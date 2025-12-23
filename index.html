@@ -130,18 +130,18 @@
         .cal-day.today { border: 2px solid var(--accent); color: var(--text); }
 
         /* --- Badges --- */
-        .badges-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .badges-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
         .badge-item { 
-            display: flex; align-items: center; gap: 5px; padding: 6px 12px; 
-            background: #fff; border: 1px solid #b0bec5; border-radius: 20px; 
-            font-size: 0.75rem; font-weight: 700; color: #78909c; opacity: 0.6; 
-            transition: all 0.3s;
+            display: flex; align-items: center; gap: 5px; padding: 6px 10px; 
+            background: #fff; border: 1px solid #b0bec5; border-radius: 12px; 
+            font-size: 0.7rem; font-weight: 700; color: #90a4ae; opacity: 0.5; 
+            filter: grayscale(1); transition: all 0.3s;
         }
         .badge-item.unlocked { 
-            opacity: 1; border-color: var(--accent); 
-            background: linear-gradient(135deg, #fffde7, #ffffff); 
-            color: #f57f17; box-shadow: 0 3px 8px rgba(255, 179, 0, 0.2); 
-            transform: scale(1.05);
+            opacity: 1; filter: grayscale(0); border-color: var(--accent); 
+            background: linear-gradient(135deg, #fffde7, #fff9c4); 
+            color: #f57f17; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.25); 
+            transform: scale(1.05); animation: popIn 0.5s ease;
         }
 
         /* --- Grouped List UI --- */
@@ -268,12 +268,14 @@
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; margin-bottom:10px; font-size: 1.1rem;">🏅 Danh Hiệu Cao Quý</h3>
+                    <h3 style="margin-top:0; margin-bottom:10px; font-size: 1.1rem;">🏅 Danh Hiệu Võ Lâm</h3>
                     <div class="badges-container">
-                        <div class="badge-item" id="badge-novice">👶 Tiểu Đồng Y Quán</div>
-                        <div class="badge-item" id="badge-streak3">🔥 Hỏa Nhãn Kim Tinh (3 ngày)</div>
-                        <div class="badge-item" id="badge-streak7">✋ Thiên Thủ Quan Âm (7 ngày)</div>
-                        <div class="badge-item" id="badge-master">👑 Hoa Đà Tái Thế (Bậc thầy)</div>
+                        <div class="badge-item" id="badge-novice">🌱 Lang Băm Tập Sự</div>
+                        <div class="badge-item" id="badge-master5">📖 Sách Y Chạy Bằng Cơm</div>
+                        <div class="badge-item" id="badge-streak3">💉 Thần Kim Diệu Thủ</div>
+                        <div class="badge-item" id="badge-streak7">📡 Bắt Mạch Online</div>
+                        <div class="badge-item" id="badge-streak14">🏯 Thái Y Viện Trưởng</div>
+                        <div class="badge-item" id="badge-master20">✨ Hoa Đà Tái Thế</div>
                     </div>
                 </div>
 
@@ -418,12 +420,14 @@
             calendarGrid: document.getElementById('calendarGrid'),
             viewWeek: document.getElementById('viewWeek'),
             viewMonth: document.getElementById('viewMonth'),
-            // Badges
+            // Badges (UPDATED)
             badges: {
                 novice: document.getElementById('badge-novice'),
+                master5: document.getElementById('badge-master5'),
                 streak3: document.getElementById('badge-streak3'),
                 streak7: document.getElementById('badge-streak7'),
-                master: document.getElementById('badge-master')
+                streak14: document.getElementById('badge-streak14'),
+                master20: document.getElementById('badge-master20')
             }
         };
 
@@ -764,7 +768,7 @@
             const streakCount = attendanceDates.size;
             todayCheckedIn = attendanceDates.has(today);
             els.statStreak.textContent = streakCount;
-            updateBadges(streakCount, acupoints.length);
+            updateBadges(streakCount);
             try {
                 await setDoc(doc(db, "profiles", currentUser.uid), {
                     displayName: currentUser.displayName, streak: streakCount, photoURL: currentUser.photoURL, lastActive: serverTimestamp()
@@ -772,13 +776,18 @@
             } catch(e) {}
         }
 
-        function updateBadges(streak = 0, totalCards = 0) {
-            // Logic mở khóa huy hiệu
-            if(totalCards >= 5) els.badges.novice.classList.add('unlocked');
-            if(streak >= 3) els.badges.streak3.classList.add('unlocked');
-            if(streak >= 7) els.badges.streak7.classList.add('unlocked');
+        function updateBadges(streak = 0) {
+            // Mặc định luôn mở khóa Lang Băm Tập Sự
+            els.badges.novice.classList.add('unlocked');
+
+            // Logic mở khóa danh hiệu mới
             const mastered = acupoints.filter(i => (i.srsLevel || 0) >= 4).length;
-            if(mastered >= 10) els.badges.master.classList.add('unlocked');
+
+            if (mastered >= 5) els.badges.master5.classList.add('unlocked');
+            if (streak >= 3) els.badges.streak3.classList.add('unlocked');
+            if (streak >= 7) els.badges.streak7.classList.add('unlocked');
+            if (streak >= 14) els.badges.streak14.classList.add('unlocked');
+            if (mastered >= 20) els.badges.master20.classList.add('unlocked');
         }
 
         async function tryAutoCheckIn() {
