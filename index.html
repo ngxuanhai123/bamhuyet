@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiHi - Sổ Tay Bấm Huyệt</title>
+    <title>HiHi Med - Sổ Tay Y Học</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00897b; /* Teal Darker */
-            --primary-light: #b2dfdb;
-            --accent: #ffb300; /* Amber */
-            --bg: #f0f4f8;
+            --primary: #00695c; /* Teal đậm chất y học */
+            --primary-light: #4db6ac;
+            --accent: #ffb300; 
+            --bg: #f5f7fa;
             --surface: #ffffff;
-            --text: #37474f;
-            --success: #43a047;
-            --error: #e53935;
+            --text: #263238;
+            --success: #2e7d32;
+            --error: #c62828;
             --radius: 16px;
-            --shadow: 0 8px 24px rgba(0, 137, 123, 0.12);
+            --shadow: 0 8px 24px rgba(0, 105, 92, 0.1);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -38,15 +38,16 @@
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
         }
         .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 137, 123, 0.3); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.3); }
         .btn-secondary { background: #cfd8dc; color: #455a64; }
         .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3); }
         .btn-danger { background: #ffebee; color: var(--error); }
         .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
+        .btn-xs { padding: 4px 10px; font-size: 0.8rem; border-radius: 8px; }
 
         .card {
             background: var(--surface); border-radius: var(--radius); padding: 20px;
-            margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.5);
+            margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.8);
         }
         
         input, select, textarea {
@@ -58,7 +59,7 @@
         /* --- Layout --- */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--primary), #4db6ac);
+            background: linear-gradient(135deg, var(--primary), #80cbc4);
             display: flex; justify-content: center; align-items: center; z-index: 100;
         }
         .login-box {
@@ -70,13 +71,19 @@
         #app-screen { display: none; flex: 1; flex-direction: column; }
 
         header {
-            background: var(--surface); padding: 12px 16px;
+            background: var(--surface); padding: 10px 16px;
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
-        .brand { font-weight: 800; color: var(--primary); font-size: 1.3rem; display: flex; align-items: center; gap: 6px; }
+        .brand { 
+            font-weight: 800; color: var(--primary); font-size: 1.2rem; 
+            display: flex; align-items: center; gap: 8px; 
+        }
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .slogan { font-size: 0.65rem; font-weight: 500; color: #78909c; text-transform: uppercase; letter-spacing: 0.5px; }
+        
         .user-profile { display: flex; align-items: center; gap: 8px; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light); }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light); }
 
         .container { max-width: 800px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; }
 
@@ -86,7 +93,7 @@
             padding: 8px 16px; border-radius: 20px; background: white; color: var(--text); opacity: 0.7;
             font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; border: 1px solid transparent;
         }
-        .nav-item.active { background: var(--primary); color: white; opacity: 1; box-shadow: 0 4px 10px rgba(0, 137, 123, 0.2); }
+        .nav-item.active { background: var(--primary); color: white; opacity: 1; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.2); }
 
         /* --- Views --- */
         .view { display: none; animation: fadeIn 0.3s ease; }
@@ -103,6 +110,18 @@
         .feedback.correct { color: var(--success); }
         .feedback.wrong { color: var(--error); }
 
+        /* --- Calendar UI --- */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.85rem; }
+        .cal-day-header { font-weight: bold; color: #90a4ae; padding-bottom: 5px; font-size: 0.75rem; }
+        .cal-day { 
+            aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
+            border-radius: 8px; background: #fafafa; color: #cfd8dc; font-weight: 500;
+        }
+        .cal-day.active { background: var(--primary); color: white; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .cal-day.today { border: 2px solid var(--accent); color: var(--text); }
+        .cal-day.active.today { border: 2px solid var(--accent); color: white; }
+
         /* --- Grouped List UI --- */
         .group-header {
             background: #e0f2f1; color: var(--primary); padding: 8px 12px;
@@ -117,10 +136,14 @@
         
         /* --- Leaderboard UI --- */
         .lb-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-        .lb-rank { font-weight: 800; font-size: 1.1rem; width: 30px; color: var(--accent); }
-        .lb-name { flex: 1; font-weight: 600; }
-        .lb-score { font-weight: 700; color: var(--primary); background: #e0f2f1; padding: 4px 8px; border-radius: 6px; font-size: 0.9rem; }
+        .lb-rank { font-weight: 800; font-size: 1.1rem; width: 35px; color: var(--text); opacity: 0.6; }
+        .lb-name { flex: 1; font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px;}
+        .lb-score { font-weight: 700; color: var(--primary); background: #e0f2f1; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; white-space: nowrap;}
+        
         .lb-top1 { border: 2px solid #ffd700; background: #fffde7; }
+        .lb-top1 .lb-rank { color: #fbc02d; opacity: 1; }
+        .lb-top2 .lb-rank { color: #90a4ae; opacity: 1; }
+        .lb-top3 .lb-rank { color: #a1887f; opacity: 1; }
 
         /* --- Utilities --- */
         .app-footer { text-align: center; padding: 20px; margin-top: auto; color: #90a4ae; font-size: 0.85rem; }
@@ -142,19 +165,26 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <div style="font-size: 3.5rem; margin-bottom: 10px;">👋</div>
-            <h1 style="color: var(--primary); margin: 0; font-size: 2rem; letter-spacing: -1px;">HiHi</h1>
-            <p style="color: #78909c; margin-bottom: 25px;">Sổ tay bấm huyệt cá nhân</p>
+            <div style="font-size: 4rem; margin-bottom: 10px;">⚕️</div>
+            <h1 style="color: var(--primary); margin: 0; font-size: 2.2rem; letter-spacing: -1px;">HiHi Med</h1>
+            <p style="color: #546e7a; margin-bottom: 5px; font-weight: 600;">Sổ Tay Huyệt Đạo</p>
+            <p style="color: #90a4ae; font-size: 0.9rem; margin-top: 0; margin-bottom: 25px; font-style: italic;">"Tinh hoa trị liệu cổ truyền"</p>
             <button class="btn btn-google" id="btnLogin">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="margin-right:8px">
-                Đăng nhập với Google
+                Đăng nhập bằng Google
             </button>
         </div>
     </div>
 
     <div id="app-screen">
         <header>
-            <div class="brand">👋 HiHi</div>
+            <div class="brand">
+                <span style="font-size: 1.8rem;">⚕️</span>
+                <div class="brand-text">
+                    <span>HiHi Med</span>
+                    <span class="slogan">Sổ tay y học</span>
+                </div>
+            </div>
             <div class="user-profile">
                 <img id="userAvatar" class="avatar" src="" alt="">
                 <button class="btn btn-danger" style="padding: 6px 10px; font-size: 0.75rem;" id="btnLogout">Thoát</button>
@@ -164,7 +194,7 @@
         <div class="container">
             <div class="nav-pills">
                 <div class="nav-item active" data-target="tab-quiz">🧠 Học Tập</div>
-                <div class="nav-item" data-target="tab-dashboard">🏆 Bảng Xếp Hạng</div>
+                <div class="nav-item" data-target="tab-dashboard">🏆 Thành Tích</div>
                 <div class="nav-item" data-target="tab-manage">⚙️ Quản Lý</div>
             </div>
 
@@ -196,7 +226,7 @@
                     
                     <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 30px;">
                         <div style="font-size: 3rem;">📭</div>
-                        <p>Bạn chưa có dữ liệu.</p>
+                        <p>Bạn chưa có dữ liệu y học nào.</p>
                         <button class="btn btn-primary" onclick="initDefaultData()">♻️ Tải 30+ huyệt mẫu ngay</button>
                     </div>
                 </div>
@@ -206,7 +236,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                     <div class="card" style="margin:0; text-align:center; background: linear-gradient(135deg, var(--primary), #004d40); color: white; border:none;">
                         <div style="font-size: 2rem; font-weight: 800;" id="stat-streak">0</div>
-                        <div style="font-size: 0.8rem; opacity: 0.9;">Ngày chăm chỉ</div>
+                        <div style="font-size: 0.8rem; opacity: 0.9;">Chuỗi ngày học</div>
                     </div>
                     <div class="card" style="margin:0; text-align:center;">
                         <div style="font-size: 2rem; font-weight: 800; color: var(--primary);" id="stat-total">0</div>
@@ -214,7 +244,21 @@
                     </div>
                 </div>
 
-                <h3 style="margin: 10px 0; font-size: 1.1rem; color: #37474f;">🏆 Bảng vàng chăm học</h3>
+                <div class="card">
+                    <div class="cal-header">
+                        <h3 style="margin:0; font-size: 1.1rem; display:flex; align-items:center; gap:5px;">📅 Lịch Sử Học</h3>
+                        <div>
+                            <button class="btn btn-xs btn-primary" id="viewWeek">Tuần</button>
+                            <button class="btn btn-xs btn-secondary" id="viewMonth">Tháng</button>
+                        </div>
+                    </div>
+                    <div class="cal-grid" style="margin-bottom: 5px;">
+                        <div class="cal-day-header">CN</div><div class="cal-day-header">T2</div><div class="cal-day-header">T3</div><div class="cal-day-header">T4</div><div class="cal-day-header">T5</div><div class="cal-day-header">T6</div><div class="cal-day-header">T7</div>
+                    </div>
+                    <div id="calendarGrid" class="cal-grid"></div>
+                </div>
+
+                <h3 style="margin: 10px 0; font-size: 1.1rem; color: #37474f;">🏆 Bảng vàng Top 20</h3>
                 <div id="leaderboardList">
                     <div style="text-align:center; padding: 20px; color: #90a4ae;">Đang tải xếp hạng...</div>
                 </div>
@@ -222,14 +266,14 @@
 
             <div id="tab-manage" class="view">
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Thêm mới</h3>
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Thêm huyệt mới</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <input type="text" id="inpGroup" placeholder="Nhóm (VD: Đau đầu)" list="groupSuggestions">
                         <input type="text" id="inpName" placeholder="Tên Huyệt">
                     </div>
                     <datalist id="groupSuggestions"></datalist>
                     <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí, tác dụng..."></textarea>
-                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu ngay</button>
+                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu kiến thức</button>
                     
                     <div style="margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
                         <button class="btn btn-secondary" style="width: 100%; font-size: 0.85rem;" onclick="initDefaultData()">
@@ -239,14 +283,14 @@
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Danh sách của bạn</h3>
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Kho dữ liệu của bạn</h3>
                     <div id="dataList" style="max-height: 500px; overflow-y: auto;"></div>
                 </div>
             </div>
         </div>
 
         <footer class="app-footer">
-            Made with <span class="heart-anim">❤</span> by Xuân Hải
+            HiHi Med &copy; 2025<br>Made with <span class="heart-anim">❤</span> by Xuân Hải
         </footer>
     </div>
 
@@ -276,44 +320,35 @@
         let currentQuizItem = null;
         let currentHintIndex = 0;
         let todayCheckedIn = false;
+        let attendanceDates = new Set(); // Lưu danh sách ngày đã học để vẽ lịch
+        let calViewMode = 'month'; // 'week' or 'month'
 
-        // --- BỘ DỮ LIỆU MẪU KHỔNG LỒ (30+ HUYỆT) ---
+        // --- BỘ DỮ LIỆU MẪU (30+ HUYỆT) ---
         const defaultAcupoints = [
-            // Đau đầu
             { group: "Đau đầu", name: "Hợp Cốc", desc: "Nằm ở hổ khẩu, giữa xương đốt bàn ngón cái và ngón trỏ." },
             { group: "Đau đầu", name: "Thái Dương", desc: "Chỗ lõm phía sau đuôi lông mày và đuôi mắt khoảng 1 thốn." },
             { group: "Đau đầu", name: "Ấn Đường", desc: "Điểm chính giữa đường nối hai đầu lông mày." },
             { group: "Đau đầu", name: "Toản Trúc", desc: "Chỗ lõm đầu trong lông mày, thẳng trên góc mắt trong." },
             { group: "Đau đầu", name: "Phong Trì", desc: "Chỗ lõm phía sau gáy, bên ngoài khối cơ thang, ngay dưới xương chẩm." },
-            
-            // Mất ngủ
             { group: "Mất ngủ", name: "Nội Quan", desc: "Mặt trước cổ tay, từ lằn chỉ đo lên 2 thốn, giữa hai gân." },
             { group: "Mất ngủ", name: "Thần Môn", desc: "Trên lằn chỉ cổ tay, chỗ lõm phía xương trụ (phía ngón út)." },
             { group: "Mất ngủ", name: "Tam Âm Giao", desc: "Mặt trong cẳng chân, từ đỉnh mắt cá trong đo lên 3 thốn." },
             { group: "Mất ngủ", name: "Dũng Tuyền", desc: "Chỗ lõm dưới gan bàn chân, tại điểm nối 1/3 trước và 2/3 sau." },
-
-            // Đau lưng & Vai gáy
             { group: "Đau lưng", name: "Ủy Trung", desc: "Điểm chính giữa nếp lằn khoeo chân (sau đầu gối)." },
             { group: "Đau lưng", name: "Thận Du", desc: "Dưới mỏm gai đốt sống thắt lưng 2, đo ra ngang 1.5 thốn." },
             { group: "Đau vai gáy", name: "Kiên Tỉnh", desc: "Điểm giữa đường nối huyệt Đại Chùy và mỏm cùng vai." },
             { group: "Đau vai gáy", name: "Đại Chùy", desc: "Chỗ lõm dưới mỏm gai đốt sống cổ 7 (C7)." },
             { group: "Đau lưng", name: "Dương Lăng Tuyền", desc: "Chỗ lõm phía trước và dưới đầu nhỏ xương mác." },
-
-            // Tiêu hóa
             { group: "Tiêu hóa", name: "Túc Tam Lý", desc: "Dưới mắt gối ngoài 3 thốn, cách mào chày 1 khoát ngón tay." },
             { group: "Tiêu hóa", name: "Trung Quản", desc: "Nằm trên đường giữa bụng, từ rốn đo lên 4 thốn." },
             { group: "Tiêu hóa", name: "Thiên Khu", desc: "Từ rốn đo ngang ra 2 bên, mỗi bên 2 thốn." },
-
-            // Cảm cúm & Hô hấp
             { group: "Hô hấp", name: "Nghinh Hương", desc: "Điểm giao giữa rãnh mũi má và đường ngang qua chân cánh mũi." },
-            { group: "Hô hấp", name: "Liệt Khuyết", desc: "Trên cổ tay 1.5 thốn, khi hai bàn tay đan vào nhau, đầu ngón trỏ chạm vào đâu là huyệt ở đó." },
+            { group: "Hô hấp", name: "Liệt Khuyết", desc: "Trên cổ tay 1.5 thốn, khi hai bàn tay đan vào nhau." },
             { group: "Hô hấp", name: "Phế Du", desc: "Dưới mỏm gai đốt sống ngực 3, đo ra ngang 1.5 thốn." },
             { group: "Hô hấp", name: "Xích Trạch", desc: "Trên nếp gấp khuỷu tay, bờ ngoài gân cơ nhị đầu." },
-
-            // Thư giãn & Thẩm mỹ
-            { group: "Thẩm mỹ", name: "Quyền Liêu", desc: "Dưới xương gò má, giao điểm đường thẳng qua đuôi mắt và đường ngang qua chân cánh mũi." },
+            { group: "Thẩm mỹ", name: "Quyền Liêu", desc: "Dưới xương gò má, giao điểm đường thẳng qua đuôi mắt." },
             { group: "Thẩm mỹ", name: "Địa Thương", desc: "Cách khóe miệng 0.4 thốn." },
-            { group: "Thư giãn", name: "Bách Hội", desc: "Điểm chính giữa đỉnh đầu, nơi giao nhau của đường nối hai đỉnh tai và đường dọc giữa đầu." },
+            { group: "Thư giãn", name: "Bách Hội", desc: "Điểm chính giữa đỉnh đầu." },
             { group: "Thư giãn", name: "Lao Cung", desc: "Trong lòng bàn tay, khi nắm tay lại, đầu ngón giữa chạm vào đâu là huyệt." }
         ];
 
@@ -347,10 +382,13 @@
             btnNext: document.getElementById('btnNext'),
             quizArea: document.getElementById('quizArea'),
             emptyQuizMsg: document.getElementById('emptyQuizMsg'),
-            // Stats
+            // Stats & Cal
             statStreak: document.getElementById('stat-streak'),
             statTotal: document.getElementById('stat-total'),
-            leaderboardList: document.getElementById('leaderboardList')
+            leaderboardList: document.getElementById('leaderboardList'),
+            calendarGrid: document.getElementById('calendarGrid'),
+            viewWeek: document.getElementById('viewWeek'),
+            viewMonth: document.getElementById('viewMonth')
         };
 
         // --- AUTH ---
@@ -367,8 +405,9 @@
                 showLoading(true);
                 await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
                 setupNavigation();
+                renderCalendar(); // Render lịch lần đầu
                 showLoading(false);
-                showToast(`Chào mừng ${user.displayName}!`);
+                showToast(`Xin chào bác sĩ tương lai ${user.displayName}!`);
             } else {
                 els.loginScreen.style.display = 'flex';
                 els.appScreen.style.display = 'none';
@@ -390,35 +429,26 @@
                 snap.forEach((doc) => acupoints.push({ id: doc.id, ...doc.data() }));
                 
                 els.statTotal.textContent = acupoints.length;
-                renderListGrouped(); // Render theo nhóm
+                renderListGrouped();
                 updateGroupSelect();
                 prepareQuiz();
             } catch (e) { console.error(e); }
         }
 
-        // --- RENDER DANH SÁCH THEO NHÓM (NEW) ---
         function renderListGrouped() {
             els.dataList.innerHTML = '';
-            
-            // 1. Nhóm dữ liệu
             const groups = {};
             acupoints.forEach(item => {
                 if(!groups[item.group]) groups[item.group] = [];
                 groups[item.group].push(item);
             });
 
-            // 2. Sắp xếp tên nhóm
-            const sortedGroups = Object.keys(groups).sort();
-
-            // 3. Render
-            sortedGroups.forEach(gName => {
-                // Header nhóm
+            Object.keys(groups).sort().forEach(gName => {
                 const header = document.createElement('div');
                 header.className = 'group-header';
                 header.innerHTML = `<span>📂 ${gName}</span> <span style="font-size:0.8rem; opacity:0.8">${groups[gName].length} bài</span>`;
                 els.dataList.appendChild(header);
 
-                // Các item trong nhóm
                 groups[gName].forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'list-item';
@@ -436,10 +466,8 @@
             if(acupoints.length === 0) els.dataList.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Danh sách trống</div>';
         }
 
-        // --- IMPORT DEFAULT DATA ---
         window.initDefaultData = async () => {
             if(acupoints.length > 0 && !confirm("Thêm dữ liệu mẫu vào danh sách hiện tại của bạn?")) return;
-            
             showLoading(true);
             try {
                 const batch = writeBatch(db);
@@ -451,14 +479,12 @@
                 });
                 await batch.commit();
                 await loadData();
-                showToast("✅ Đã nạp thành công!");
-                // Chuyển về tab học tập
+                showToast("✅ Đã nạp dữ liệu y học!");
                 document.querySelector('[data-target="tab-quiz"]').click();
             } catch(e) { showToast("Lỗi: " + e.message); }
             showLoading(false);
         }
 
-        // --- ADD & DELETE ---
         els.btnAddData.addEventListener('click', async () => {
             const group = els.inpGroup.value.trim();
             const name = els.inpName.value.trim();
@@ -492,20 +518,19 @@
             showLoading(false);
         }
 
-        // --- ATTENDANCE & LEADERBOARD SYSTEM ---
+        // --- ATTENDANCE, CALENDAR & LEADERBOARD ---
         async function checkAttendance() {
-            // 1. Tính streak cá nhân
             const today = new Date().toISOString().split('T')[0];
             const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
             const snap = await getDocs(q);
-            const dates = new Set();
-            snap.forEach(doc => dates.add(doc.data().date));
+            attendanceDates.clear(); // Xóa cũ
+            snap.forEach(doc => attendanceDates.add(doc.data().date));
             
-            const streakCount = dates.size;
-            todayCheckedIn = dates.has(today);
+            const streakCount = attendanceDates.size;
+            todayCheckedIn = attendanceDates.has(today);
             els.statStreak.textContent = streakCount;
 
-            // 2. Cập nhật Profile cho Bảng Xếp Hạng
+            // Cập nhật Profile
             try {
                 await setDoc(doc(db, "profiles", currentUser.uid), {
                     displayName: currentUser.displayName,
@@ -524,14 +549,17 @@
                     uid: currentUser.uid, date: today, timestamp: serverTimestamp()
                 });
                 todayCheckedIn = true;
+                attendanceDates.add(today); // Cập nhật local
+                renderCalendar(); // Vẽ lại lịch để hiện ngày hôm nay xanh
+                checkAttendance(); // Cập nhật streak
                 showToast("✅ Điểm danh ngày mới!");
-                checkAttendance();
             } catch(e) { console.error(e); }
         }
 
         async function loadLeaderboard() {
             try {
-                const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(10));
+                // TOP 20
+                const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(20));
                 const snap = await getDocs(q);
                 els.leaderboardList.innerHTML = '';
                 
@@ -540,8 +568,15 @@
                     const data = doc.data();
                     const isMe = doc.id === currentUser.uid;
                     const div = document.createElement('div');
-                    div.className = `lb-item ${rank === 1 ? 'lb-top1' : ''}`;
-                    div.style.border = isMe ? '2px solid var(--primary)' : 'none';
+                    
+                    let rankClass = '';
+                    if (rank === 1) rankClass = 'lb-top1';
+                    else if (rank === 2) rankClass = 'lb-top2';
+                    else if (rank === 3) rankClass = 'lb-top3';
+
+                    div.className = `lb-item ${rankClass}`;
+                    if(isMe) div.style.border = '2px solid var(--primary)';
+                    
                     div.innerHTML = `
                         <div class="lb-rank">#${rank}</div>
                         <img src="${data.photoURL}" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
@@ -558,6 +593,69 @@
             }
         }
 
+        // --- LOGIC VẼ LỊCH (CALENDAR) ---
+        els.viewWeek.addEventListener('click', () => { calViewMode = 'week'; renderCalendar(); });
+        els.viewMonth.addEventListener('click', () => { calViewMode = 'month'; renderCalendar(); });
+
+        function renderCalendar() {
+            // Update button styles
+            if(calViewMode === 'week') {
+                els.viewWeek.className = 'btn btn-xs btn-primary';
+                els.viewMonth.className = 'btn btn-xs btn-secondary';
+            } else {
+                els.viewWeek.className = 'btn btn-xs btn-secondary';
+                els.viewMonth.className = 'btn btn-xs btn-primary';
+            }
+
+            const today = new Date();
+            els.calendarGrid.innerHTML = '';
+            
+            let startDate, daysToRender;
+
+            if (calViewMode === 'month') {
+                // Lấy ngày đầu tháng
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                // Tìm ngày bắt đầu lưới (Chủ nhật trước đó)
+                const dayOfWeek = startDate.getDay(); // 0 (Sun) -> 6 (Sat)
+                startDate.setDate(startDate.getDate() - dayOfWeek);
+                daysToRender = 42; // 6 tuần để chắc chắn bao phủ
+            } else {
+                // Lấy đầu tuần này (Chủ nhật)
+                startDate = new Date(today);
+                startDate.setDate(today.getDate() - today.getDay());
+                daysToRender = 7;
+            }
+
+            for (let i = 0; i < daysToRender; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                
+                // Format YYYY-MM-DD để so sánh
+                // Lưu ý: toISOString() dùng UTC, ta cần local date string
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const dateString = `${year}-${month}-${day}`;
+
+                const isToday = (today.getDate() === currentDate.getDate() && 
+                                today.getMonth() === currentDate.getMonth() && 
+                                today.getFullYear() === currentDate.getFullYear());
+                
+                const hasStudied = attendanceDates.has(dateString);
+                
+                // Chỉ hiện ngày trong tháng hiện tại rõ nét nếu ở chế độ tháng
+                const isCurrentMonth = currentDate.getMonth() === today.getMonth();
+                const opacity = (calViewMode === 'month' && !isCurrentMonth) ? '0.3' : '1';
+
+                const div = document.createElement('div');
+                div.className = `cal-day ${hasStudied ? 'active' : ''} ${isToday ? 'today' : ''}`;
+                div.style.opacity = opacity;
+                div.textContent = currentDate.getDate();
+                els.calendarGrid.appendChild(div);
+            }
+        }
+
+
         // --- QUIZ LOGIC ---
         function prepareQuiz() {
             if(acupoints.length > 0) {
@@ -569,7 +667,7 @@
 
         function startQuiz() {
             if (acupoints.length === 0) return;
-            tryAutoCheckIn(); // Auto điểm danh khi học
+            tryAutoCheckIn(); 
             
             const filter = els.quizGroupSelect.value;
             let pool = (filter === 'all') ? acupoints : acupoints.filter(i => i.group === filter);
@@ -577,26 +675,22 @@
             
             const idx = Math.floor(Math.random() * pool.length);
             currentQuizItem = pool[idx];
-            currentHintIndex = 0; // Reset gợi ý
+            currentHintIndex = 0;
 
             els.qGroup.textContent = currentQuizItem.group;
-            els.qQuestion.textContent = "Huyệt này là gì?";
+            els.qQuestion.textContent = "Huyệt này tên là gì?";
             els.qDesc.textContent = currentQuizItem.desc;
             els.qInput.value = '';
             els.qFeedback.textContent = ''; els.qFeedback.className = 'feedback';
         }
 
-        // Gợi ý Logic
         els.btnHint.addEventListener('click', () => {
             if(!currentQuizItem) return;
             const name = currentQuizItem.name;
             if(currentHintIndex < name.length) {
                 currentHintIndex++;
                 els.qInput.value = name.substring(0, currentHintIndex);
-                // Nếu đã gợi ý hết thì báo đáp án
-                if(currentHintIndex === name.length) {
-                    els.qFeedback.textContent = "Đã hiện toàn bộ đáp án!";
-                }
+                if(currentHintIndex === name.length) els.qFeedback.textContent = "Đã hiện toàn bộ đáp án!";
             }
         });
 
@@ -607,9 +701,9 @@
             tryAutoCheckIn();
             const val = els.qInput.value.trim().toLowerCase();
             if(val === currentQuizItem.name.toLowerCase()) {
-                els.qFeedback.innerHTML = "🎉 Chính xác!"; els.qFeedback.className = 'feedback correct';
+                els.qFeedback.innerHTML = "🎉 Chính xác tuyệt đối!"; els.qFeedback.className = 'feedback correct';
             } else {
-                els.qFeedback.innerHTML = "❌ Sai rồi"; els.qFeedback.className = 'feedback wrong';
+                els.qFeedback.innerHTML = "❌ Chưa đúng rồi"; els.qFeedback.className = 'feedback wrong';
             }
         });
         els.btnShowAns.addEventListener('click', () => {
@@ -628,7 +722,7 @@
                     document.getElementById(tab.dataset.target).classList.add('active');
                     
                     if(tab.dataset.target === 'tab-quiz') startQuiz();
-                    if(tab.dataset.target === 'tab-dashboard') loadLeaderboard(); // Reload BXH khi mở tab
+                    if(tab.dataset.target === 'tab-dashboard') loadLeaderboard();
                 });
             });
         }
