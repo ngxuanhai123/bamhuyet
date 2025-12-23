@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00695c; /* Teal đậm chất y học */
+            --primary: #00695c;
             --primary-light: #4db6ac;
             --accent: #ffb300; 
             --bg: #f5f7fa;
@@ -41,6 +41,7 @@
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.3); }
         .btn-secondary { background: #cfd8dc; color: #455a64; }
         .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3); }
+        .btn-success { background: #e8f5e9; color: var(--success); border: 1px solid #c8e6c9; }
         .btn-danger { background: #ffebee; color: var(--error); }
         .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
         .btn-xs { padding: 4px 10px; font-size: 0.8rem; border-radius: 8px; }
@@ -107,8 +108,9 @@
         .quiz-desc { color: #546e7a; font-style: italic; margin-bottom: 20px; line-height: 1.5; font-size: 0.95rem; }
         
         .feedback { min-height: 24px; margin-top: 10px; font-weight: 700; font-size: 1rem; }
-        .feedback.correct { color: var(--success); }
+        .feedback.correct { color: var(--success); animation: popIn 0.3s; }
         .feedback.wrong { color: var(--error); }
+        @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
 
         /* --- Calendar UI --- */
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -133,6 +135,10 @@
             padding: 12px 8px; border-bottom: 1px solid #eee;
         }
         .list-item:last-child { border-bottom: none; }
+        .tag-mastered { 
+            background: #e8f5e9; color: var(--success); font-size: 0.7rem; padding: 2px 6px; 
+            border-radius: 4px; font-weight: 700; border: 1px solid #c8e6c9; margin-left: 5px;
+        }
         
         /* --- Leaderboard UI --- */
         .lb-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
@@ -219,15 +225,15 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px;">
                             <button class="btn btn-accent" id="btnHint">💡 Gợi ý</button>
                             <button class="btn btn-secondary" id="btnShowAns">👁️ Đáp án</button>
-                            <button class="btn btn-primary" id="btnCheckAns">✨ Kiểm tra</button>
+                            <button class="btn btn-success" id="btnMastered">✅ Đã thuộc</button>
                         </div>
-                        <button class="btn btn-secondary" style="width: 100%; margin-top: 10px; background: #eceff1; color: #78909c" id="btnNext">Câu tiếp theo ➜</button>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 10px; background: #eceff1; color: #78909c" id="btnNext">Bỏ qua câu này ➜</button>
                     </div>
                     
                     <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 30px;">
-                        <div style="font-size: 3rem;">📭</div>
-                        <p>Bạn chưa có dữ liệu y học nào.</p>
-                        <button class="btn btn-primary" onclick="initDefaultData()">♻️ Tải 30+ huyệt mẫu ngay</button>
+                        <div style="font-size: 3rem;">🎉</div>
+                        <p id="emptyMsgText">Bạn chưa có dữ liệu y học nào.</p>
+                        <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()">♻️ Tải 30+ huyệt mẫu ngay</button>
                     </div>
                 </div>
             </div>
@@ -240,7 +246,7 @@
                     </div>
                     <div class="card" style="margin:0; text-align:center;">
                         <div style="font-size: 2rem; font-weight: 800; color: var(--primary);" id="stat-total">0</div>
-                        <div style="font-size: 0.8rem; color: #78909c;">Huyệt đã lưu</div>
+                        <div style="font-size: 0.8rem; color: #78909c;">Tổng số huyệt</div>
                     </div>
                 </div>
 
@@ -283,7 +289,7 @@
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Kho dữ liệu của bạn</h3>
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Kho dữ liệu (Tất cả)</h3>
                     <div id="dataList" style="max-height: 500px; overflow-y: auto;"></div>
                 </div>
             </div>
@@ -297,7 +303,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp, writeBatch, orderBy, limit, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp, writeBatch, orderBy, limit, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // FIREBASE CONFIG
         const firebaseConfig = {
@@ -320,8 +326,9 @@
         let currentQuizItem = null;
         let currentHintIndex = 0;
         let todayCheckedIn = false;
-        let attendanceDates = new Set(); // Lưu danh sách ngày đã học để vẽ lịch
-        let calViewMode = 'month'; // 'week' or 'month'
+        let attendanceDates = new Set();
+        let calViewMode = 'week'; // DEFAULT: WEEK VIEW
+        let isProcessing = false; // Prevent double checking
 
         // --- BỘ DỮ LIỆU MẪU (30+ HUYỆT) ---
         const defaultAcupoints = [
@@ -376,12 +383,14 @@
             qDesc: document.getElementById('qDesc'),
             qInput: document.getElementById('qInput'),
             qFeedback: document.getElementById('qFeedback'),
-            btnCheckAns: document.getElementById('btnCheckAns'),
+            btnMastered: document.getElementById('btnMastered'),
             btnShowAns: document.getElementById('btnShowAns'),
             btnHint: document.getElementById('btnHint'),
             btnNext: document.getElementById('btnNext'),
             quizArea: document.getElementById('quizArea'),
             emptyQuizMsg: document.getElementById('emptyQuizMsg'),
+            emptyMsgText: document.getElementById('emptyMsgText'),
+            btnInitData: document.getElementById('btnInitData'),
             // Stats & Cal
             statStreak: document.getElementById('stat-streak'),
             statTotal: document.getElementById('stat-total'),
@@ -405,7 +414,7 @@
                 showLoading(true);
                 await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
                 setupNavigation();
-                renderCalendar(); // Render lịch lần đầu
+                renderCalendar(); 
                 showLoading(false);
                 showToast(`Xin chào bác sĩ tương lai ${user.displayName}!`);
             } else {
@@ -450,11 +459,15 @@
                 els.dataList.appendChild(header);
 
                 groups[gName].forEach(item => {
+                    const isMastered = item.isMastered === true;
                     const div = document.createElement('div');
                     div.className = 'list-item';
                     div.innerHTML = `
                         <div>
-                            <div style="font-weight:600">${item.name}</div>
+                            <div style="font-weight:600">
+                                ${item.name} 
+                                ${isMastered ? '<span class="tag-mastered">✅ Đã thuộc</span>' : ''}
+                            </div>
                             <div style="font-size:0.85rem; color:#666; margin-top:2px">${item.desc}</div>
                         </div>
                         <button onclick="deleteAcupoint('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem; opacity:0.4; color:red;">&times;</button>
@@ -474,7 +487,12 @@
                 defaultAcupoints.forEach(item => {
                     const docRef = doc(collection(db, "acupoints"));
                     batch.set(docRef, {
-                        uid: currentUser.uid, group: item.group, name: item.name, desc: item.desc, createdAt: serverTimestamp()
+                        uid: currentUser.uid, 
+                        group: item.group, 
+                        name: item.name, 
+                        desc: item.desc, 
+                        isMastered: false, // Mặc định chưa thuộc
+                        createdAt: serverTimestamp()
                     });
                 });
                 await batch.commit();
@@ -494,9 +512,9 @@
             showLoading(true);
             try {
                 const docRef = await addDoc(collection(db, "acupoints"), {
-                    uid: currentUser.uid, group, name, desc, createdAt: serverTimestamp()
+                    uid: currentUser.uid, group, name, desc, isMastered: false, createdAt: serverTimestamp()
                 });
-                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc });
+                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc, isMastered: false });
                 els.inpName.value = ''; els.inpDesc.value = '';
                 els.statTotal.textContent = acupoints.length;
                 renderListGrouped(); updateGroupSelect(); prepareQuiz();
@@ -523,14 +541,13 @@
             const today = new Date().toISOString().split('T')[0];
             const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
             const snap = await getDocs(q);
-            attendanceDates.clear(); // Xóa cũ
+            attendanceDates.clear(); 
             snap.forEach(doc => attendanceDates.add(doc.data().date));
             
             const streakCount = attendanceDates.size;
             todayCheckedIn = attendanceDates.has(today);
             els.statStreak.textContent = streakCount;
 
-            // Cập nhật Profile
             try {
                 await setDoc(doc(db, "profiles", currentUser.uid), {
                     displayName: currentUser.displayName,
@@ -549,16 +566,15 @@
                     uid: currentUser.uid, date: today, timestamp: serverTimestamp()
                 });
                 todayCheckedIn = true;
-                attendanceDates.add(today); // Cập nhật local
-                renderCalendar(); // Vẽ lại lịch để hiện ngày hôm nay xanh
-                checkAttendance(); // Cập nhật streak
+                attendanceDates.add(today);
+                renderCalendar(); 
+                checkAttendance(); 
                 showToast("✅ Điểm danh ngày mới!");
             } catch(e) { console.error(e); }
         }
 
         async function loadLeaderboard() {
             try {
-                // TOP 20
                 const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(20));
                 const snap = await getDocs(q);
                 els.leaderboardList.innerHTML = '';
@@ -593,12 +609,11 @@
             }
         }
 
-        // --- LOGIC VẼ LỊCH (CALENDAR) ---
+        // --- CALENDAR LOGIC ---
         els.viewWeek.addEventListener('click', () => { calViewMode = 'week'; renderCalendar(); });
         els.viewMonth.addEventListener('click', () => { calViewMode = 'month'; renderCalendar(); });
 
         function renderCalendar() {
-            // Update button styles
             if(calViewMode === 'week') {
                 els.viewWeek.className = 'btn btn-xs btn-primary';
                 els.viewMonth.className = 'btn btn-xs btn-secondary';
@@ -613,14 +628,11 @@
             let startDate, daysToRender;
 
             if (calViewMode === 'month') {
-                // Lấy ngày đầu tháng
                 startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                // Tìm ngày bắt đầu lưới (Chủ nhật trước đó)
-                const dayOfWeek = startDate.getDay(); // 0 (Sun) -> 6 (Sat)
+                const dayOfWeek = startDate.getDay(); 
                 startDate.setDate(startDate.getDate() - dayOfWeek);
-                daysToRender = 42; // 6 tuần để chắc chắn bao phủ
+                daysToRender = 42; 
             } else {
-                // Lấy đầu tuần này (Chủ nhật)
                 startDate = new Date(today);
                 startDate.setDate(today.getDate() - today.getDay());
                 daysToRender = 7;
@@ -630,8 +642,6 @@
                 const currentDate = new Date(startDate);
                 currentDate.setDate(startDate.getDate() + i);
                 
-                // Format YYYY-MM-DD để so sánh
-                // Lưu ý: toISOString() dùng UTC, ta cần local date string
                 const year = currentDate.getFullYear();
                 const month = String(currentDate.getMonth() + 1).padStart(2, '0');
                 const day = String(currentDate.getDate()).padStart(2, '0');
@@ -642,8 +652,6 @@
                                 today.getFullYear() === currentDate.getFullYear());
                 
                 const hasStudied = attendanceDates.has(dateString);
-                
-                // Chỉ hiện ngày trong tháng hiện tại rõ nét nếu ở chế độ tháng
                 const isCurrentMonth = currentDate.getMonth() === today.getMonth();
                 const opacity = (calViewMode === 'month' && !isCurrentMonth) ? '0.3' : '1';
 
@@ -656,22 +664,39 @@
         }
 
 
-        // --- QUIZ LOGIC ---
+        // --- QUIZ LOGIC (AUTO CHECK + MASTERY) ---
         function prepareQuiz() {
+            // Hiển thị quiz nếu có dữ liệu
             if(acupoints.length > 0) {
                 els.quizArea.style.display = 'block'; els.emptyQuizMsg.style.display = 'none';
             } else {
-                els.quizArea.style.display = 'none'; els.emptyQuizMsg.style.display = 'block';
+                els.quizArea.style.display = 'none'; 
+                els.emptyQuizMsg.style.display = 'block';
+                els.emptyMsgText.textContent = "Bạn chưa có dữ liệu y học nào.";
+                els.btnInitData.style.display = 'inline-flex';
             }
         }
 
         function startQuiz() {
+            isProcessing = false;
             if (acupoints.length === 0) return;
             tryAutoCheckIn(); 
             
             const filter = els.quizGroupSelect.value;
-            let pool = (filter === 'all') ? acupoints : acupoints.filter(i => i.group === filter);
-            if (pool.length === 0) return;
+            // Lọc ra các huyệt chưa thuộc (isMastered != true)
+            let pool = acupoints.filter(i => (i.isMastered !== true) && (filter === 'all' || i.group === filter));
+            
+            if (pool.length === 0) {
+                // Nếu đã thuộc hết
+                els.quizArea.style.display = 'none';
+                els.emptyQuizMsg.style.display = 'block';
+                els.emptyMsgText.textContent = "Chúc mừng! Bạn đã thuộc hết các huyệt trong mục này.";
+                els.btnInitData.style.display = 'none';
+                return;
+            } else {
+                els.quizArea.style.display = 'block';
+                els.emptyQuizMsg.style.display = 'none';
+            }
             
             const idx = Math.floor(Math.random() * pool.length);
             currentQuizItem = pool[idx];
@@ -681,8 +706,53 @@
             els.qQuestion.textContent = "Huyệt này tên là gì?";
             els.qDesc.textContent = currentQuizItem.desc;
             els.qInput.value = '';
+            els.qInput.focus();
             els.qFeedback.textContent = ''; els.qFeedback.className = 'feedback';
         }
+
+        // LOGIC AUTO CHECK
+        els.qInput.addEventListener('input', () => {
+            if(!currentQuizItem || isProcessing) return;
+            
+            const val = els.qInput.value.trim().toLowerCase();
+            const correctName = currentQuizItem.name.toLowerCase();
+
+            if (val === correctName) {
+                isProcessing = true;
+                els.qFeedback.innerHTML = "🎉 Chính xác!"; 
+                els.qFeedback.className = 'feedback correct';
+                tryAutoCheckIn();
+                
+                // Tự động qua câu sau 1s
+                setTimeout(() => {
+                    startQuiz();
+                }, 1000);
+            }
+        });
+
+        // LOGIC ĐÃ THUỘC (MASTERED)
+        els.btnMastered.addEventListener('click', async () => {
+            if(!currentQuizItem) return;
+            if(!confirm("Đánh dấu đã thuộc huyệt này? (Sẽ không hỏi lại nữa)")) return;
+
+            showLoading(true);
+            try {
+                // Cập nhật Firestore
+                const itemRef = doc(db, "acupoints", currentQuizItem.id);
+                await updateDoc(itemRef, { isMastered: true });
+
+                // Cập nhật mảng local
+                const localItem = acupoints.find(i => i.id === currentQuizItem.id);
+                if(localItem) localItem.isMastered = true;
+
+                showToast("Đã đánh dấu thuộc bài! 🧠");
+                renderListGrouped(); // Cập nhật dấu tick bên tab quản lý
+                startQuiz(); // Qua câu khác
+            } catch(e) {
+                showToast("Lỗi: " + e.message);
+            }
+            showLoading(false);
+        });
 
         els.btnHint.addEventListener('click', () => {
             if(!currentQuizItem) return;
@@ -690,26 +760,20 @@
             if(currentHintIndex < name.length) {
                 currentHintIndex++;
                 els.qInput.value = name.substring(0, currentHintIndex);
-                if(currentHintIndex === name.length) els.qFeedback.textContent = "Đã hiện toàn bộ đáp án!";
+                els.qInput.focus();
+                // Trigger input event manually incase hint completes the word
+                els.qInput.dispatchEvent(new Event('input'));
             }
         });
 
         els.quizGroupSelect.addEventListener('change', startQuiz);
         els.btnNext.addEventListener('click', startQuiz);
-        els.btnCheckAns.addEventListener('click', () => {
-            if(!currentQuizItem) { startQuiz(); return; }
-            tryAutoCheckIn();
-            const val = els.qInput.value.trim().toLowerCase();
-            if(val === currentQuizItem.name.toLowerCase()) {
-                els.qFeedback.innerHTML = "🎉 Chính xác tuyệt đối!"; els.qFeedback.className = 'feedback correct';
-            } else {
-                els.qFeedback.innerHTML = "❌ Chưa đúng rồi"; els.qFeedback.className = 'feedback wrong';
-            }
-        });
         els.btnShowAns.addEventListener('click', () => {
             if(!currentQuizItem) return;
             tryAutoCheckIn();
             els.qInput.value = currentQuizItem.name;
+            els.qInput.focus();
+            els.qInput.dispatchEvent(new Event('input')); // Auto check luôn
         });
 
         // --- NAVIGATION ---
