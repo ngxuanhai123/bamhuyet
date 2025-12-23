@@ -1,59 +1,625 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AcuLearn - Học Bấm Huyệt</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Nunito', 'sans-serif'],
-            },
-            colors: {
-              primary: '#10b981', // emerald-500
-              secondary: '#0f766e', // teal-700
-              background: '#f0fdf4', // emerald-50
-            }
-          }
-        }
-      }
-    </script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Bấm Huyệt Online - Firebase</title>
     <style>
-      body {
-        background-color: #f0fdf4;
-      }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #888; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555; 
-      }
+        :root {
+            --primary: #1976d2;
+            --primary-light: #63a4ff;
+            --bg: #f0f2f5;
+            --text: #333;
+            --white: #fff;
+            --danger: #d32f2f;
+            --success: #388e3c;
+            --warning: #fbc02d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: var(--text);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* App Layout */
+        #app-screen { display: none; }
+
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .user-info { font-size: 0.9rem; display: flex; align-items: center; gap: 10px;}
+        .avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid white; }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background-color: #e3f2fd;
+        }
+
+        /* Content Views */
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Card Component */
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Buttons & Inputs */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-google { background-color: #db4437; color: white; width: 100%; margin-top: 10px;}
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Calendar / Attendance Styles */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eee;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            position: relative;
+        }
+        .cal-day.checked {
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+        }
+        .cal-day.today {
+            border: 2px solid var(--warning);
+        }
+
+        /* Quiz Styles */
+        .feedback { margin: 15px 0; font-weight: bold; min-height: 24px; text-align: center;}
+        .feedback.correct { color: var(--success); }
+        .feedback.wrong { color: var(--danger); }
+        
+        /* List Item */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        /* Loading Spinner */
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; display: none;}
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
-  }
-}
-</script>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+
+    <div id="loading"><div class="spinner"></div></div>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <h2>Học Bấm Huyệt</h2>
+            <p>Đăng nhập để lưu trữ huyệt đạo và lịch sử học tập của riêng bạn.</p>
+            <button class="btn btn-google" id="btnLogin">Đăng nhập bằng Google</button>
+        </div>
+    </div>
+
+    <div id="app-screen">
+        <header>
+            <div><strong>Sổ Tay Bấm Huyệt</strong></div>
+            <div class="user-info">
+                <span id="userName">User</span>
+                <img id="userAvatar" class="avatar" src="" alt="">
+                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem; margin-left: 10px;" id="btnLogout">Thoát</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-target="tab-attendance">Điểm Danh</div>
+                <div class="nav-tab" data-target="tab-quiz">Học Tập</div>
+                <div class="nav-tab" data-target="tab-manage">Quản Lý</div>
+            </div>
+
+            <div id="tab-attendance" class="view active">
+                <div class="card">
+                    <h3>📅 Điểm danh hôm nay</h3>
+                    <p id="attendanceMsg">Bạn chưa học bài hôm nay. Hãy điểm danh để giữ chuỗi!</p>
+                    <button id="btnCheckIn" class="btn btn-primary" style="width: 100%">✅ Điểm Danh Ngay</button>
+                </div>
+
+                <div class="card">
+                    <h3>Lịch sử tháng này</h3>
+                    <div id="calendar" class="calendar-grid">
+                        </div>
+                </div>
+            </div>
+
+            <div id="tab-quiz" class="view">
+                <div class="card">
+                    <select id="quizGroupSelect">
+                        <option value="all">Tất cả các nhóm</option>
+                    </select>
+                    <hr>
+                    <div id="quizArea" style="text-align: center;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;" id="qGroup">Nhóm: ...</div>
+                        <h2 id="qQuestion" style="color: var(--primary);">Câu hỏi...</h2>
+                        <p id="qDesc" style="font-style: italic;">Mô tả...</p>
+                        
+                        <input type="text" id="qInput" placeholder="Nhập tên huyệt..." autocomplete="off">
+                        <div class="feedback" id="qFeedback"></div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button class="btn" style="background:#757575; color:white" id="btnShowAns">Xem Đáp Án</button>
+                            <button class="btn btn-primary" id="btnCheckAns">Kiểm Tra</button>
+                        </div>
+                        <button class="btn" style="width: 100%; margin-top: 10px; background: #eee;" id="btnNext">Câu Tiếp Theo</button>
+                    </div>
+                    <div id="emptyQuizMsg" style="display:none; text-align: center;">Chưa có dữ liệu huyệt. Hãy vào mục Quản Lý để thêm.</div>
+                </div>
+            </div>
+
+            <div id="tab-manage" class="view">
+                <div class="card">
+                    <h3>Thêm Huyệt Mới</h3>
+                    <input type="text" id="inpGroup" placeholder="Nhóm bệnh (VD: Đau đầu)" list="groupSuggestions">
+                    <datalist id="groupSuggestions"></datalist>
+                    <input type="text" id="inpName" placeholder="Tên Huyệt (Đáp án)">
+                    <textarea id="inpDesc" rows="3" placeholder="Mô tả vị trí / Tác dụng"></textarea>
+                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">Lưu vào Cloud</button>
+                </div>
+
+                <div class="card">
+                    <h3>Danh Sách Huyệt Của Bạn</h3>
+                    <div id="dataList" style="max-height: 400px; overflow-y: auto;">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. Import SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, setDoc, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 2. Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAsHD5pH6Blm4wtXKEJojFYMl24SNgiKY0",
+            authDomain: "bamhuyet-6c9e6.firebaseapp.com",
+            projectId: "bamhuyet-6c9e6",
+            storageBucket: "bamhuyet-6c9e6.firebasestorage.app",
+            messagingSenderId: "195174949274",
+            appId: "1:195174949274:web:50cd99e0fad60ba8a81a23",
+            measurementId: "G-W66885N5XM"
+        };
+
+        // 3. Initialize
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // 4. Global State
+        let currentUser = null;
+        let acupoints = [];
+        let currentQuizItem = null;
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            loading: document.getElementById('loading'),
+            loginScreen: document.getElementById('login-screen'),
+            appScreen: document.getElementById('app-screen'),
+            btnLogin: document.getElementById('btnLogin'),
+            btnLogout: document.getElementById('btnLogout'),
+            userName: document.getElementById('userName'),
+            userAvatar: document.getElementById('userAvatar'),
+            tabs: document.querySelectorAll('.nav-tab'),
+            views: document.querySelectorAll('.view'),
+            // Manage
+            inpGroup: document.getElementById('inpGroup'),
+            inpName: document.getElementById('inpName'),
+            inpDesc: document.getElementById('inpDesc'),
+            btnAddData: document.getElementById('btnAddData'),
+            dataList: document.getElementById('dataList'),
+            groupSuggestions: document.getElementById('groupSuggestions'),
+            // Quiz
+            quizGroupSelect: document.getElementById('quizGroupSelect'),
+            qGroup: document.getElementById('qGroup'),
+            qQuestion: document.getElementById('qQuestion'),
+            qDesc: document.getElementById('qDesc'),
+            qInput: document.getElementById('qInput'),
+            qFeedback: document.getElementById('qFeedback'),
+            btnCheckAns: document.getElementById('btnCheckAns'),
+            btnShowAns: document.getElementById('btnShowAns'),
+            btnNext: document.getElementById('btnNext'),
+            quizArea: document.getElementById('quizArea'),
+            emptyQuizMsg: document.getElementById('emptyQuizMsg'),
+            // Attendance
+            btnCheckIn: document.getElementById('btnCheckIn'),
+            attendanceMsg: document.getElementById('attendanceMsg'),
+            calendar: document.getElementById('calendar')
+        };
+
+        // --- AUTHENTICATION ---
+        els.btnLogin.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(err => alert(err.message));
+        });
+
+        els.btnLogout.addEventListener('click', () => {
+            signOut(auth);
+            location.reload();
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                els.loginScreen.style.display = 'none';
+                els.appScreen.style.display = 'block';
+                els.userName.textContent = user.displayName;
+                els.userAvatar.src = user.photoURL;
+                
+                await loadData();      // Tải dữ liệu huyệt
+                await checkAttendance(); // Kiểm tra điểm danh
+                setupTabs();
+            } else {
+                els.loginScreen.style.display = 'flex';
+                els.appScreen.style.display = 'none';
+            }
+        });
+
+        // --- DATABASE OPERATIONS (FIRESTORE) ---
+        
+        // 1. Load Acupoints
+        async function loadData() {
+            showLoading(true);
+            try {
+                const q = query(collection(db, "acupoints"), where("uid", "==", currentUser.uid));
+                const querySnapshot = await getDocs(q);
+                acupoints = [];
+                querySnapshot.forEach((doc) => {
+                    acupoints.push({ id: doc.id, ...doc.data() });
+                });
+                renderList();
+                updateGroupSelect();
+                startQuiz();
+            } catch (e) {
+                console.error("Error loading: ", e);
+                alert("Lỗi tải dữ liệu. Hãy đảm bảo bạn đã tạo Database trong Firebase Console.");
+            }
+            showLoading(false);
+        }
+
+        // 2. Add Acupoint
+        els.btnAddData.addEventListener('click', async () => {
+            const group = els.inpGroup.value.trim();
+            const name = els.inpName.value.trim();
+            const desc = els.inpDesc.value.trim();
+
+            if(!group || !name) return alert("Cần nhập tên huyệt và nhóm bệnh!");
+
+            showLoading(true);
+            try {
+                const docRef = await addDoc(collection(db, "acupoints"), {
+                    uid: currentUser.uid,
+                    group, name, desc,
+                    createdAt: serverTimestamp()
+                });
+                
+                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc });
+                
+                // Reset form
+                els.inpName.value = '';
+                els.inpDesc.value = '';
+                
+                renderList();
+                updateGroupSelect();
+                alert("Đã lưu thành công!");
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert("Lỗi khi lưu. Kiểm tra kết nối mạng.");
+            }
+            showLoading(false);
+        });
+
+        // 3. Delete Acupoint (Global function attached to window for HTML access)
+        window.deleteAcupoint = async (id) => {
+            if(!confirm("Xóa huyệt này?")) return;
+            showLoading(true);
+            try {
+                await deleteDoc(doc(db, "acupoints", id));
+                acupoints = acupoints.filter(item => item.id !== id);
+                renderList();
+                updateGroupSelect();
+                startQuiz();
+            } catch (e) {
+                alert("Lỗi xóa.");
+            }
+            showLoading(false);
+        }
+
+        // --- ATTENDANCE (ĐIỂM DANH) ---
+        
+        function getTodayStr() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        async function checkAttendance() {
+            const today = getTodayStr();
+            const q = query(
+                collection(db, "attendance"), 
+                where("uid", "==", currentUser.uid),
+                where("date", "==", today)
+            );
+            
+            const snap = await getDocs(q);
+            if(!snap.empty) {
+                markCheckedInUI();
+            } else {
+                els.attendanceMsg.textContent = "Hôm nay bạn chưa học. Cố lên!";
+                els.btnCheckIn.disabled = false;
+                els.btnCheckIn.textContent = "✅ Điểm Danh Ngay";
+                els.btnCheckIn.classList.remove('btn-secondary');
+                els.btnCheckIn.classList.add('btn-primary');
+            }
+
+            loadCalendar();
+        }
+
+        els.btnCheckIn.addEventListener('click', async () => {
+            showLoading(true);
+            const today = getTodayStr();
+            try {
+                await addDoc(collection(db, "attendance"), {
+                    uid: currentUser.uid,
+                    date: today,
+                    timestamp: serverTimestamp()
+                });
+                markCheckedInUI();
+                loadCalendar();
+                alert("Đã điểm danh thành công!");
+            } catch(e) {
+                console.error(e);
+                alert("Lỗi điểm danh.");
+            }
+            showLoading(false);
+        });
+
+        function markCheckedInUI() {
+            els.attendanceMsg.textContent = "Tuyệt vời! Bạn đã hoàn thành mục tiêu hôm nay.";
+            els.btnCheckIn.disabled = true;
+            els.btnCheckIn.textContent = "Đã Điểm Danh";
+            els.btnCheckIn.classList.remove('btn-primary');
+            els.btnCheckIn.classList.add('btn-secondary');
+        }
+
+        async function loadCalendar() {
+            // Lấy dữ liệu điểm danh tháng này
+            // Đơn giản hóa: Lấy tất cả lịch sử (trong thực tế nên limit)
+            const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
+            const snap = await getDocs(q);
+            const checkedDates = new Set();
+            snap.forEach(doc => checkedDates.add(doc.data().date));
+
+            // Vẽ lịch (30 ngày gần nhất hoặc tháng hiện tại)
+            els.calendar.innerHTML = '';
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            
+            for(let i=1; i<=daysInMonth; i++) {
+                const dayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                const div = document.createElement('div');
+                div.className = 'cal-day';
+                div.textContent = i;
+                
+                if (dayStr === getTodayStr()) div.classList.add('today');
+                if (checkedDates.has(dayStr)) {
+                    div.classList.add('checked');
+                    div.innerHTML = '✔';
+                }
+                
+                els.calendar.appendChild(div);
+            }
+        }
+
+        // --- UI & QUIZ LOGIC ---
+
+        function setupTabs() {
+            els.tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    els.tabs.forEach(t => t.classList.remove('active'));
+                    els.views.forEach(v => v.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.target).classList.add('active');
+                });
+            });
+        }
+
+        function renderList() {
+            els.dataList.innerHTML = '';
+            // Sắp xếp theo Group
+            const sorted = [...acupoints].sort((a,b) => a.group.localeCompare(b.group));
+            
+            sorted.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong> <span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:10px;">${item.group}</span>
+                        <div style="font-size:0.85rem; color:#666">${item.desc}</div>
+                    </div>
+                    <button onclick="deleteAcupoint('${item.id}')" style="background:none; border:none; color:red; font-size:1.2rem; cursor:pointer;">&times;</button>
+                `;
+                els.dataList.appendChild(div);
+            });
+        }
+
+        function updateGroupSelect() {
+            const groups = [...new Set(acupoints.map(i => i.group))];
+            
+            // Update Datalist (cho form nhập)
+            els.groupSuggestions.innerHTML = groups.map(g => `<option value="${g}">`).join('');
+
+            // Update Quiz Select
+            const currentVal = els.quizGroupSelect.value;
+            els.quizGroupSelect.innerHTML = '<option value="all">Tất cả các nhóm</option>';
+            groups.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                els.quizGroupSelect.appendChild(opt);
+            });
+            if(groups.includes(currentVal)) els.quizGroupSelect.value = currentVal;
+        }
+
+        // Quiz Functions
+        els.quizGroupSelect.addEventListener('change', startQuiz);
+        els.btnNext.addEventListener('click', startQuiz);
+
+        function startQuiz() {
+            const filter = els.quizGroupSelect.value;
+            let pool = (filter === 'all') ? acupoints : acupoints.filter(i => i.group === filter);
+
+            if (pool.length === 0) {
+                els.quizArea.style.display = 'none';
+                els.emptyQuizMsg.style.display = 'block';
+                return;
+            }
+            
+            els.quizArea.style.display = 'block';
+            els.emptyQuizMsg.style.display = 'none';
+
+            // Random item
+            const idx = Math.floor(Math.random() * pool.length);
+            currentQuizItem = pool[idx];
+
+            els.qGroup.textContent = `Nhóm bệnh: ${currentQuizItem.group}`;
+            els.qQuestion.textContent = "Huyệt này là gì?";
+            els.qDesc.textContent = currentQuizItem.desc;
+            els.qInput.value = '';
+            els.qFeedback.textContent = '';
+            els.qFeedback.className = 'feedback';
+        }
+
+        els.btnCheckAns.addEventListener('click', () => {
+            if(!currentQuizItem) return;
+            const val = els.qInput.value.trim().toLowerCase();
+            if(val === currentQuizItem.name.toLowerCase()) {
+                els.qFeedback.textContent = "Chính xác!";
+                els.qFeedback.className = 'feedback correct';
+                // Tự động điểm danh nếu trả lời đúng (tùy chọn)
+                // if (!els.btnCheckIn.disabled) els.btnCheckIn.click();
+            } else {
+                els.qFeedback.textContent = "Sai rồi, thử lại nhé.";
+                els.qFeedback.className = 'feedback wrong';
+            }
+        });
+
+        els.btnShowAns.addEventListener('click', () => {
+            if(!currentQuizItem) return;
+            els.qInput.value = currentQuizItem.name;
+            els.qFeedback.textContent = "Đáp án đã được hiển thị.";
+            els.qFeedback.className = 'feedback';
+        });
+
+        function showLoading(isLoading) {
+            els.loading.style.display = isLoading ? 'flex' : 'none';
+        }
+
+    </script>
+</body>
 </html>
