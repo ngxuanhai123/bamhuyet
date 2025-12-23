@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiHi Med - Sổ Tay Y Học Thông Minh</title>
+    <title>HiHi Med - Tuyệt Kỹ Y Học</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -11,13 +11,13 @@
             --primary: #00695c;
             --primary-light: #4db6ac;
             --accent: #ffb300; 
-            --bg: #f5f7fa;
+            --bg: #f0f2f5;
             --surface: #ffffff;
             --text: #263238;
             --success: #2e7d32;
             --error: #c62828;
             --radius: 16px;
-            --shadow: 0 8px 24px rgba(0, 105, 92, 0.1);
+            --shadow: 0 4px 20px rgba(0, 105, 92, 0.08);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -40,10 +40,10 @@
         }
         .btn:active { transform: scale(0.96); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.3); }
-        .btn-secondary { background: #cfd8dc; color: #455a64; }
+        .btn-secondary { background: #eceff1; color: #455a64; border: 1px solid #cfd8dc; }
         .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3); }
         .btn-success { background: #e8f5e9; color: var(--success); border: 1px solid #c8e6c9; }
-        .btn-danger { background: #ffebee; color: var(--error); }
+        .btn-search { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; width: 100%; margin-bottom: 15px;}
         .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
         .btn-xs { padding: 4px 10px; font-size: 0.8rem; border-radius: 8px; }
 
@@ -112,12 +112,6 @@
         .quiz-question { font-size: 1.4rem; color: #263238; margin: 8px 0; font-weight: 800; }
         .quiz-desc { color: #546e7a; font-style: italic; margin-bottom: 15px; line-height: 1.5; font-size: 0.95rem; }
         
-        .quiz-image { 
-            max-width: 100%; height: 200px; object-fit: contain; border-radius: 12px; margin-bottom: 15px; 
-            background: #f0f0f0; display: none; /* Ẩn nếu không có ảnh */
-        }
-        .quiz-image.has-image { display: inline-block; }
-
         .feedback { min-height: 24px; margin-top: 10px; font-weight: 700; font-size: 1rem; }
         .feedback.correct { color: var(--success); animation: popIn 0.3s; }
         .feedback.wrong { color: var(--error); animation: shake 0.4s; }
@@ -139,9 +133,16 @@
         .badges-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
         .badge-item { 
             display: flex; align-items: center; gap: 5px; padding: 6px 12px; 
-            background: #fff; border: 1px solid #eee; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #78909c; opacity: 0.5; filter: grayscale(1);
+            background: #fff; border: 1px solid #b0bec5; border-radius: 20px; 
+            font-size: 0.75rem; font-weight: 700; color: #78909c; opacity: 0.6; 
+            transition: all 0.3s;
         }
-        .badge-item.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--accent); background: #fffde7; color: #f57f17; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .badge-item.unlocked { 
+            opacity: 1; border-color: var(--accent); 
+            background: linear-gradient(135deg, #fffde7, #ffffff); 
+            color: #f57f17; box-shadow: 0 3px 8px rgba(255, 179, 0, 0.2); 
+            transform: scale(1.05);
+        }
 
         /* --- Grouped List UI --- */
         .group-header {
@@ -179,7 +180,6 @@
     <div id="loading"><div class="spinner"></div></div>
     <div id="toast">Thông báo</div>
 
-    <audio id="sndCorrect" src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWgAAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMmUqncAAAAAAALAAAAAB//uQZAmAAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA//uQZAuAAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA//uQZAyAAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA//uQZA2AAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA"></audio> 
     <div id="login-screen">
         <div class="login-box">
             <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
@@ -199,7 +199,7 @@
                 <span style="font-size: 1.8rem;">⚕️</span>
                 <div class="brand-text">
                     <span>HiHi Med</span>
-                    <span class="slogan">Spaced Repetition</span>
+                    <span class="slogan">Tuyệt kỹ y học</span>
                 </div>
             </div>
             <div class="user-profile">
@@ -212,29 +212,31 @@
 
         <div class="container">
             <div class="nav-pills">
-                <div class="nav-item active" data-target="tab-quiz">🧠 Học Tập</div>
-                <div class="nav-item" data-target="tab-dashboard">🏆 Thành Tích</div>
-                <div class="nav-item" data-target="tab-manage">⚙️ Quản Lý</div>
+                <div class="nav-item active" data-target="tab-quiz">🧠 Luyện Công</div>
+                <div class="nav-item" data-target="tab-dashboard">🏆 Bảng Vàng</div>
+                <div class="nav-item" data-target="tab-manage">📖 Tàng Kinh Các</div>
             </div>
 
             <div id="tab-quiz" class="view active">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin:0; font-size: 1.1rem;">Ôn tập SRS <span id="limitCounter" style="font-size: 0.8rem; color: #f57c00; display:none;">(0/10)</span></h3>
+                        <h3 style="margin:0; font-size: 1.1rem;">Luyện Tập <span id="limitCounter" style="font-size: 0.8rem; color: #f57c00; display:none;">(0/10)</span></h3>
                         <select id="quizGroupSelect" style="width: auto; margin:0; padding: 6px 12px; font-size: 0.85rem; border-radius: 20px;">
-                            <option value="all">Tất cả chủ đề</option>
+                            <option value="all">Tất cả</option>
                         </select>
                     </div>
 
                     <div id="quizArea" class="quiz-container">
                         <div class="quiz-badge" id="qGroup">...</div>
                         
-                        <img id="qImage" class="quiz-image" src="" alt="Minh họa huyệt">
-                        
                         <div class="quiz-question" id="qQuestion">...</div>
                         <p class="quiz-desc" id="qDesc">...</p>
                         
-                        <input type="text" id="qInput" placeholder="Nhập tên huyệt (không dấu ok)..." autocomplete="off">
+                        <button class="btn btn-search" id="btnSearchImg">
+                            🔍 Bấm để xem ảnh minh họa (Google)
+                        </button>
+                        
+                        <input type="text" id="qInput" placeholder="Nhập tên huyệt (có dấu/không dấu đều được)..." autocomplete="off">
                         
                         <div class="feedback" id="qFeedback"></div>
                         
@@ -261,23 +263,23 @@
                     </div>
                     <div class="card" style="margin:0; text-align:center;">
                         <div style="font-size: 2rem; font-weight: 800; color: var(--primary);" id="stat-mastered">0</div>
-                        <div style="font-size: 0.8rem; color: #78909c;">Huyệt đã thuộc</div>
+                        <div style="font-size: 0.8rem; color: #78909c;">Đã tinh thông</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; margin-bottom:10px; font-size: 1.1rem;">🏅 Huy hiệu của tôi</h3>
+                    <h3 style="margin-top:0; margin-bottom:10px; font-size: 1.1rem;">🏅 Danh Hiệu Cao Quý</h3>
                     <div class="badges-container">
-                        <div class="badge-item" id="badge-studious">🎓 Tập sự</div>
-                        <div class="badge-item" id="badge-streak3">🔥 Chăm chỉ (3 ngày)</div>
-                        <div class="badge-item" id="badge-streak7">⚡ Bền bỉ (7 ngày)</div>
-                        <div class="badge-item" id="badge-master">👑 Thần y</div>
+                        <div class="badge-item" id="badge-novice">👶 Tiểu Đồng Y Quán</div>
+                        <div class="badge-item" id="badge-streak3">🔥 Hỏa Nhãn Kim Tinh (3 ngày)</div>
+                        <div class="badge-item" id="badge-streak7">✋ Thiên Thủ Quan Âm (7 ngày)</div>
+                        <div class="badge-item" id="badge-master">👑 Hoa Đà Tái Thế (Bậc thầy)</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="cal-header">
-                        <h3 style="margin:0; font-size: 1.1rem; display:flex; align-items:center; gap:5px;">📅 Lịch Sử Học</h3>
+                        <h3 style="margin:0; font-size: 1.1rem; display:flex; align-items:center; gap:5px;">📅 Lịch Sử Tu Luyện</h3>
                         <div>
                             <button class="btn btn-xs btn-primary" id="viewWeek">Tuần</button>
                             <button class="btn btn-xs btn-secondary" id="viewMonth">Tháng</button>
@@ -303,19 +305,18 @@
                         <input type="text" id="inpName" placeholder="Tên Huyệt">
                     </div>
                     <datalist id="groupSuggestions"></datalist>
-                    <input type="text" id="inpImage" placeholder="Link ảnh (Tùy chọn)">
                     <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí, tác dụng..."></textarea>
-                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu kiến thức</button>
+                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu Bí Kíp</button>
                     
                     <div style="margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
                         <button class="btn btn-secondary" style="width: 100%; font-size: 0.85rem;" onclick="initDefaultData()">
-                            📚 Tải bộ dữ liệu mẫu (Nếu chưa có)
+                            📚 Tải bí kíp mẫu (Nếu chưa có)
                         </button>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Kho dữ liệu (Tất cả)</h3>
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Tàng Kinh Các (Kho dữ liệu)</h3>
                     <div id="dataList" style="max-height: 500px; overflow-y: auto;"></div>
                 </div>
             </div>
@@ -360,20 +361,18 @@
         let calViewMode = 'week'; 
         let isProcessing = false;
 
-        // SRS Intervals (Days): Level 0 (New), Level 1 (1 day), Level 2 (3 days), etc.
         const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
 
-        // --- BỘ DỮ LIỆU MẪU CÓ ẢNH ---
-        // (Lưu ý: Link ảnh placeholder để demo, bạn có thể sửa sau)
+        // --- BỘ DỮ LIỆU MẪU ---
         const defaultAcupoints = [
-            { group: "Đau đầu", name: "Hợp Cốc", image: "https://i.imgur.com/8QjQyWq.png", desc: "Nằm ở hổ khẩu, giữa xương đốt bàn ngón cái và ngón trỏ." },
-            { group: "Đau đầu", name: "Thái Dương", image: "", desc: "Chỗ lõm phía sau đuôi lông mày và đuôi mắt khoảng 1 thốn." },
-            { group: "Đau đầu", name: "Ấn Đường", image: "", desc: "Điểm chính giữa đường nối hai đầu lông mày." },
-            { group: "Mất ngủ", name: "Nội Quan", image: "", desc: "Mặt trước cổ tay, từ lằn chỉ đo lên 2 thốn, giữa hai gân." },
-            { group: "Mất ngủ", name: "Dũng Tuyền", image: "", desc: "Chỗ lõm dưới gan bàn chân, tại điểm nối 1/3 trước và 2/3 sau." },
-            { group: "Đau lưng", name: "Ủy Trung", image: "", desc: "Điểm chính giữa nếp lằn khoeo chân (sau đầu gối)." },
-            { group: "Tiêu hóa", name: "Túc Tam Lý", image: "", desc: "Dưới mắt gối ngoài 3 thốn, cách mào chày 1 khoát ngón tay." },
-            { group: "Thư giãn", name: "Bách Hội", image: "", desc: "Điểm chính giữa đỉnh đầu." }
+            { group: "Đau đầu", name: "Hợp Cốc", desc: "Nằm ở hổ khẩu, giữa xương đốt bàn ngón cái và ngón trỏ." },
+            { group: "Đau đầu", name: "Thái Dương", desc: "Chỗ lõm phía sau đuôi lông mày và đuôi mắt khoảng 1 thốn." },
+            { group: "Đau đầu", name: "Ấn Đường", desc: "Điểm chính giữa đường nối hai đầu lông mày." },
+            { group: "Mất ngủ", name: "Nội Quan", desc: "Mặt trước cổ tay, từ lằn chỉ đo lên 2 thốn, giữa hai gân." },
+            { group: "Mất ngủ", name: "Dũng Tuyền", desc: "Chỗ lõm dưới gan bàn chân, tại điểm nối 1/3 trước và 2/3 sau." },
+            { group: "Đau lưng", name: "Ủy Trung", desc: "Điểm chính giữa nếp lằn khoeo chân (sau đầu gối)." },
+            { group: "Tiêu hóa", name: "Túc Tam Lý", desc: "Dưới mắt gối ngoài 3 thốn, cách mào chày 1 khoát ngón tay." },
+            { group: "Thư giãn", name: "Bách Hội", desc: "Điểm chính giữa đỉnh đầu." }
         ];
 
         // ELEMENTS
@@ -393,7 +392,6 @@
             inpGroup: document.getElementById('inpGroup'),
             inpName: document.getElementById('inpName'),
             inpDesc: document.getElementById('inpDesc'),
-            inpImage: document.getElementById('inpImage'),
             btnAddData: document.getElementById('btnAddData'),
             dataList: document.getElementById('dataList'),
             groupSuggestions: document.getElementById('groupSuggestions'),
@@ -402,8 +400,8 @@
             qGroup: document.getElementById('qGroup'),
             qQuestion: document.getElementById('qQuestion'),
             qDesc: document.getElementById('qDesc'),
-            qImage: document.getElementById('qImage'),
             qInput: document.getElementById('qInput'),
+            btnSearchImg: document.getElementById('btnSearchImg'), // Nút mới
             qFeedback: document.getElementById('qFeedback'),
             btnShowAns: document.getElementById('btnShowAns'),
             btnHint: document.getElementById('btnHint'),
@@ -422,15 +420,14 @@
             viewMonth: document.getElementById('viewMonth'),
             // Badges
             badges: {
-                studious: document.getElementById('badge-studious'),
+                novice: document.getElementById('badge-novice'),
                 streak3: document.getElementById('badge-streak3'),
                 streak7: document.getElementById('badge-streak7'),
                 master: document.getElementById('badge-master')
             }
         };
 
-        // --- UTILS: SOUND & FUZZY ---
-        // Âm thanh tổng hợp đơn giản
+        // --- UTILS: SOUND & TEXT PROCESSING ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -438,52 +435,51 @@
             const gainNode = audioCtx.createGain();
             osc.connect(gainNode);
             gainNode.connect(audioCtx.destination);
-            
             if (type === 'correct') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
                 gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
             } else {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
                 gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
             }
         }
 
-        // Loại bỏ dấu tiếng Việt để so sánh mờ
-        function removeVietnameseTones(str) {
-            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
-            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
-            str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
-            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o"); 
-            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u"); 
-            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y"); 
-            str = str.replace(/đ/g,"d");
-            str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
-            str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
-            str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
-            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
-            str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
-            str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
-            str = str.replace(/Đ/g, "D");
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        // HÀM CHUẨN HÓA TIẾNG VIỆT MẠNH MẼ HƠN
+        function cleanText(str) {
+            if (!str) return "";
+            // 1. Chuyển về chữ thường
+            str = str.toLowerCase();
+            // 2. Chuẩn hóa Unicode (dựng sẵn) để tránh lỗi mã
+            str = str.normalize("NFC");
+            // 3. Xóa dấu
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            // 4. Xóa ký tự đặc biệt, chỉ giữ chữ và số
+            str = str.replace(/[\u0300-\u036f]/g, ""); // Remove combining diacritics
+            str = str.replace(/[^a-z0-9\s]/g, ""); 
+            return str.trim();
         }
 
         // --- AUTH ---
         function showLoginScreen(isForced = false) {
             els.loginScreen.style.display = 'flex';
             if(isForced) {
-                els.loginTitle.textContent = "Đã hết lượt học miễn phí";
-                els.loginMsg.textContent = "Bạn đã học đủ 10 câu. Đăng nhập để tiếp tục không giới hạn.";
+                els.loginTitle.textContent = "Hết lượt luyện công";
+                els.loginMsg.textContent = "Bạn đã học đủ 10 chiêu. Đăng nhập để tiếp tục.";
             } else {
-                els.loginTitle.textContent = "Đăng nhập để tiếp tục";
-                els.loginMsg.textContent = "Lưu lại tiến độ và học không giới hạn";
+                els.loginTitle.textContent = "Đăng nhập";
+                els.loginMsg.textContent = "Lưu lại tiến độ luyện tập";
             }
         }
 
@@ -493,51 +489,27 @@
 
         onAuthStateChanged(auth, async (user) => {
             els.loginScreen.style.display = 'none';
-            
             if (user) {
-                isGuest = false;
-                currentUser = user;
+                isGuest = false; currentUser = user;
                 els.userAvatar.src = user.photoURL;
-                els.btnLogout.style.display = 'inline-block';
-                els.btnLoginHeader.style.display = 'none';
-                els.guestLabel.style.display = 'none';
-                els.limitCounter.style.display = 'none';
-                
+                els.btnLogout.style.display = 'inline-block'; els.btnLoginHeader.style.display = 'none';
+                els.guestLabel.style.display = 'none'; els.limitCounter.style.display = 'none';
                 showLoading(true);
                 await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
                 showLoading(false);
-                showToast(`Xin chào ${user.displayName}!`);
+                showToast(`Mừng đại hiệp ${user.displayName} quay lại!`);
             } else {
-                isGuest = true;
-                currentUser = null;
-                guestQuizCount = 0;
-                
-                els.btnLogout.style.display = 'none';
-                els.btnLoginHeader.style.display = 'inline-block';
-                els.guestLabel.style.display = 'inline-block';
-                els.limitCounter.style.display = 'inline-block';
+                isGuest = true; currentUser = null; guestQuizCount = 0;
+                els.btnLogout.style.display = 'none'; els.btnLoginHeader.style.display = 'inline-block';
+                els.guestLabel.style.display = 'inline-block'; els.limitCounter.style.display = 'inline-block';
                 els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
                 
-                // Local Guest Data
                 const localData = localStorage.getItem('guest_acupoints');
-                if (localData) {
-                    acupoints = JSON.parse(localData);
-                } else {
-                    acupoints = defaultAcupoints.map((item, index) => ({
-                        id: 'guest_' + index,
-                        ...item,
-                        srsLevel: 0,
-                        nextReview: 0
-                    }));
-                }
-                
-                renderListGrouped();
-                updateGroupSelect();
-                prepareQuiz();
+                if (localData) { acupoints = JSON.parse(localData); } 
+                else { acupoints = defaultAcupoints.map((item, index) => ({ id: 'guest_' + index, ...item, srsLevel: 0, nextReview: 0 })); }
+                renderListGrouped(); updateGroupSelect(); prepareQuiz();
             }
-            setupNavigation();
-            renderCalendar();
-            updateBadges();
+            setupNavigation(); renderCalendar(); updateBadges();
         });
 
         function showLoading(show) { els.loading.style.display = show ? 'flex' : 'none'; }
@@ -554,11 +526,7 @@
                 const snap = await getDocs(q);
                 acupoints = [];
                 snap.forEach((doc) => acupoints.push({ id: doc.id, ...doc.data() }));
-                
-                // Sort by ID to keep consistent order if timestamps equal
-                renderListGrouped();
-                updateGroupSelect();
-                prepareQuiz();
+                renderListGrouped(); updateGroupSelect(); prepareQuiz();
             } catch (e) { console.error(e); }
         }
 
@@ -577,23 +545,19 @@
             Object.keys(groups).sort().forEach(gName => {
                 const header = document.createElement('div');
                 header.className = 'group-header';
-                header.innerHTML = `<span>📂 ${gName}</span> <span style="font-size:0.8rem; opacity:0.8">${groups[gName].length} bài</span>`;
+                header.innerHTML = `<span>📂 ${gName}</span> <span style="font-size:0.8rem; opacity:0.8">${groups[gName].length} chiêu</span>`;
                 els.dataList.appendChild(header);
 
                 groups[gName].forEach(item => {
                     const level = item.srsLevel || 0;
                     let lvClass = '';
-                    if(level >= 4) lvClass = 'srs-lv-high';
-                    else if(level >= 1) lvClass = 'srs-lv-med';
-
+                    if(level >= 4) lvClass = 'srs-lv-high'; else if(level >= 1) lvClass = 'srs-lv-med';
                     const div = document.createElement('div');
                     div.className = 'list-item';
                     div.innerHTML = `
                         <div>
                             <div style="font-weight:600; display:flex; align-items:center;">
-                                ${item.name} 
-                                <span class="srs-level ${lvClass}">Lv ${level}</span>
-                                ${item.image ? '<span style="margin-left:5px; font-size:0.8rem">📷</span>' : ''}
+                                ${item.name} <span class="srs-level ${lvClass}">Tầng ${level}</span>
                             </div>
                             <div style="font-size:0.85rem; color:#666; margin-top:2px">${item.desc}</div>
                         </div>
@@ -602,51 +566,43 @@
                     els.dataList.appendChild(div);
                 });
             });
-            if(acupoints.length === 0) els.dataList.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Danh sách trống</div>';
+            if(acupoints.length === 0) els.dataList.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Chưa có bí kíp nào.</div>';
         }
 
         window.initDefaultData = async () => {
             if(isGuest) return showToast("Dữ liệu mẫu đã có sẵn cho khách.");
             if(acupoints.length > 0 && !confirm("Thêm dữ liệu mẫu vào danh sách hiện tại?")) return;
-            
             showLoading(true);
             try {
                 const batch = writeBatch(db);
                 defaultAcupoints.forEach(item => {
                     const docRef = doc(collection(db, "acupoints"));
                     batch.set(docRef, {
-                        uid: currentUser.uid, 
-                        group: item.group, name: item.name, desc: item.desc, image: item.image || "",
+                        uid: currentUser.uid, group: item.group, name: item.name, desc: item.desc, image: "",
                         srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
                     });
                 });
-                await batch.commit();
-                await loadData();
-                showToast("✅ Đã nạp dữ liệu y học!");
+                await batch.commit(); await loadData();
+                showToast("✅ Đã nạp bí kíp y học!");
                 document.querySelector('[data-target="tab-quiz"]').click();
             } catch(e) { showToast("Lỗi: " + e.message); }
             showLoading(false);
         }
 
         els.btnAddData.addEventListener('click', async () => {
-            if(isGuest) return showToast("Vui lòng đăng nhập để lưu dữ liệu của riêng bạn.");
+            if(isGuest) return showToast("Đăng nhập để lưu bí kíp của riêng bạn.");
             const group = els.inpGroup.value.trim();
             const name = els.inpName.value.trim();
             const desc = els.inpDesc.value.trim();
-            const image = els.inpImage.value.trim();
-
             if(!group || !name) return showToast("Thiếu tên hoặc nhóm!");
-            
             showLoading(true);
             try {
                 const docRef = await addDoc(collection(db, "acupoints"), {
-                    uid: currentUser.uid, group, name, desc, image,
-                    srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
+                    uid: currentUser.uid, group, name, desc, image:"", srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
                 });
-                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc, image, srsLevel: 0, nextReview: 0 });
-                els.inpName.value = ''; els.inpDesc.value = ''; els.inpImage.value = '';
-                renderListGrouped(); updateGroupSelect(); prepareQuiz();
-                showToast("Đã lưu!");
+                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc, image:"", srsLevel: 0, nextReview: 0 });
+                els.inpName.value = ''; els.inpDesc.value = '';
+                renderListGrouped(); updateGroupSelect(); prepareQuiz(); showToast("Đã lưu!");
             } catch (e) { showToast("Lỗi lưu."); }
             showLoading(false);
         });
@@ -658,70 +614,45 @@
             try {
                 await deleteDoc(doc(db, "acupoints", id));
                 acupoints = acupoints.filter(item => item.id !== id);
-                renderListGrouped(); updateGroupSelect(); prepareQuiz();
-                showToast("Đã xóa.");
+                renderListGrouped(); updateGroupSelect(); prepareQuiz(); showToast("Đã xóa.");
             } catch (e) { showToast("Lỗi xóa."); }
             showLoading(false);
         }
 
-        // --- LOGIC: SRS & QUIZ ---
+        // --- QUIZ LOGIC ---
         function prepareQuiz() {
             if(acupoints.length > 0) {
                 els.quizArea.style.display = 'block'; els.emptyQuizMsg.style.display = 'none';
             } else {
-                els.quizArea.style.display = 'none'; 
-                els.emptyQuizMsg.style.display = 'block';
+                els.quizArea.style.display = 'none'; els.emptyQuizMsg.style.display = 'block';
                 els.btnInitData.style.display = isGuest ? 'none' : 'inline-flex';
             }
         }
 
         function startQuiz() {
             isProcessing = false;
-
-            if(isGuest && guestQuizCount >= GUEST_LIMIT) {
-                showLoginScreen(true); return;
-            }
+            if(isGuest && guestQuizCount >= GUEST_LIMIT) { showLoginScreen(true); return; }
 
             const filter = els.quizGroupSelect.value;
             const now = Date.now();
-
-            // SRS Logic: Lọc các câu đã đến hạn (nextReview <= now) hoặc câu mới (level 0)
             let pool = acupoints.filter(i => {
                 const matchGroup = (filter === 'all' || i.group === filter);
                 const isDue = (i.nextReview || 0) <= now;
                 return matchGroup && isDue;
             });
             
-            // Nếu hết câu "cần học", lấy ngẫu nhiên để ôn thêm (Overstudy)
             if (pool.length === 0) {
-                 // Nếu không có câu nào ĐẾN HẠN, báo đã xong (hoặc cho ôn tập tự do)
-                 // Ở đây ta báo xong để user có cảm giác hoàn thành (Dopamine)
-                 els.quizArea.style.display = 'none';
-                 els.emptyQuizMsg.style.display = 'block';
-                 return;
+                 els.quizArea.style.display = 'none'; els.emptyQuizMsg.style.display = 'block'; return;
             } else {
-                els.quizArea.style.display = 'block';
-                els.emptyQuizMsg.style.display = 'none';
+                els.quizArea.style.display = 'block'; els.emptyQuizMsg.style.display = 'none';
             }
             
-            // Lấy câu có thời gian review thấp nhất (ưu tiên câu bị sai trước đó)
             pool.sort((a, b) => (a.nextReview || 0) - (b.nextReview || 0));
-            // Lấy 1 trong 3 câu đầu tiên để đỡ nhàm chán
             const idx = Math.floor(Math.random() * Math.min(3, pool.length));
-            
             currentQuizItem = pool[idx];
             currentHintIndex = 0;
 
             els.qGroup.textContent = currentQuizItem.group;
-            
-            // Xử lý ảnh
-            if (currentQuizItem.image && currentQuizItem.image.startsWith('http')) {
-                els.qImage.src = currentQuizItem.image;
-                els.qImage.classList.add('has-image');
-            } else {
-                els.qImage.classList.remove('has-image');
-            }
-
             els.qQuestion.textContent = "Huyệt này tên là gì?";
             els.qDesc.textContent = currentQuizItem.desc;
             els.qInput.value = '';
@@ -729,67 +660,76 @@
             els.qFeedback.textContent = ''; els.qFeedback.className = 'feedback';
         }
 
+        // XỬ LÝ NÚT TÌM KIẾM ẢNH
+        els.btnSearchImg.addEventListener('click', () => {
+            if(!currentQuizItem) return;
+            const query = encodeURIComponent(`huyệt ${currentQuizItem.name} vị trí`);
+            window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank');
+        });
+
         async function handleAnswer(isCorrect) {
             if(!currentQuizItem) return;
-
-            // Update SRS
             const oldLevel = currentQuizItem.srsLevel || 0;
-            let newLevel = oldLevel;
-            let nextReview = 0;
+            let newLevel = oldLevel; let nextReview = 0;
 
             if (isCorrect) {
                 newLevel = Math.min(oldLevel + 1, SRS_INTERVALS.length - 1);
                 const days = SRS_INTERVALS[newLevel];
                 nextReview = Date.now() + (days * 24 * 60 * 60 * 1000);
-                
-                // Hiệu ứng
                 playTone('correct');
-                els.qFeedback.innerHTML = "🎉 Chính xác!";
+                els.qFeedback.innerHTML = "🎉 Tuyệt vời! Chính xác!";
                 els.qFeedback.className = 'feedback correct';
-                
-                // Nếu hoàn thành mục tiêu ngày (ví dụ 5 câu), bắn pháo hoa
                 if(Math.random() > 0.7) confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
-
             } else {
-                newLevel = 0; // Sai về 0
-                nextReview = Date.now(); // Học lại ngay
+                newLevel = 0; nextReview = Date.now();
                 playTone('wrong');
                 els.qFeedback.innerHTML = `Sai rồi: <b>${currentQuizItem.name}</b>`;
                 els.qFeedback.className = 'feedback wrong';
             }
 
-            // Save Data
             if(isGuest) {
                 guestQuizCount++;
                 els.limitCounter.textContent = `(${guestQuizCount}/${GUEST_LIMIT})`;
-                currentQuizItem.srsLevel = newLevel;
-                currentQuizItem.nextReview = nextReview;
+                currentQuizItem.srsLevel = newLevel; currentQuizItem.nextReview = nextReview;
                 localStorage.setItem('guest_acupoints', JSON.stringify(acupoints));
             } else {
                 try {
                     const itemRef = doc(db, "acupoints", currentQuizItem.id);
                     await updateDoc(itemRef, { srsLevel: newLevel, nextReview: nextReview });
-                    // Cập nhật local để UI mượt
-                    currentQuizItem.srsLevel = newLevel;
-                    currentQuizItem.nextReview = nextReview;
+                    currentQuizItem.srsLevel = newLevel; currentQuizItem.nextReview = nextReview;
                 } catch(e) { console.error(e); }
             }
 
             if(isCorrect) {
-                tryAutoCheckIn();
-                setTimeout(() => { startQuiz(); }, 1200);
+                tryAutoCheckIn(); setTimeout(() => { startQuiz(); }, 1200);
             }
         }
 
+        // INPUT LOGIC ĐƯỢC CẬP NHẬT ĐỂ SO SÁNH THÔNG MINH HƠN
         els.qInput.addEventListener('input', () => {
             if(!currentQuizItem || isProcessing) return;
-            const val = removeVietnameseTones(els.qInput.value.trim());
-            const correctName = removeVietnameseTones(currentQuizItem.name);
             
-            // Fuzzy match: Chứa từ khóa chính hoặc giống hệt
-            if (val.length >= 2 && val === correctName) {
+            // 1. So sánh chuẩn hóa không dấu (cho người gõ nhanh)
+            const inputClean = cleanText(els.qInput.value);
+            const targetClean = cleanText(currentQuizItem.name);
+
+            // 2. So sánh chính xác có dấu (để đảm bảo gõ có dấu cũng đúng)
+            const inputExact = els.qInput.value.trim().toLowerCase();
+            const targetExact = currentQuizItem.name.trim().toLowerCase();
+
+            // Nếu đúng 1 trong 2 trường hợp
+            if ((inputClean.length >= 2 && inputClean === targetClean) || 
+                (inputExact.length >= 2 && inputExact === targetExact)) {
                 isProcessing = true;
                 handleAnswer(true);
+            }
+        });
+
+        // Thêm bắt sự kiện Enter cho tiện
+        els.qInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                // Nếu chưa đúng mà bấm Enter -> Coi như không biết -> Hiện đáp án
+                if (!isProcessing) els.btnShowAns.click();
             }
         });
 
@@ -798,11 +738,8 @@
         els.btnShowAns.addEventListener('click', () => {
             if(!currentQuizItem || isProcessing) return;
             isProcessing = true;
-            handleAnswer(false); // Xem đáp án coi như sai
-            setTimeout(() => {
-                isProcessing = false;
-                els.qInput.value = currentQuizItem.name;
-            }, 500);
+            handleAnswer(false);
+            setTimeout(() => { isProcessing = false; els.qInput.value = currentQuizItem.name; }, 500);
         });
         
         els.btnHint.addEventListener('click', () => {
@@ -812,44 +749,34 @@
                 currentHintIndex++;
                 els.qInput.value = name.substring(0, currentHintIndex);
                 els.qInput.focus();
-                // Nếu gợi ý hết chữ -> check luôn
-                const val = removeVietnameseTones(els.qInput.value.trim());
-                const correct = removeVietnameseTones(currentQuizItem.name);
-                if(val === correct) { isProcessing = true; handleAnswer(true); }
+                // Check lại ngay sau khi gợi ý
+                els.qInput.dispatchEvent(new Event('input'));
             }
         });
 
-        // --- BADGES & STATS ---
+        // --- STATS ---
         async function checkAttendance() {
             if(isGuest) { els.statStreak.textContent = "0"; return; }
             const today = new Date().toISOString().split('T')[0];
             const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
             const snap = await getDocs(q);
-            attendanceDates.clear(); 
-            snap.forEach(doc => attendanceDates.add(doc.data().date));
-            
-            const streakCount = attendanceDates.size; // Logic streak đơn giản là tổng ngày
+            attendanceDates.clear(); snap.forEach(doc => attendanceDates.add(doc.data().date));
+            const streakCount = attendanceDates.size;
             todayCheckedIn = attendanceDates.has(today);
             els.statStreak.textContent = streakCount;
-
             updateBadges(streakCount, acupoints.length);
-
             try {
                 await setDoc(doc(db, "profiles", currentUser.uid), {
-                    displayName: currentUser.displayName,
-                    streak: streakCount,
-                    photoURL: currentUser.photoURL,
-                    lastActive: serverTimestamp()
+                    displayName: currentUser.displayName, streak: streakCount, photoURL: currentUser.photoURL, lastActive: serverTimestamp()
                 }, { merge: true });
             } catch(e) {}
         }
 
         function updateBadges(streak = 0, totalCards = 0) {
-            if(totalCards >= 5) els.badges.studious.classList.add('unlocked');
+            // Logic mở khóa huy hiệu
+            if(totalCards >= 5) els.badges.novice.classList.add('unlocked');
             if(streak >= 3) els.badges.streak3.classList.add('unlocked');
             if(streak >= 7) els.badges.streak7.classList.add('unlocked');
-            
-            // Kiểm tra badge Master (thuộc > 10 huyệt lv 4)
             const mastered = acupoints.filter(i => (i.srsLevel || 0) >= 4).length;
             if(mastered >= 10) els.badges.master.classList.add('unlocked');
         }
@@ -858,17 +785,11 @@
             if(isGuest || todayCheckedIn) return;
             try {
                 const today = new Date().toISOString().split('T')[0];
-                await addDoc(collection(db, "attendance"), {
-                    uid: currentUser.uid, date: today, timestamp: serverTimestamp()
-                });
-                todayCheckedIn = true;
-                attendanceDates.add(today);
-                
+                await addDoc(collection(db, "attendance"), { uid: currentUser.uid, date: today, timestamp: serverTimestamp() });
+                todayCheckedIn = true; attendanceDates.add(today);
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 showToast("✅ Điểm danh thành công!");
-                
-                checkAttendance(); 
-                renderCalendar(); 
+                checkAttendance(); renderCalendar(); 
             } catch(e) { console.error(e); }
         }
 
@@ -877,27 +798,19 @@
                 const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(20));
                 const snap = await getDocs(q);
                 els.leaderboardList.innerHTML = '';
-                
                 let rank = 1;
                 snap.forEach(doc => {
                     const data = doc.data();
                     const isMe = currentUser && doc.id === currentUser.uid;
                     const div = document.createElement('div');
-                    
                     let rankClass = '';
-                    if (rank === 1) rankClass = 'lb-top1';
-                    else if (rank === 2) rankClass = 'lb-top2';
-                    else if (rank === 3) rankClass = 'lb-top3';
-
+                    if (rank === 1) rankClass = 'lb-top1'; else if (rank === 2) rankClass = 'lb-top2'; else if (rank === 3) rankClass = 'lb-top3';
                     div.className = `lb-item ${rankClass}`;
                     if(isMe) div.style.border = '2px solid var(--primary)';
-                    
-                    div.innerHTML = `
-                        <div class="lb-rank">#${rank}</div>
+                    div.innerHTML = `<div class="lb-rank">#${rank}</div>
                         <img src="${data.photoURL}" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
                         <div class="lb-name">${data.displayName} ${isMe ? '(Bạn)' : ''}</div>
-                        <div class="lb-score">${data.streak} ngày</div>
-                    `;
+                        <div class="lb-score">${data.streak} ngày</div>`;
                     els.leaderboardList.appendChild(div);
                     rank++;
                 });
@@ -908,46 +821,27 @@
         els.viewMonth.addEventListener('click', () => { calViewMode = 'month'; renderCalendar(); });
 
         function renderCalendar() {
-            if(calViewMode === 'week') {
-                els.viewWeek.className = 'btn btn-xs btn-primary';
-                els.viewMonth.className = 'btn btn-xs btn-secondary';
-            } else {
-                els.viewWeek.className = 'btn btn-xs btn-secondary';
-                els.viewMonth.className = 'btn btn-xs btn-primary';
-            }
-
-            const today = new Date();
-            els.calendarGrid.innerHTML = '';
-            
+            if(calViewMode === 'week') { els.viewWeek.className = 'btn btn-xs btn-primary'; els.viewMonth.className = 'btn btn-xs btn-secondary'; } 
+            else { els.viewWeek.className = 'btn btn-xs btn-secondary'; els.viewMonth.className = 'btn btn-xs btn-primary'; }
+            const today = new Date(); els.calendarGrid.innerHTML = '';
             let startDate, daysToRender;
             if (calViewMode === 'month') {
                 startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                const dayOfWeek = startDate.getDay(); 
-                startDate.setDate(startDate.getDate() - dayOfWeek);
-                daysToRender = 42; 
+                const dayOfWeek = startDate.getDay(); startDate.setDate(startDate.getDate() - dayOfWeek); daysToRender = 42; 
             } else {
-                startDate = new Date(today);
-                startDate.setDate(today.getDate() - today.getDay());
-                daysToRender = 7;
+                startDate = new Date(today); startDate.setDate(today.getDate() - today.getDay()); daysToRender = 7;
             }
-
             for (let i = 0; i < daysToRender; i++) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + i);
-                
-                const year = currentDate.getFullYear();
-                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-                const day = String(currentDate.getDate()).padStart(2, '0');
+                const currentDate = new Date(startDate); currentDate.setDate(startDate.getDate() + i);
+                const year = currentDate.getFullYear(); const month = String(currentDate.getMonth() + 1).padStart(2, '0'); const day = String(currentDate.getDate()).padStart(2, '0');
                 const dateString = `${year}-${month}-${day}`;
                 const isToday = (today.getDate() === currentDate.getDate() && today.getMonth() === currentDate.getMonth() && today.getFullYear() === currentDate.getFullYear());
                 const hasStudied = attendanceDates.has(dateString);
                 const isCurrentMonth = currentDate.getMonth() === today.getMonth();
                 const opacity = (calViewMode === 'month' && !isCurrentMonth) ? '0.3' : '1';
-
                 const div = document.createElement('div');
                 div.className = `cal-day ${hasStudied ? 'active' : ''} ${isToday ? 'today' : ''}`;
-                div.style.opacity = opacity;
-                div.textContent = currentDate.getDate();
+                div.style.opacity = opacity; div.textContent = currentDate.getDate();
                 els.calendarGrid.appendChild(div);
             }
         }
@@ -959,7 +853,6 @@
                     els.views.forEach(v => v.classList.remove('active'));
                     tab.classList.add('active');
                     document.getElementById(tab.dataset.target).classList.add('active');
-                    
                     if(tab.dataset.target === 'tab-quiz') startQuiz();
                     if(tab.dataset.target === 'tab-dashboard') loadLeaderboard();
                 });
@@ -970,10 +863,9 @@
             const groups = [...new Set(acupoints.map(i => i.group))];
             els.groupSuggestions.innerHTML = groups.map(g => `<option value="${g}">`).join('');
             const currentVal = els.quizGroupSelect.value;
-            els.quizGroupSelect.innerHTML = '<option value="all">Tất cả chủ đề</option>';
+            els.quizGroupSelect.innerHTML = '<option value="all">Tất cả</option>';
             groups.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g; opt.textContent = g;
+                const opt = document.createElement('option'); opt.value = g; opt.textContent = g;
                 els.quizGroupSelect.appendChild(opt);
             });
             if(groups.includes(currentVal)) els.quizGroupSelect.value = currentVal;
