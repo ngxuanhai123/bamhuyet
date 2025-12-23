@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiHi Med 2.0 - SRS Edition</title>
+    <title>HiHi Med - Sổ Tay Y Học Thông Minh</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -11,13 +11,13 @@
             --primary: #00695c;
             --primary-light: #4db6ac;
             --accent: #ffb300; 
-            --bg: #f0f4f8;
+            --bg: #f5f7fa;
             --surface: #ffffff;
             --text: #263238;
             --success: #2e7d32;
             --error: #c62828;
-            --radius: 20px;
-            --shadow: 0 10px 30px rgba(0, 105, 92, 0.08);
+            --radius: 16px;
+            --shadow: 0 8px 24px rgba(0, 105, 92, 0.1);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -30,271 +30,299 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
         }
 
-        /* --- UI Components --- */
+        /* --- Components --- */
         .btn {
-            padding: 14px 24px; border: none; border-radius: 16px; cursor: pointer;
-            font-weight: 700; font-size: 0.95rem; transition: all 0.2s;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            position: relative; overflow: hidden;
+            padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer;
+            font-weight: 600; font-size: 0.95rem; transition: transform 0.1s, box-shadow 0.2s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0, 105, 92, 0.3); }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.3); }
         .btn-secondary { background: #cfd8dc; color: #455a64; }
-        .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3); }
-        .btn-success { background: #e8f5e9; color: var(--success); border: 2px solid #c8e6c9; }
+        .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3); }
+        .btn-success { background: #e8f5e9; color: var(--success); border: 1px solid #c8e6c9; }
         .btn-danger { background: #ffebee; color: var(--error); }
-        .btn-google { background: white; color: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; border: 1px solid #eee;}
-        .btn-xs { padding: 6px 12px; font-size: 0.8rem; border-radius: 10px; }
+        .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
+        .btn-xs { padding: 4px 10px; font-size: 0.8rem; border-radius: 8px; }
 
         .card {
-            background: var(--surface); border-radius: var(--radius); padding: 24px;
-            margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.8);
-            position: relative;
+            background: var(--surface); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.8);
+            position: relative; overflow: hidden;
         }
         
         input, select, textarea {
-            width: 100%; padding: 14px; border: 2px solid #eceff1; border-radius: 14px;
-            font-size: 1rem; margin-bottom: 12px; font-family: inherit; transition: border-color 0.2s; background: #fafafa;
+            width: 100%; padding: 12px; border: 2px solid #eceff1; border-radius: 12px;
+            font-size: 1rem; margin-bottom: 12px; font-family: inherit; transition: border-color 0.2s;
         }
         input:focus, textarea:focus { border-color: var(--primary); background: #fff; }
 
-        /* --- Header & Layout --- */
+        /* --- Layout --- */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 105, 92, 0.95); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0, 105, 92, 0.95);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center; align-items: center; z-index: 1000;
         }
         .login-box {
-            background: white; padding: 40px; border-radius: 30px;
-            text-align: center; width: 90%; max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white; padding: 30px; border-radius: 24px;
+            text-align: center; width: 90%; max-width: 380px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: popIn 0.4s ease;
         }
 
-        #app-screen { display: flex; flex: 1; flex-direction: column; max-width: 800px; margin: 0 auto; width: 100%; }
+        #app-screen { display: flex; flex: 1; flex-direction: column; }
 
         header {
-            background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #eee;
+            background: var(--surface); padding: 10px 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
-        .brand { font-weight: 900; color: var(--primary); font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
-
-        .container { padding: 20px; flex: 1; width: 100%; }
-
-        /* --- Navigation --- */
-        .nav-pills { 
-            display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding: 5px; 
-            background: #eceff1; border-radius: 20px;
+        .brand { 
+            font-weight: 800; color: var(--primary); font-size: 1.2rem; 
+            display: flex; align-items: center; gap: 8px; 
         }
-        .nav-item {
-            flex: 1; text-align: center; padding: 10px; border-radius: 15px; color: #78909c;
-            font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
-        }
-        .nav-item.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        /* --- Views & Quiz --- */
-        .view { display: none; animation: slideUp 0.4s ease; }
-        .view.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .quiz-container { text-align: center; padding: 10px 0; }
-        .quiz-badge { 
-            display: inline-block; padding: 6px 16px; background: #e0f2f1; color: var(--primary); 
-            border-radius: 30px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; 
-        }
-        .quiz-question { font-size: 1.6rem; color: #263238; margin: 10px 0; font-weight: 800; line-height: 1.3; }
-        .quiz-desc { color: #546e7a; font-style: italic; margin-bottom: 25px; line-height: 1.6; font-size: 1rem; background: #fafafa; padding: 15px; border-radius: 12px; }
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .slogan { font-size: 0.65rem; font-weight: 500; color: #78909c; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        /* New: Image Area */
-        .quiz-image-area {
-            width: 100%; height: 200px; background: #eee; border-radius: 16px; margin-bottom: 15px;
-            display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;
-            cursor: pointer;
+        .user-profile { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light); background: #eee; }
+
+        .container { max-width: 800px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; }
+
+        /* --- Tabs --- */
+        .nav-pills { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch;}
+        .nav-item {
+            padding: 8px 16px; border-radius: 20px; background: white; color: var(--text); opacity: 0.7;
+            font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; border: 1px solid transparent;
         }
-        .quiz-image-area img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .quiz-image-area:hover img { transform: scale(1.05); }
-        .img-placeholder { color: #90a4ae; font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .nav-item.active { background: var(--primary); color: white; opacity: 1; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.2); }
 
-        .feedback { min-height: 30px; margin-top: 15px; font-weight: 800; font-size: 1.1rem; opacity: 0; transition: 0.3s; }
-        .feedback.show { opacity: 1; transform: scale(1.1); }
-        .feedback.correct { color: var(--success); }
-        .feedback.wrong { color: var(--error); }
+        /* --- Views --- */
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Gamification UI --- */
-        .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px;}
-        .badge-item { 
-            text-align: center; padding: 10px; background: #fff; border-radius: 12px; 
-            border: 1px solid #eee; opacity: 0.5; filter: grayscale(1); transition: 0.3s; 
+        /* --- Quiz UI --- */
+        .quiz-container { text-align: center; padding: 10px 0; }
+        .quiz-badge { display: inline-block; padding: 4px 12px; background: #e0f2f1; color: var(--primary); border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .quiz-question { font-size: 1.4rem; color: #263238; margin: 8px 0; font-weight: 800; }
+        .quiz-desc { color: #546e7a; font-style: italic; margin-bottom: 15px; line-height: 1.5; font-size: 0.95rem; }
+        
+        .quiz-image { 
+            max-width: 100%; height: 200px; object-fit: contain; border-radius: 12px; margin-bottom: 15px; 
+            background: #f0f0f0; display: none; /* Ẩn nếu không có ảnh */
         }
-        .badge-item.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--accent); background: #fffde7; transform: scale(1.05); box-shadow: 0 4px 10px rgba(255,179,0,0.2); }
-        .badge-icon { font-size: 2rem; margin-bottom: 5px; display: block; }
-        .badge-name { font-size: 0.7rem; font-weight: 700; color: #555; }
+        .quiz-image.has-image { display: inline-block; }
 
-        /* --- Calendar & Leaderboard --- */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+        .feedback { min-height: 24px; margin-top: 10px; font-weight: 700; font-size: 1rem; }
+        .feedback.correct { color: var(--success); animation: popIn 0.3s; }
+        .feedback.wrong { color: var(--error); animation: shake 0.4s; }
+        @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+        /* --- Calendar UI --- */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.85rem; }
+        .cal-day-header { font-weight: bold; color: #90a4ae; padding-bottom: 5px; font-size: 0.75rem; }
         .cal-day { 
             aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
-            border-radius: 10px; background: #fff; border: 1px solid #eceff1; font-weight: 600; font-size: 0.9rem;
+            border-radius: 8px; background: #fafafa; color: #cfd8dc; font-weight: 500;
         }
-        .cal-day.active { background: var(--primary); color: white; border-color: var(--primary); }
-        
-        .lb-item { 
-            display: flex; align-items: center; padding: 15px; background: white; 
-            border-radius: 16px; margin-bottom: 10px; border: 1px solid #eceff1; 
-        }
-        .lb-top1 { border: 2px solid #ffd700; background: linear-gradient(to right, #fff, #fffde7); }
+        .cal-day.active { background: var(--primary); color: white; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .cal-day.today { border: 2px solid var(--accent); color: var(--text); }
 
-        /* --- Utilities --- */
-        #toast { visibility: hidden; min-width: 250px; background-color: #263238; color: #fff; text-align: center; border-radius: 50px; padding: 16px 24px; position: fixed; z-index: 2000; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px); opacity: 0; transition: 0.4s; font-weight: 600; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        #toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+        /* --- Badges --- */
+        .badges-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .badge-item { 
+            display: flex; align-items: center; gap: 5px; padding: 6px 12px; 
+            background: #fff; border: 1px solid #eee; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #78909c; opacity: 0.5; filter: grayscale(1);
+        }
+        .badge-item.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--accent); background: #fffde7; color: #f57f17; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* --- Grouped List UI --- */
+        .group-header {
+            background: #e0f2f1; color: var(--primary); padding: 8px 12px;
+            border-radius: 8px; font-weight: 700; margin-top: 10px; margin-bottom: 5px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 8px; border-bottom: 1px solid #eee;
+        }
+        .list-item:last-child { border-bottom: none; }
+        .srs-level {
+            font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;
+            background: #eee; color: #78909c; margin-left: 5px;
+        }
+        .srs-lv-high { background: #e8f5e9; color: var(--success); }
+        .srs-lv-med { background: #fff8e1; color: #fbc02d; }
         
-        #loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 200; display: none; justify-content: center; align-items: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #eceff1; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        /* --- Utilities --- */
+        .app-footer { text-align: center; padding: 20px; margin-top: auto; color: #90a4ae; font-size: 0.85rem; }
+        .heart-anim { color: #e91e63; display: inline-block; animation: heartBeat 1.5s infinite; }
+        @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.3); } 28% { transform: scale(1); } 42% { transform: scale(1.3); } 70% { transform: scale(1); } }
+        
+        #toast { visibility: hidden; min-width: 200px; background-color: #263238; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; transform: translateX(-50%); opacity: 0; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 0.9rem; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 100px; }
+        #loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 200; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 10px; display: none;}
+        .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
-    <audio id="sndCorrect" src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAjAAAXoQA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0AAADQTGF2YzU4LjU0AAAAAAAAAAAAAAAAJAMAAAAAAAAXoQBxjW4tAAAAAP/7kmRAAABAAABAAAAAAABAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAATAxLjUAqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uSZEAAAAAAA0gAAAAAAADSAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></audio>
     <div id="loading"><div class="spinner"></div></div>
     <div id="toast">Thông báo</div>
 
+    <audio id="sndCorrect" src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWgAAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMmUqncAAAAAAALAAAAAB//uQZAmAAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA//uQZAuAAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA//uQZAyAAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA//uQZA2AAABAAAAXAADAAACAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAA"></audio> 
     <div id="login-screen">
         <div class="login-box">
-            <div style="font-size: 3.5rem; margin-bottom: 15px;">🎓</div>
-            <h1 style="color: var(--primary); margin: 0; font-size: 1.6rem; letter-spacing: -0.5px;" id="loginTitle">Bác Sĩ Tập Sự</h1>
-            <p style="color: #546e7a; margin-bottom: 30px; line-height: 1.5;" id="loginMsg">Đăng nhập để đồng bộ dữ liệu ôn tập thông minh (SRS).</p>
+            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
+            <h1 style="color: var(--primary); margin: 0; font-size: 1.5rem; letter-spacing: -1px;" id="loginTitle">Đăng nhập để tiếp tục</h1>
+            <p style="color: #546e7a; margin-bottom: 25px; font-size: 0.95rem;" id="loginMsg">Lưu lại tiến độ SRS và đồng bộ hóa</p>
             <button class="btn btn-google" id="btnLogin">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" style="margin-right:10px">
-                Đăng nhập với Google
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="margin-right:8px">
+                Đăng nhập bằng Google
             </button>
+            <p style="font-size: 0.8rem; color: #90a4ae; margin-top: 20px;">Hoàn toàn miễn phí</p>
         </div>
     </div>
 
     <div id="app-screen">
         <header>
             <div class="brand">
-                <span style="font-size: 1.8rem; animation: heartBeat 2s infinite;">❤️</span>
-                <div style="display:flex; flex-direction:column; line-height:1;">
+                <span style="font-size: 1.8rem;">⚕️</span>
+                <div class="brand-text">
                     <span>HiHi Med</span>
-                    <span style="font-size: 0.65rem; color:#78909c; font-weight:500;">SRS EDITION</span>
+                    <span class="slogan">Spaced Repetition</span>
                 </div>
             </div>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span id="streakBadge" style="display:none; font-size:0.8rem; font-weight:bold; color:var(--accent); background: #fff8e1; padding: 4px 8px; border-radius:10px;">🔥 0</span>
-                <img id="userAvatar" class="avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NmZDhkYyI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPjwvc3ZnPg==">
-                <button class="btn btn-xs btn-secondary" id="btnLogout" style="display:none;">Thoát</button>
-                <button class="btn btn-xs btn-primary" id="btnLoginHeader">Vào</button>
+            <div class="user-profile">
+                <span id="guestLabel" style="font-size: 0.8rem; color: #78909c; font-weight: 600; margin-right: 5px;">Khách</span>
+                <img id="userAvatar" class="avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NmZDhkYyI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPjwvc3ZnPg==" alt="">
+                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem; display:none;" id="btnLogout">Thoát</button>
+                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;" id="btnLoginHeader">Đăng nhập</button>
             </div>
         </header>
 
         <div class="container">
             <div class="nav-pills">
-                <div class="nav-item active" data-target="tab-quiz">🧠 Ôn Tập</div>
+                <div class="nav-item active" data-target="tab-quiz">🧠 Học Tập</div>
                 <div class="nav-item" data-target="tab-dashboard">🏆 Thành Tích</div>
                 <div class="nav-item" data-target="tab-manage">⚙️ Quản Lý</div>
             </div>
 
             <div id="tab-quiz" class="view active">
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="margin:0; font-size: 1.1rem; color: var(--primary);">🔥 Câu hỏi hôm nay</h3>
-                        <div id="dueCounter" style="font-size: 0.85rem; font-weight: 700; color: var(--error); background: #ffebee; padding: 4px 10px; border-radius: 10px;">
-                            0 cần ôn
-                        </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin:0; font-size: 1.1rem;">Ôn tập SRS <span id="limitCounter" style="font-size: 0.8rem; color: #f57c00; display:none;">(0/10)</span></h3>
+                        <select id="quizGroupSelect" style="width: auto; margin:0; padding: 6px 12px; font-size: 0.85rem; border-radius: 20px;">
+                            <option value="all">Tất cả chủ đề</option>
+                        </select>
                     </div>
 
                     <div id="quizArea" class="quiz-container">
                         <div class="quiz-badge" id="qGroup">...</div>
                         
-                        <div class="quiz-image-area" id="qImageArea">
-                            <div class="img-placeholder">
-                                <span style="font-size: 2rem;">🖼️</span>
-                                <span>Hình ảnh huyệt đạo</span>
-                            </div>
-                            <img id="qImgDisplay" style="display:none;" src="" alt="Huyệt">
-                        </div>
+                        <img id="qImage" class="quiz-image" src="" alt="Minh họa huyệt">
                         
-                        <div class="quiz-question" id="qQuestion">Huyệt này tên là gì?</div>
+                        <div class="quiz-question" id="qQuestion">...</div>
                         <p class="quiz-desc" id="qDesc">...</p>
                         
                         <input type="text" id="qInput" placeholder="Nhập tên huyệt (không dấu ok)..." autocomplete="off">
                         
                         <div class="feedback" id="qFeedback"></div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
-                            <button class="btn btn-secondary" id="btnHint" style="font-size:0.9rem;">💡 Gợi ý (Reset Level)</button>
-                            <button class="btn btn-accent" id="btnSearchImg" style="font-size:0.9rem;">🔍 Soi hình ảnh</button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px;">
+                            <button class="btn btn-accent" id="btnHint">💡 Gợi ý</button>
+                            <button class="btn btn-secondary" id="btnShowAns">👁️ Đáp án</button>
                         </div>
-                        <button class="btn btn-secondary" style="width: 100%; margin-top: 10px; background: transparent; color: #90a4ae; border: 1px dashed #cfd8dc;" id="btnSkip">Bỏ qua câu này</button>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 10px; background: #eceff1; color: #78909c" id="btnNext">Bỏ qua câu này ➜</button>
                     </div>
                     
-                    <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 40px 10px;">
-                        <div style="font-size: 4rem; margin-bottom:10px;">🎉</div>
-                        <h3 style="margin:0; color:var(--primary);">Hết bài hôm nay!</h3>
-                        <p style="color:#78909c;">Bạn đã hoàn thành xuất sắc nhiệm vụ.</p>
-                        <button class="btn btn-primary" onclick="initDefaultData()">♻️ Nạp thêm dữ liệu mẫu</button>
+                    <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 30px;">
+                        <div style="font-size: 3rem;">🎉</div>
+                        <p id="emptyMsgText">Bạn đã hoàn thành bài học hôm nay!</p>
+                        <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()">♻️ Tải dữ liệu mẫu</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-dashboard" class="view">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                     <div class="card" style="margin:0; text-align:center; background: linear-gradient(135deg, var(--primary), #004d40); color: white; border:none;">
-                        <div style="font-size: 2.5rem; font-weight: 800;" id="stat-streak">0</div>
-                        <div style="font-size: 0.85rem; opacity: 0.9; font-weight:600;">Chuỗi ngày học</div>
+                        <div style="font-size: 2rem; font-weight: 800;" id="stat-streak">0</div>
+                        <div style="font-size: 0.8rem; opacity: 0.9;">Chuỗi ngày học</div>
                     </div>
                     <div class="card" style="margin:0; text-align:center;">
-                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);" id="stat-mastered">0</div>
-                        <div style="font-size: 0.85rem; color: #78909c;">Huyệt đã thuộc (Lvl > 3)</div>
+                        <div style="font-size: 2rem; font-weight: 800; color: var(--primary);" id="stat-mastered">0</div>
+                        <div style="font-size: 0.8rem; color: #78909c;">Huyệt đã thuộc</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">🏅 Bộ Sưu Tập Huy Chương</h3>
-                    <div class="badges-grid" id="badgeList">
-                        </div>
+                    <h3 style="margin-top:0; margin-bottom:10px; font-size: 1.1rem;">🏅 Huy hiệu của tôi</h3>
+                    <div class="badges-container">
+                        <div class="badge-item" id="badge-studious">🎓 Tập sự</div>
+                        <div class="badge-item" id="badge-streak3">🔥 Chăm chỉ (3 ngày)</div>
+                        <div class="badge-item" id="badge-streak7">⚡ Bền bỉ (7 ngày)</div>
+                        <div class="badge-item" id="badge-master">👑 Thần y</div>
+                    </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; margin-bottom:15px; font-size: 1.1rem;">📅 Điểm Danh</h3>
+                    <div class="cal-header">
+                        <h3 style="margin:0; font-size: 1.1rem; display:flex; align-items:center; gap:5px;">📅 Lịch Sử Học</h3>
+                        <div>
+                            <button class="btn btn-xs btn-primary" id="viewWeek">Tuần</button>
+                            <button class="btn btn-xs btn-secondary" id="viewMonth">Tháng</button>
+                        </div>
+                    </div>
+                    <div class="cal-grid" style="margin-bottom: 5px;">
+                        <div class="cal-day-header">CN</div><div class="cal-day-header">T2</div><div class="cal-day-header">T3</div><div class="cal-day-header">T4</div><div class="cal-day-header">T5</div><div class="cal-day-header">T6</div><div class="cal-day-header">T7</div>
+                    </div>
                     <div id="calendarGrid" class="cal-grid"></div>
                 </div>
 
-                <h3 style="margin: 15px 0; font-size: 1.1rem; color: #37474f;">🏆 Bảng Xếp Hạng</h3>
-                <div id="leaderboardList"></div>
+                <h3 style="margin: 10px 0; font-size: 1.1rem; color: #37474f;">🏆 Bảng vàng Top 20</h3>
+                <div id="leaderboardList">
+                    <div style="text-align:center; padding: 20px; color: #90a4ae;">Đang tải xếp hạng...</div>
+                </div>
             </div>
 
             <div id="tab-manage" class="view">
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Thêm Kiến Thức Mới</h3>
-                    <input type="text" id="inpGroup" placeholder="Nhóm (VD: Đau đầu)" list="groupSuggestions">
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Thêm huyệt mới</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <input type="text" id="inpGroup" placeholder="Nhóm (VD: Đau đầu)" list="groupSuggestions">
+                        <input type="text" id="inpName" placeholder="Tên Huyệt">
+                    </div>
                     <datalist id="groupSuggestions"></datalist>
-                    <input type="text" id="inpName" placeholder="Tên Huyệt">
-                    <textarea id="inpDesc" rows="3" placeholder="Mô tả vị trí..."></textarea>
-                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu vào kho</button>
+                    <input type="text" id="inpImage" placeholder="Link ảnh (Tùy chọn)">
+                    <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí, tác dụng..."></textarea>
+                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu kiến thức</button>
                     
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #cfd8dc;">
+                    <div style="margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
                         <button class="btn btn-secondary" style="width: 100%; font-size: 0.85rem;" onclick="initDefaultData()">
-                            📚 Reset dữ liệu mẫu (30+ Huyệt)
+                            📚 Tải bộ dữ liệu mẫu (Nếu chưa có)
                         </button>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Kho Dữ Liệu</h3>
-                    <div id="dataList" style="max-height: 400px; overflow-y: auto;"></div>
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Kho dữ liệu (Tất cả)</h3>
+                    <div id="dataList" style="max-height: 500px; overflow-y: auto;"></div>
                 </div>
             </div>
         </div>
 
-        <footer style="text-align: center; padding: 20px; color: #90a4ae; font-size: 0.8rem;">
-            HiHi Med 2.0 &copy; 2025<br>Xây dựng bởi Xuân Hải
+        <footer class="app-footer">
+            HiHi Med &copy; 2025<br>Made with <span class="heart-anim">❤</span> by Xuân Hải
         </footer>
     </div>
 
@@ -303,13 +331,15 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp, writeBatch, orderBy, limit, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyAsHD5pH6Blm4wtXKEJojFYMl24SNgiKY0",
             authDomain: "bamhuyet-6c9e6.firebaseapp.com",
             projectId: "bamhuyet-6c9e6",
             storageBucket: "bamhuyet-6c9e6.firebasestorage.app",
             messagingSenderId: "195174949274",
-            appId: "1:195174949274:web:50cd99e0fad60ba8a81a23"
+            appId: "1:195174949274:web:50cd99e0fad60ba8a81a23",
+            measurementId: "G-W66885N5XM"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -317,44 +347,116 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // --- STATE & DATA ---
         let currentUser = null;
         let isGuest = true;
+        let guestQuizCount = 0;
+        const GUEST_LIMIT = 10;
+        
         let acupoints = [];
         let currentQuizItem = null;
         let currentHintIndex = 0;
+        let todayCheckedIn = false;
         let attendanceDates = new Set();
-        let currentStreak = 0;
-        
-        // --- SOUNDS ---
-        const audioCorrect = new Audio("data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="); // Placeholder, will use visual feedback mostly if silent
-        // Using a real base64 beep for "Correct" to make it fun
-        const playDing = () => {
-             // Create oscillator for a pleasant "Ding"
-             const ctx = new (window.AudioContext || window.webkitAudioContext)();
-             const osc = ctx.createOscillator();
-             const gain = ctx.createGain();
-             osc.type = 'sine';
-             osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-             osc.frequency.exponentialRampToValueAtTime(1046.5, ctx.currentTime + 0.1); // C6
-             gain.gain.setValueAtTime(0.1, ctx.currentTime);
-             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-             osc.connect(gain); gain.connect(ctx.destination);
-             osc.start(); osc.stop(0.5);
-        }
-        const playBuzz = () => {
-             const ctx = new (window.AudioContext || window.webkitAudioContext)();
-             const osc = ctx.createOscillator();
-             const gain = ctx.createGain();
-             osc.type = 'sawtooth';
-             osc.frequency.setValueAtTime(150, ctx.currentTime); 
-             gain.gain.setValueAtTime(0.1, ctx.currentTime);
-             gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-             osc.connect(gain); gain.connect(ctx.destination);
-             osc.start(); osc.stop(0.3);
+        let calViewMode = 'week'; 
+        let isProcessing = false;
+
+        // SRS Intervals (Days): Level 0 (New), Level 1 (1 day), Level 2 (3 days), etc.
+        const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
+
+        // --- BỘ DỮ LIỆU MẪU CÓ ẢNH ---
+        // (Lưu ý: Link ảnh placeholder để demo, bạn có thể sửa sau)
+        const defaultAcupoints = [
+            { group: "Đau đầu", name: "Hợp Cốc", image: "https://i.imgur.com/8QjQyWq.png", desc: "Nằm ở hổ khẩu, giữa xương đốt bàn ngón cái và ngón trỏ." },
+            { group: "Đau đầu", name: "Thái Dương", image: "", desc: "Chỗ lõm phía sau đuôi lông mày và đuôi mắt khoảng 1 thốn." },
+            { group: "Đau đầu", name: "Ấn Đường", image: "", desc: "Điểm chính giữa đường nối hai đầu lông mày." },
+            { group: "Mất ngủ", name: "Nội Quan", image: "", desc: "Mặt trước cổ tay, từ lằn chỉ đo lên 2 thốn, giữa hai gân." },
+            { group: "Mất ngủ", name: "Dũng Tuyền", image: "", desc: "Chỗ lõm dưới gan bàn chân, tại điểm nối 1/3 trước và 2/3 sau." },
+            { group: "Đau lưng", name: "Ủy Trung", image: "", desc: "Điểm chính giữa nếp lằn khoeo chân (sau đầu gối)." },
+            { group: "Tiêu hóa", name: "Túc Tam Lý", image: "", desc: "Dưới mắt gối ngoài 3 thốn, cách mào chày 1 khoát ngón tay." },
+            { group: "Thư giãn", name: "Bách Hội", image: "", desc: "Điểm chính giữa đỉnh đầu." }
+        ];
+
+        // ELEMENTS
+        const els = {
+            loading: document.getElementById('loading'),
+            loginScreen: document.getElementById('login-screen'),
+            loginTitle: document.getElementById('loginTitle'),
+            loginMsg: document.getElementById('loginMsg'),
+            btnLogin: document.getElementById('btnLogin'),
+            btnLoginHeader: document.getElementById('btnLoginHeader'),
+            btnLogout: document.getElementById('btnLogout'),
+            userAvatar: document.getElementById('userAvatar'),
+            guestLabel: document.getElementById('guestLabel'),
+            navItems: document.querySelectorAll('.nav-item'),
+            views: document.querySelectorAll('.view'),
+            // Manage
+            inpGroup: document.getElementById('inpGroup'),
+            inpName: document.getElementById('inpName'),
+            inpDesc: document.getElementById('inpDesc'),
+            inpImage: document.getElementById('inpImage'),
+            btnAddData: document.getElementById('btnAddData'),
+            dataList: document.getElementById('dataList'),
+            groupSuggestions: document.getElementById('groupSuggestions'),
+            // Quiz
+            quizGroupSelect: document.getElementById('quizGroupSelect'),
+            qGroup: document.getElementById('qGroup'),
+            qQuestion: document.getElementById('qQuestion'),
+            qDesc: document.getElementById('qDesc'),
+            qImage: document.getElementById('qImage'),
+            qInput: document.getElementById('qInput'),
+            qFeedback: document.getElementById('qFeedback'),
+            btnShowAns: document.getElementById('btnShowAns'),
+            btnHint: document.getElementById('btnHint'),
+            btnNext: document.getElementById('btnNext'),
+            quizArea: document.getElementById('quizArea'),
+            emptyQuizMsg: document.getElementById('emptyQuizMsg'),
+            emptyMsgText: document.getElementById('emptyMsgText'),
+            btnInitData: document.getElementById('btnInitData'),
+            limitCounter: document.getElementById('limitCounter'),
+            // Stats & Cal
+            statStreak: document.getElementById('stat-streak'),
+            statMastered: document.getElementById('stat-mastered'),
+            leaderboardList: document.getElementById('leaderboardList'),
+            calendarGrid: document.getElementById('calendarGrid'),
+            viewWeek: document.getElementById('viewWeek'),
+            viewMonth: document.getElementById('viewMonth'),
+            // Badges
+            badges: {
+                studious: document.getElementById('badge-studious'),
+                streak3: document.getElementById('badge-streak3'),
+                streak7: document.getElementById('badge-streak7'),
+                master: document.getElementById('badge-master')
+            }
+        };
+
+        // --- UTILS: SOUND & FUZZY ---
+        // Âm thanh tổng hợp đơn giản
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            }
         }
 
-        // --- UTILS: VIETNAMESE FUZZY MATCH ---
+        // Loại bỏ dấu tiếng Việt để so sánh mờ
         function removeVietnameseTones(str) {
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
             str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
@@ -370,384 +472,512 @@
             str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
             str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
             str = str.replace(/Đ/g, "D");
-            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         }
 
-        // --- DATA DEFAULTS (SRS Fields Added) ---
-        const defaultAcupoints = [
-            { group: "Đau đầu", name: "Hợp Cốc", desc: "Nằm ở hổ khẩu, giữa xương đốt bàn ngón cái và ngón trỏ.", level: 0, nextReview: 0 },
-            { group: "Đau đầu", name: "Thái Dương", desc: "Chỗ lõm phía sau đuôi lông mày và đuôi mắt khoảng 1 thốn.", level: 0, nextReview: 0 },
-            { group: "Đau đầu", name: "Ấn Đường", desc: "Điểm chính giữa đường nối hai đầu lông mày.", level: 0, nextReview: 0 },
-            { group: "Mất ngủ", name: "Nội Quan", desc: "Mặt trước cổ tay, từ lằn chỉ đo lên 2 thốn, giữa hai gân.", level: 0, nextReview: 0 },
-            { group: "Mất ngủ", name: "Thần Môn", desc: "Trên lằn chỉ cổ tay, chỗ lõm phía xương trụ (phía ngón út).", level: 0, nextReview: 0 },
-            { group: "Mất ngủ", name: "Tam Âm Giao", desc: "Mặt trong cẳng chân, từ đỉnh mắt cá trong đo lên 3 thốn.", level: 0, nextReview: 0 },
-            { group: "Tiêu hóa", name: "Túc Tam Lý", desc: "Dưới mắt gối ngoài 3 thốn, cách mào chày 1 khoát ngón tay.", level: 0, nextReview: 0 },
-            { group: "Tiêu hóa", name: "Trung Quản", desc: "Nằm trên đường giữa bụng, từ rốn đo lên 4 thốn.", level: 0, nextReview: 0 },
-            { group: "Hô hấp", name: "Nghinh Hương", desc: "Điểm giao giữa rãnh mũi má và đường ngang qua chân cánh mũi.", level: 0, nextReview: 0 },
-            { group: "Thư giãn", name: "Bách Hội", desc: "Điểm chính giữa đỉnh đầu, nơi giao nhau của hai đường nối đỉnh tai.", level: 0, nextReview: 0 }
-        ];
-
-        // --- DOM ELEMENTS ---
-        const els = {
-            loginScreen: document.getElementById('login-screen'),
-            btnLogin: document.getElementById('btnLogin'),
-            btnLogout: document.getElementById('btnLogout'),
-            btnLoginHeader: document.getElementById('btnLoginHeader'),
-            userAvatar: document.getElementById('userAvatar'),
-            streakBadge: document.getElementById('streakBadge'),
-            navItems: document.querySelectorAll('.nav-item'),
-            views: document.querySelectorAll('.view'),
-            // Quiz
-            quizArea: document.getElementById('quizArea'),
-            emptyQuizMsg: document.getElementById('emptyQuizMsg'),
-            qGroup: document.getElementById('qGroup'),
-            qQuestion: document.getElementById('qQuestion'),
-            qDesc: document.getElementById('qDesc'),
-            qInput: document.getElementById('qInput'),
-            qFeedback: document.getElementById('qFeedback'),
-            qImgDisplay: document.getElementById('qImgDisplay'),
-            qImageArea: document.getElementById('qImageArea'),
-            btnHint: document.getElementById('btnHint'),
-            btnSearchImg: document.getElementById('btnSearchImg'),
-            btnSkip: document.getElementById('btnSkip'),
-            dueCounter: document.getElementById('dueCounter'),
-            // Stats
-            statStreak: document.getElementById('stat-streak'),
-            statMastered: document.getElementById('stat-mastered'),
-            badgeList: document.getElementById('badgeList'),
-            calendarGrid: document.getElementById('calendarGrid'),
-            leaderboardList: document.getElementById('leaderboardList'),
-            // Manage
-            inpGroup: document.getElementById('inpGroup'),
-            inpName: document.getElementById('inpName'),
-            inpDesc: document.getElementById('inpDesc'),
-            btnAddData: document.getElementById('btnAddData'),
-            dataList: document.getElementById('dataList'),
-            groupSuggestions: document.getElementById('groupSuggestions'),
-            loading: document.getElementById('loading')
-        };
-
-        // --- AUTH & INIT ---
-        function showLoading(show) { els.loading.style.display = show ? 'flex' : 'none'; }
-        function showToast(msg) { 
-            const t = document.getElementById('toast'); 
-            t.textContent = msg; t.classList.add('show'); 
-            setTimeout(() => t.classList.remove('show'), 3000); 
+        // --- AUTH ---
+        function showLoginScreen(isForced = false) {
+            els.loginScreen.style.display = 'flex';
+            if(isForced) {
+                els.loginTitle.textContent = "Đã hết lượt học miễn phí";
+                els.loginMsg.textContent = "Bạn đã học đủ 10 câu. Đăng nhập để tiếp tục không giới hạn.";
+            } else {
+                els.loginTitle.textContent = "Đăng nhập để tiếp tục";
+                els.loginMsg.textContent = "Lưu lại tiến độ và học không giới hạn";
+            }
         }
 
-        els.btnLogin.addEventListener('click', () => signInWithPopup(auth, provider).catch(e => showToast(e.message)));
+        els.btnLogin.addEventListener('click', () => signInWithPopup(auth, provider).catch(err => showToast("Lỗi: " + err.message)));
+        els.btnLoginHeader.addEventListener('click', () => showLoginScreen(false));
         els.btnLogout.addEventListener('click', () => { signOut(auth); location.reload(); });
-        els.btnLoginHeader.addEventListener('click', () => els.loginScreen.style.display = 'flex');
 
         onAuthStateChanged(auth, async (user) => {
             els.loginScreen.style.display = 'none';
+            
             if (user) {
                 isGuest = false;
                 currentUser = user;
                 els.userAvatar.src = user.photoURL;
                 els.btnLogout.style.display = 'inline-block';
                 els.btnLoginHeader.style.display = 'none';
+                els.guestLabel.style.display = 'none';
+                els.limitCounter.style.display = 'none';
+                
                 showLoading(true);
                 await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
                 showLoading(false);
-                showToast(`Chào mừng ${user.displayName}!`);
+                showToast(`Xin chào ${user.displayName}!`);
             } else {
                 isGuest = true;
+                currentUser = null;
+                guestQuizCount = 0;
+                
                 els.btnLogout.style.display = 'none';
                 els.btnLoginHeader.style.display = 'inline-block';
-                // Load Guest Data
-                const localData = localStorage.getItem('guestAcupoints');
-                if(localData) acupoints = JSON.parse(localData);
-                else acupoints = JSON.parse(JSON.stringify(defaultAcupoints)).map((x, i) => ({...x, id: 'g'+i}));
+                els.guestLabel.style.display = 'inline-block';
+                els.limitCounter.style.display = 'inline-block';
+                els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
                 
+                // Local Guest Data
+                const localData = localStorage.getItem('guest_acupoints');
+                if (localData) {
+                    acupoints = JSON.parse(localData);
+                } else {
+                    acupoints = defaultAcupoints.map((item, index) => ({
+                        id: 'guest_' + index,
+                        ...item,
+                        srsLevel: 0,
+                        nextReview: 0
+                    }));
+                }
+                
+                renderListGrouped();
+                updateGroupSelect();
                 prepareQuiz();
-                renderManageList();
             }
             setupNavigation();
-            checkBadges();
+            renderCalendar();
+            updateBadges();
         });
 
-        // --- DATA & SRS LOGIC ---
+        function showLoading(show) { els.loading.style.display = show ? 'flex' : 'none'; }
+        function showToast(message) {
+            const x = document.getElementById("toast"); x.textContent = message;
+            x.className = "show"; setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        // --- DATA LOGIC ---
         async function loadData() {
+            if(isGuest) return;
             try {
                 const q = query(collection(db, "acupoints"), where("uid", "==", currentUser.uid));
                 const snap = await getDocs(q);
                 acupoints = [];
-                snap.forEach(doc => acupoints.push({ id: doc.id, ...doc.data() }));
+                snap.forEach((doc) => acupoints.push({ id: doc.id, ...doc.data() }));
+                
+                // Sort by ID to keep consistent order if timestamps equal
+                renderListGrouped();
+                updateGroupSelect();
                 prepareQuiz();
-                renderManageList();
             } catch (e) { console.error(e); }
         }
 
-        function calculateNextReview(currentLevel) {
-            // Simple SRS: 1 -> 1d, 2 -> 3d, 3 -> 7d, 4 -> 14d, 5 -> 30d
-            const intervals = [0, 1, 3, 7, 14, 30, 60];
-            const days = intervals[Math.min(currentLevel, intervals.length - 1)];
-            const date = new Date();
-            date.setDate(date.getDate() + days);
-            return date.getTime();
+        function renderListGrouped() {
+            els.dataList.innerHTML = '';
+            const groups = {};
+            let masteredCount = 0;
+            acupoints.forEach(item => {
+                if(!groups[item.group]) groups[item.group] = [];
+                groups[item.group].push(item);
+                if((item.srsLevel || 0) >= 4) masteredCount++;
+            });
+
+            els.statMastered.textContent = masteredCount;
+
+            Object.keys(groups).sort().forEach(gName => {
+                const header = document.createElement('div');
+                header.className = 'group-header';
+                header.innerHTML = `<span>📂 ${gName}</span> <span style="font-size:0.8rem; opacity:0.8">${groups[gName].length} bài</span>`;
+                els.dataList.appendChild(header);
+
+                groups[gName].forEach(item => {
+                    const level = item.srsLevel || 0;
+                    let lvClass = '';
+                    if(level >= 4) lvClass = 'srs-lv-high';
+                    else if(level >= 1) lvClass = 'srs-lv-med';
+
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    div.innerHTML = `
+                        <div>
+                            <div style="font-weight:600; display:flex; align-items:center;">
+                                ${item.name} 
+                                <span class="srs-level ${lvClass}">Lv ${level}</span>
+                                ${item.image ? '<span style="margin-left:5px; font-size:0.8rem">📷</span>' : ''}
+                            </div>
+                            <div style="font-size:0.85rem; color:#666; margin-top:2px">${item.desc}</div>
+                        </div>
+                        <button onclick="deleteAcupoint('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem; opacity:0.4; color:red;">&times;</button>
+                    `;
+                    els.dataList.appendChild(div);
+                });
+            });
+            if(acupoints.length === 0) els.dataList.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Danh sách trống</div>';
         }
 
-        async function updateItemSRS(item, isCorrect) {
-            let newLevel = isCorrect ? (item.level || 0) + 1 : 0;
-            let nextReview = calculateNextReview(newLevel);
+        window.initDefaultData = async () => {
+            if(isGuest) return showToast("Dữ liệu mẫu đã có sẵn cho khách.");
+            if(acupoints.length > 0 && !confirm("Thêm dữ liệu mẫu vào danh sách hiện tại?")) return;
             
-            // Update Local
-            item.level = newLevel;
-            item.nextReview = nextReview;
+            showLoading(true);
+            try {
+                const batch = writeBatch(db);
+                defaultAcupoints.forEach(item => {
+                    const docRef = doc(collection(db, "acupoints"));
+                    batch.set(docRef, {
+                        uid: currentUser.uid, 
+                        group: item.group, name: item.name, desc: item.desc, image: item.image || "",
+                        srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
+                    });
+                });
+                await batch.commit();
+                await loadData();
+                showToast("✅ Đã nạp dữ liệu y học!");
+                document.querySelector('[data-target="tab-quiz"]').click();
+            } catch(e) { showToast("Lỗi: " + e.message); }
+            showLoading(false);
+        }
 
-            if (isGuest) {
-                localStorage.setItem('guestAcupoints', JSON.stringify(acupoints));
+        els.btnAddData.addEventListener('click', async () => {
+            if(isGuest) return showToast("Vui lòng đăng nhập để lưu dữ liệu của riêng bạn.");
+            const group = els.inpGroup.value.trim();
+            const name = els.inpName.value.trim();
+            const desc = els.inpDesc.value.trim();
+            const image = els.inpImage.value.trim();
+
+            if(!group || !name) return showToast("Thiếu tên hoặc nhóm!");
+            
+            showLoading(true);
+            try {
+                const docRef = await addDoc(collection(db, "acupoints"), {
+                    uid: currentUser.uid, group, name, desc, image,
+                    srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
+                });
+                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc, image, srsLevel: 0, nextReview: 0 });
+                els.inpName.value = ''; els.inpDesc.value = ''; els.inpImage.value = '';
+                renderListGrouped(); updateGroupSelect(); prepareQuiz();
+                showToast("Đã lưu!");
+            } catch (e) { showToast("Lỗi lưu."); }
+            showLoading(false);
+        });
+
+        window.deleteAcupoint = async (id) => {
+            if(isGuest) return showToast("Khách không thể xóa dữ liệu mẫu.");
+            if(!confirm("Xóa huyệt này?")) return;
+            showLoading(true);
+            try {
+                await deleteDoc(doc(db, "acupoints", id));
+                acupoints = acupoints.filter(item => item.id !== id);
+                renderListGrouped(); updateGroupSelect(); prepareQuiz();
+                showToast("Đã xóa.");
+            } catch (e) { showToast("Lỗi xóa."); }
+            showLoading(false);
+        }
+
+        // --- LOGIC: SRS & QUIZ ---
+        function prepareQuiz() {
+            if(acupoints.length > 0) {
+                els.quizArea.style.display = 'block'; els.emptyQuizMsg.style.display = 'none';
             } else {
-                try {
-                    await updateDoc(doc(db, "acupoints", item.id), { level: newLevel, nextReview: nextReview });
-                } catch(e) { console.log(e); }
+                els.quizArea.style.display = 'none'; 
+                els.emptyQuizMsg.style.display = 'block';
+                els.btnInitData.style.display = isGuest ? 'none' : 'inline-flex';
             }
         }
 
-        // --- QUIZ LOGIC ---
-        function prepareQuiz() {
-            const now = new Date().getTime();
-            // Filter: items due today OR items never learned (level 0)
-            const dueItems = acupoints.filter(i => !i.nextReview || i.nextReview <= now);
+        function startQuiz() {
+            isProcessing = false;
+
+            if(isGuest && guestQuizCount >= GUEST_LIMIT) {
+                showLoginScreen(true); return;
+            }
+
+            const filter = els.quizGroupSelect.value;
+            const now = Date.now();
+
+            // SRS Logic: Lọc các câu đã đến hạn (nextReview <= now) hoặc câu mới (level 0)
+            let pool = acupoints.filter(i => {
+                const matchGroup = (filter === 'all' || i.group === filter);
+                const isDue = (i.nextReview || 0) <= now;
+                return matchGroup && isDue;
+            });
             
-            els.dueCounter.textContent = `${dueItems.length} cần ôn`;
-            if (dueItems.length > 0) {
-                els.dueCounter.style.display = 'block';
+            // Nếu hết câu "cần học", lấy ngẫu nhiên để ôn thêm (Overstudy)
+            if (pool.length === 0) {
+                 // Nếu không có câu nào ĐẾN HẠN, báo đã xong (hoặc cho ôn tập tự do)
+                 // Ở đây ta báo xong để user có cảm giác hoàn thành (Dopamine)
+                 els.quizArea.style.display = 'none';
+                 els.emptyQuizMsg.style.display = 'block';
+                 return;
+            } else {
                 els.quizArea.style.display = 'block';
                 els.emptyQuizMsg.style.display = 'none';
-            } else {
-                els.dueCounter.style.display = 'none';
-                els.quizArea.style.display = 'none';
-                els.emptyQuizMsg.style.display = 'block';
-                return;
             }
-
-            // Pick random due item
-            currentQuizItem = dueItems[Math.floor(Math.random() * dueItems.length)];
+            
+            // Lấy câu có thời gian review thấp nhất (ưu tiên câu bị sai trước đó)
+            pool.sort((a, b) => (a.nextReview || 0) - (b.nextReview || 0));
+            // Lấy 1 trong 3 câu đầu tiên để đỡ nhàm chán
+            const idx = Math.floor(Math.random() * Math.min(3, pool.length));
+            
+            currentQuizItem = pool[idx];
             currentHintIndex = 0;
 
             els.qGroup.textContent = currentQuizItem.group;
+            
+            // Xử lý ảnh
+            if (currentQuizItem.image && currentQuizItem.image.startsWith('http')) {
+                els.qImage.src = currentQuizItem.image;
+                els.qImage.classList.add('has-image');
+            } else {
+                els.qImage.classList.remove('has-image');
+            }
+
+            els.qQuestion.textContent = "Huyệt này tên là gì?";
             els.qDesc.textContent = currentQuizItem.desc;
             els.qInput.value = '';
-            els.qFeedback.className = 'feedback';
-            els.qFeedback.textContent = '';
             els.qInput.focus();
-
-            // Image handling (Placeholder for now)
-            els.qImgDisplay.style.display = 'none'; 
-            document.querySelector('.img-placeholder').style.display = 'flex';
+            els.qFeedback.textContent = ''; els.qFeedback.className = 'feedback';
         }
 
-        // --- INTERACTION ---
-        els.qInput.addEventListener('input', async () => {
+        async function handleAnswer(isCorrect) {
             if(!currentQuizItem) return;
-            const userIn = removeVietnameseTones(els.qInput.value);
-            const correctName = removeVietnameseTones(currentQuizItem.name);
 
-            // Check if string contains the name (fuzzy containment) or equality
-            if (userIn === correctName || (userIn.length > 4 && correctName.includes(userIn))) {
-                // CORRECT
-                els.qInput.blur();
-                els.qFeedback.textContent = "🎉 Chính xác!";
-                els.qFeedback.className = 'feedback show correct';
-                playDing();
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+            // Update SRS
+            const oldLevel = currentQuizItem.srsLevel || 0;
+            let newLevel = oldLevel;
+            let nextReview = 0;
+
+            if (isCorrect) {
+                newLevel = Math.min(oldLevel + 1, SRS_INTERVALS.length - 1);
+                const days = SRS_INTERVALS[newLevel];
+                nextReview = Date.now() + (days * 24 * 60 * 60 * 1000);
                 
-                await updateItemSRS(currentQuizItem, true);
-                await tryAutoCheckIn();
-                setTimeout(prepareQuiz, 1200);
-            }
-        });
+                // Hiệu ứng
+                playTone('correct');
+                els.qFeedback.innerHTML = "🎉 Chính xác!";
+                els.qFeedback.className = 'feedback correct';
+                
+                // Nếu hoàn thành mục tiêu ngày (ví dụ 5 câu), bắn pháo hoa
+                if(Math.random() > 0.7) confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
 
-        els.btnHint.addEventListener('click', async () => {
-            if(!currentQuizItem) return;
-            // Penalty logic: Reset level to 0
-            playBuzz();
-            els.qFeedback.textContent = "Đã gợi ý (Sẽ phải học lại ngay)";
-            els.qFeedback.className = 'feedback show wrong';
-            
-            const name = currentQuizItem.name;
-            currentHintIndex += 2; 
-            if(currentHintIndex > name.length) currentHintIndex = name.length;
-            els.qInput.value = name.substring(0, currentHintIndex);
-            
-            // Mark as failed in SRS immediately so it stays in queue
-            await updateItemSRS(currentQuizItem, false);
-        });
-
-        els.btnSkip.addEventListener('click', prepareQuiz);
-
-        els.btnSearchImg.addEventListener('click', () => {
-            if(currentQuizItem) {
-                window.open(`https://www.google.com/search?tbm=isch&q=huyệt+đạo+${currentQuizItem.name}`, '_blank');
-            }
-        });
-
-        // --- BADGES & GAMIFICATION ---
-        const badges = [
-            { id: 'b1', name: 'Tân Binh', icon: '🌱', cond: (streak, mast) => true }, // Always unlock
-            { id: 'b2', name: 'Chăm Chỉ', icon: '🔥', cond: (streak, mast) => streak >= 3 },
-            { id: 'b3', name: 'Bền Bỉ', icon: '🏃', cond: (streak, mast) => streak >= 7 },
-            { id: 'b4', name: 'Thầy Thuốc', icon: '💊', cond: (streak, mast) => mast >= 5 },
-            { id: 'b5', name: 'Thần Y', icon: '👑', cond: (streak, mast) => mast >= 20 }
-        ];
-
-        function checkBadges() {
-            const masteredCount = acupoints.filter(i => i.level >= 3).length; // Level 3+ means remembered well
-            els.statMastered.textContent = masteredCount;
-            
-            els.badgeList.innerHTML = '';
-            badges.forEach(b => {
-                const unlocked = b.cond(currentStreak, masteredCount);
-                const div = document.createElement('div');
-                div.className = `badge-item ${unlocked ? 'unlocked' : ''}`;
-                div.innerHTML = `<span class="badge-icon">${b.icon}</span><div class="badge-name">${b.name}</div>`;
-                els.badgeList.appendChild(div);
-            });
-        }
-
-        // --- MANAGE & INIT ---
-        window.initDefaultData = async () => {
-            if(isGuest) {
-                acupoints = defaultAcupoints.map((x,i) => ({...x, id: 'g'+i}));
-                localStorage.setItem('guestAcupoints', JSON.stringify(acupoints));
-                showToast("Đã nạp dữ liệu mẫu!");
-                prepareQuiz(); renderManageList();
-                return;
-            }
-            const batch = writeBatch(db);
-            defaultAcupoints.forEach(item => {
-                const docRef = doc(collection(db, "acupoints"));
-                batch.set(docRef, { ...item, uid: currentUser.uid, createdAt: serverTimestamp() });
-            });
-            await batch.commit();
-            await loadData();
-            showToast("Đã nạp dữ liệu vào Cloud!");
-        };
-
-        els.btnAddData.addEventListener('click', async () => {
-            if(isGuest) return showToast("Vui lòng đăng nhập để lưu dữ liệu riêng.");
-            const g = els.inpGroup.value.trim(); const n = els.inpName.value.trim();
-            if(!g || !n) return showToast("Thiếu thông tin!");
-            
-            await addDoc(collection(db, "acupoints"), {
-                uid: currentUser.uid, group: g, name: n, desc: els.inpDesc.value, 
-                level: 0, nextReview: 0, createdAt: serverTimestamp()
-            });
-            els.inpName.value = ''; els.inpDesc.value = '';
-            loadData(); showToast("Đã thêm!");
-        });
-
-        function renderManageList() {
-            els.dataList.innerHTML = '';
-            acupoints.forEach(item => {
-                const div = document.createElement('div');
-                div.style.padding = "10px"; div.style.borderBottom = "1px solid #eee";
-                div.style.display = "flex"; div.style.justifyContent = "space-between";
-                div.innerHTML = `
-                    <div><b>${item.name}</b> <span style="font-size:0.8rem; color:#888">Lv.${item.level||0}</span></div>
-                    <button style="color:red; background:none; border:none; cursor:pointer;" onclick="deleteItem('${item.id}')">×</button>
-                `;
-                els.dataList.appendChild(div);
-            });
-            updateGroupSuggestions();
-        }
-
-        window.deleteItem = async (id) => {
-            if(!confirm("Xóa?")) return;
-            if(isGuest) {
-                acupoints = acupoints.filter(i => i.id !== id);
-                localStorage.setItem('guestAcupoints', JSON.stringify(acupoints));
-                prepareQuiz(); renderManageList();
             } else {
-                await deleteDoc(doc(db, "acupoints", id));
-                loadData();
+                newLevel = 0; // Sai về 0
+                nextReview = Date.now(); // Học lại ngay
+                playTone('wrong');
+                els.qFeedback.innerHTML = `Sai rồi: <b>${currentQuizItem.name}</b>`;
+                els.qFeedback.className = 'feedback wrong';
             }
-        };
 
-        function updateGroupSuggestions() {
-             const groups = [...new Set(acupoints.map(i => i.group))];
-             els.groupSuggestions.innerHTML = groups.map(g => `<option value="${g}">`).join('');
+            // Save Data
+            if(isGuest) {
+                guestQuizCount++;
+                els.limitCounter.textContent = `(${guestQuizCount}/${GUEST_LIMIT})`;
+                currentQuizItem.srsLevel = newLevel;
+                currentQuizItem.nextReview = nextReview;
+                localStorage.setItem('guest_acupoints', JSON.stringify(acupoints));
+            } else {
+                try {
+                    const itemRef = doc(db, "acupoints", currentQuizItem.id);
+                    await updateDoc(itemRef, { srsLevel: newLevel, nextReview: nextReview });
+                    // Cập nhật local để UI mượt
+                    currentQuizItem.srsLevel = newLevel;
+                    currentQuizItem.nextReview = nextReview;
+                } catch(e) { console.error(e); }
+            }
+
+            if(isCorrect) {
+                tryAutoCheckIn();
+                setTimeout(() => { startQuiz(); }, 1200);
+            }
         }
 
-        // --- ATTENDANCE & LEADERBOARD ---
+        els.qInput.addEventListener('input', () => {
+            if(!currentQuizItem || isProcessing) return;
+            const val = removeVietnameseTones(els.qInput.value.trim());
+            const correctName = removeVietnameseTones(currentQuizItem.name);
+            
+            // Fuzzy match: Chứa từ khóa chính hoặc giống hệt
+            if (val.length >= 2 && val === correctName) {
+                isProcessing = true;
+                handleAnswer(true);
+            }
+        });
+
+        els.quizGroupSelect.addEventListener('change', startQuiz);
+        els.btnNext.addEventListener('click', startQuiz);
+        els.btnShowAns.addEventListener('click', () => {
+            if(!currentQuizItem || isProcessing) return;
+            isProcessing = true;
+            handleAnswer(false); // Xem đáp án coi như sai
+            setTimeout(() => {
+                isProcessing = false;
+                els.qInput.value = currentQuizItem.name;
+            }, 500);
+        });
+        
+        els.btnHint.addEventListener('click', () => {
+            if(!currentQuizItem) return;
+            const name = currentQuizItem.name;
+            if(currentHintIndex < name.length) {
+                currentHintIndex++;
+                els.qInput.value = name.substring(0, currentHintIndex);
+                els.qInput.focus();
+                // Nếu gợi ý hết chữ -> check luôn
+                const val = removeVietnameseTones(els.qInput.value.trim());
+                const correct = removeVietnameseTones(currentQuizItem.name);
+                if(val === correct) { isProcessing = true; handleAnswer(true); }
+            }
+        });
+
+        // --- BADGES & STATS ---
         async function checkAttendance() {
-            if(isGuest) return;
+            if(isGuest) { els.statStreak.textContent = "0"; return; }
+            const today = new Date().toISOString().split('T')[0];
             const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
             const snap = await getDocs(q);
-            attendanceDates = new Set(snap.docs.map(d => d.data().date));
-            currentStreak = attendanceDates.size;
+            attendanceDates.clear(); 
+            snap.forEach(doc => attendanceDates.add(doc.data().date));
             
-            els.statStreak.textContent = currentStreak;
-            els.streakBadge.style.display = 'inline-block';
-            els.streakBadge.innerHTML = `🔥 ${currentStreak}`;
+            const streakCount = attendanceDates.size; // Logic streak đơn giản là tổng ngày
+            todayCheckedIn = attendanceDates.has(today);
+            els.statStreak.textContent = streakCount;
+
+            updateBadges(streakCount, acupoints.length);
+
+            try {
+                await setDoc(doc(db, "profiles", currentUser.uid), {
+                    displayName: currentUser.displayName,
+                    streak: streakCount,
+                    photoURL: currentUser.photoURL,
+                    lastActive: serverTimestamp()
+                }, { merge: true });
+            } catch(e) {}
+        }
+
+        function updateBadges(streak = 0, totalCards = 0) {
+            if(totalCards >= 5) els.badges.studious.classList.add('unlocked');
+            if(streak >= 3) els.badges.streak3.classList.add('unlocked');
+            if(streak >= 7) els.badges.streak7.classList.add('unlocked');
             
-            renderCalendar();
-            
-            // Update Profile for Leaderboard
-            await setDoc(doc(db, "profiles", currentUser.uid), {
-                displayName: currentUser.displayName, photoURL: currentUser.photoURL,
-                streak: currentStreak, lastActive: serverTimestamp()
-            }, { merge: true });
+            // Kiểm tra badge Master (thuộc > 10 huyệt lv 4)
+            const mastered = acupoints.filter(i => (i.srsLevel || 0) >= 4).length;
+            if(mastered >= 10) els.badges.master.classList.add('unlocked');
         }
 
         async function tryAutoCheckIn() {
-            if(isGuest) return;
-            const today = new Date().toISOString().split('T')[0];
-            if(!attendanceDates.has(today)) {
-                await addDoc(collection(db, "attendance"), { uid: currentUser.uid, date: today });
+            if(isGuest || todayCheckedIn) return;
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                await addDoc(collection(db, "attendance"), {
+                    uid: currentUser.uid, date: today, timestamp: serverTimestamp()
+                });
+                todayCheckedIn = true;
                 attendanceDates.add(today);
-                checkAttendance();
-                showToast("Đã điểm danh ngày mới! +1 🔥");
-                confetti({ particleCount: 100, spread: 70 });
-            }
+                
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                showToast("✅ Điểm danh thành công!");
+                
+                checkAttendance(); 
+                renderCalendar(); 
+            } catch(e) { console.error(e); }
         }
 
+        async function loadLeaderboard() {
+            try {
+                const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(20));
+                const snap = await getDocs(q);
+                els.leaderboardList.innerHTML = '';
+                
+                let rank = 1;
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const isMe = currentUser && doc.id === currentUser.uid;
+                    const div = document.createElement('div');
+                    
+                    let rankClass = '';
+                    if (rank === 1) rankClass = 'lb-top1';
+                    else if (rank === 2) rankClass = 'lb-top2';
+                    else if (rank === 3) rankClass = 'lb-top3';
+
+                    div.className = `lb-item ${rankClass}`;
+                    if(isMe) div.style.border = '2px solid var(--primary)';
+                    
+                    div.innerHTML = `
+                        <div class="lb-rank">#${rank}</div>
+                        <img src="${data.photoURL}" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
+                        <div class="lb-name">${data.displayName} ${isMe ? '(Bạn)' : ''}</div>
+                        <div class="lb-score">${data.streak} ngày</div>
+                    `;
+                    els.leaderboardList.appendChild(div);
+                    rank++;
+                });
+            } catch(e) {}
+        }
+
+        els.viewWeek.addEventListener('click', () => { calViewMode = 'week'; renderCalendar(); });
+        els.viewMonth.addEventListener('click', () => { calViewMode = 'month'; renderCalendar(); });
+
         function renderCalendar() {
-            els.calendarGrid.innerHTML = '';
+            if(calViewMode === 'week') {
+                els.viewWeek.className = 'btn btn-xs btn-primary';
+                els.viewMonth.className = 'btn btn-xs btn-secondary';
+            } else {
+                els.viewWeek.className = 'btn btn-xs btn-secondary';
+                els.viewMonth.className = 'btn btn-xs btn-primary';
+            }
+
             const today = new Date();
-            // Simple last 7 days view
-            for(let i=6; i>=0; i--) {
-                const d = new Date(); d.setDate(today.getDate() - i);
-                const ds = d.toISOString().split('T')[0];
+            els.calendarGrid.innerHTML = '';
+            
+            let startDate, daysToRender;
+            if (calViewMode === 'month') {
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                const dayOfWeek = startDate.getDay(); 
+                startDate.setDate(startDate.getDate() - dayOfWeek);
+                daysToRender = 42; 
+            } else {
+                startDate = new Date(today);
+                startDate.setDate(today.getDate() - today.getDay());
+                daysToRender = 7;
+            }
+
+            for (let i = 0; i < daysToRender; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+                
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const dateString = `${year}-${month}-${day}`;
+                const isToday = (today.getDate() === currentDate.getDate() && today.getMonth() === currentDate.getMonth() && today.getFullYear() === currentDate.getFullYear());
+                const hasStudied = attendanceDates.has(dateString);
+                const isCurrentMonth = currentDate.getMonth() === today.getMonth();
+                const opacity = (calViewMode === 'month' && !isCurrentMonth) ? '0.3' : '1';
+
                 const div = document.createElement('div');
-                div.className = `cal-day ${attendanceDates.has(ds) ? 'active' : ''}`;
-                div.textContent = d.getDate();
+                div.className = `cal-day ${hasStudied ? 'active' : ''} ${isToday ? 'today' : ''}`;
+                div.style.opacity = opacity;
+                div.textContent = currentDate.getDate();
                 els.calendarGrid.appendChild(div);
             }
         }
 
-        async function loadLeaderboard() {
-            if(isGuest) { els.leaderboardList.innerHTML = '<div style="text-align:center; padding:10px;">Đăng nhập để xem BXH</div>'; return; }
-            const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(10));
-            const snap = await getDocs(q);
-            els.leaderboardList.innerHTML = '';
-            snap.forEach((d, idx) => {
-                const data = d.data();
-                const div = document.createElement('div');
-                div.className = `lb-item ${idx===0 ? 'lb-top1' : ''}`;
-                div.innerHTML = `
-                    <div style="font-weight:800; width:30px; color:#90a4ae">#${idx+1}</div>
-                    <img src="${data.photoURL}" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
-                    <div style="flex:1; font-weight:600; font-size:0.9rem;">${data.displayName}</div>
-                    <div style="font-weight:700; color:var(--primary);">${data.streak}🔥</div>
-                `;
-                els.leaderboardList.appendChild(div);
+        function setupNavigation() {
+            els.navItems.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    els.navItems.forEach(t => t.classList.remove('active'));
+                    els.views.forEach(v => v.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.target).classList.add('active');
+                    
+                    if(tab.dataset.target === 'tab-quiz') startQuiz();
+                    if(tab.dataset.target === 'tab-dashboard') loadLeaderboard();
+                });
             });
         }
 
-        function setupNavigation() {
-            els.navItems.forEach(t => t.addEventListener('click', () => {
-                els.navItems.forEach(n => n.classList.remove('active'));
-                els.views.forEach(v => v.classList.remove('active'));
-                t.classList.add('active');
-                document.getElementById(t.dataset.target).classList.add('active');
-                if(t.dataset.target === 'tab-quiz') prepareQuiz();
-                if(t.dataset.target === 'tab-dashboard') checkBadges();
-            }));
+        function updateGroupSelect() {
+            const groups = [...new Set(acupoints.map(i => i.group))];
+            els.groupSuggestions.innerHTML = groups.map(g => `<option value="${g}">`).join('');
+            const currentVal = els.quizGroupSelect.value;
+            els.quizGroupSelect.innerHTML = '<option value="all">Tất cả chủ đề</option>';
+            groups.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g; opt.textContent = g;
+                els.quizGroupSelect.appendChild(opt);
+            });
+            if(groups.includes(currentVal)) els.quizGroupSelect.value = currentVal;
         }
-
     </script>
 </body>
 </html>
