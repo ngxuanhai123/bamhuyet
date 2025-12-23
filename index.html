@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiHi Med - Tuyệt Kỹ Y Học, Chữa được là nhờ thuốc, không chữa được là tại… duyên phận</title>
+    <title>HiHi Med - Tuyệt Kỹ Y Học</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #00695c;
-            --primary-dark: #004d40;
-            --primary-light: #b2dfdb;
+            --primary-light: #4db6ac;
             --accent: #ffb300; 
-            --bg: #f3f4f6;
+            --bg: #f0f2f5;
             --surface: #ffffff;
-            --text: #1f2937;
-            --success: #10b981;
-            --error: #ef4444;
+            --text: #263238;
+            --success: #2e7d32;
+            --error: #c62828;
             --radius: 16px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 20px rgba(0, 105, 92, 0.08);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -33,23 +32,65 @@
             flex-direction: column;
         }
 
+        /* --- Floating Home Button (Added) --- */
+        .floating-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            /* Sử dụng style cho nền sáng để phù hợp với app */
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--primary); /* Dùng màu chủ đạo của app */
+            border-color: rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .floating-home-btn svg { width: 20px; height: 20px; transition: transform 0.3s ease; }
+        
+        .floating-home-btn:hover {
+            background: var(--primary);
+            transform: translateY(2px);
+            box-shadow: 0 8px 20px rgba(0, 105, 92, 0.3);
+            border-color: transparent;
+            color: white; 
+        }
+        
+        .floating-home-btn:hover svg { transform: scale(1.1); }
+        
+        /* Responsive cho điện thoại */
+        @media (max-width: 640px) {
+            .floating-home-btn span { display: none; }
+            .floating-home-btn { padding: 10px; border-radius: 50%; top: 15px; left: 15px;}
+        }
+
         /* --- Components --- */
         .btn {
             padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer;
-            font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
+            font-weight: 600; font-size: 0.95rem; transition: transform 0.1s, box-shadow 0.2s;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
         }
         .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(0, 105, 92, 0.3); }
-        .btn-secondary { background: #e5e7eb; color: #374151; }
-        .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3); }
-        .btn-search { 
-            background: #eff6ff; color: #2563eb; border: 1px dashed #bfdbfe; 
-            width: 100%; margin-bottom: 15px; font-size: 0.9rem;
-        }
-        .btn-search:hover { background: #dbeafe; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.3); }
+        .btn-secondary { background: #eceff1; color: #455a64; border: 1px solid #cfd8dc; }
+        .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3); }
+        .btn-success { background: #e8f5e9; color: var(--success); border: 1px solid #c8e6c9; }
+        .btn-search { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; width: 100%; margin-bottom: 15px;}
         .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
-        .btn-xs { padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
+        .btn-xs { padding: 4px 10px; font-size: 0.8rem; border-radius: 8px; }
 
         .card {
             background: var(--surface); border-radius: var(--radius); padding: 20px;
@@ -58,179 +99,167 @@
         }
         
         input, select, textarea {
-            width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px;
+            width: 100%; padding: 12px; border: 2px solid #eceff1; border-radius: 12px;
             font-size: 1rem; margin-bottom: 12px; font-family: inherit; transition: border-color 0.2s;
         }
-        input:focus, textarea:focus { border-color: var(--primary); background: #fff; ring: 2px solid var(--primary-light); }
+        input:focus, textarea:focus { border-color: var(--primary); background: #fff; }
 
         /* --- Layout --- */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 105, 92, 0.98);
+            background: rgba(0, 105, 92, 0.95);
+            backdrop-filter: blur(5px);
             display: none;
             justify-content: center; align-items: center; z-index: 1000;
         }
         .login-box {
             background: white; padding: 30px; border-radius: 24px;
             text-align: center; width: 90%; max-width: 380px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: slideUp 0.4s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: popIn 0.4s ease;
         }
 
         #app-screen { display: flex; flex: 1; flex-direction: column; }
 
         header {
-            background: var(--surface); padding: 12px 16px;
+            background: var(--surface); padding: 10px 16px;
             display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 50; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            padding-left: 60px; /* Thêm khoảng trống tránh bị nút Home che */
         }
         .brand { 
-            font-weight: 800; color: var(--primary); font-size: 1.5rem; 
-            display: flex; align-items: center; gap: 10px; 
+            font-weight: 800; color: var(--primary); font-size: 1.2rem; 
+            display: flex; align-items: center; gap: 8px; 
         }
-        .brand-icon { font-size: 2.4rem; } /* LOGO LỚN HƠN */
-        .brand-text { display: flex; flex-direction: column; line-height: 1; }
-        .slogan { font-size: 0.7rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;}
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .slogan { font-size: 0.65rem; font-weight: 500; color: #78909c; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .user-info { text-align: right; display: none; } /* Hiện khi login */
-        .user-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
-        .user-title { font-size: 0.75rem; color: var(--accent); font-weight: 600; text-transform: uppercase; }
-        
-        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background: #eee; }
+        .user-profile { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light); background: #eee; }
 
         .container { max-width: 800px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; }
 
         /* --- Tabs --- */
         .nav-pills { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch;}
         .nav-item {
-            padding: 10px 20px; border-radius: 25px; background: white; color: #6b7280;
-            font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; border: 1px solid #e5e7eb;
+            padding: 8px 16px; border-radius: 20px; background: white; color: var(--text); opacity: 0.7;
+            font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; border: 1px solid transparent;
         }
-        .nav-item.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 6px rgba(0, 105, 92, 0.2); }
+        .nav-item.active { background: var(--primary); color: white; opacity: 1; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.2); }
 
         /* --- Views --- */
         .view { display: none; animation: fadeIn 0.3s ease; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- Quiz UI --- */
         .quiz-container { text-align: center; padding: 10px 0; }
-        .quiz-badge { display: inline-block; padding: 6px 16px; background: #ecfdf5; color: var(--primary); border-radius: 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; border: 1px solid #a7f3d0; }
-        .quiz-question { font-size: 1.5rem; color: #111827; margin: 10px 0; font-weight: 800; line-height: 1.3; }
-        .quiz-desc { color: #4b5563; font-style: italic; margin-bottom: 20px; line-height: 1.6; font-size: 1rem; }
+        .quiz-badge { display: inline-block; padding: 4px 12px; background: #e0f2f1; color: var(--primary); border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .quiz-question { font-size: 1.4rem; color: #263238; margin: 8px 0; font-weight: 800; }
+        .quiz-desc { color: #546e7a; font-style: italic; margin-bottom: 15px; line-height: 1.5; font-size: 0.95rem; }
         
-        .feedback { min-height: 30px; margin-top: 15px; font-weight: 700; font-size: 1.1rem; }
+        .feedback { min-height: 24px; margin-top: 10px; font-weight: 700; font-size: 1rem; }
         .feedback.correct { color: var(--success); animation: popIn 0.3s; }
         .feedback.wrong { color: var(--error); animation: shake 0.4s; }
+        @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
 
-        /* --- Leaderboard UI NEW --- */
-        .lb-container { display: flex; flex-direction: column; gap: 10px; }
-        .lb-item { 
-            display: flex; align-items: center; padding: 12px 16px; background: white; 
-            border-radius: 16px; border: 1px solid #f3f4f6;
-            transition: transform 0.2s;
+        /* --- Calendar UI --- */
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.85rem; }
+        .cal-day-header { font-weight: bold; color: #90a4ae; padding-bottom: 5px; font-size: 0.75rem; }
+        .cal-day { 
+            aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
+            border-radius: 8px; background: #fafafa; color: #cfd8dc; font-weight: 500;
         }
-        .lb-item:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        
-        .lb-rank { 
-            font-weight: 800; font-size: 1rem; width: 30px; height: 30px; 
-            display: flex; justify-content: center; align-items: center; 
-            border-radius: 50%; background: #f3f4f6; color: #6b7280; margin-right: 12px; flex-shrink: 0;
-        }
-        .lb-info { flex: 1; min-width: 0; }
-        .lb-name { font-weight: 700; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
-        .lb-detail { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
-        .lb-score { 
-            font-weight: 800; color: var(--primary); background: #ecfdf5; 
-            padding: 6px 12px; border-radius: 12px; font-size: 0.9rem;
-        }
-
-        /* Top 3 Styles */
-        .lb-top1 { background: linear-gradient(135deg, #fffbeb, #fff); border: 1px solid #fcd34d; }
-        .lb-top1 .lb-rank { background: #f59e0b; color: white; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3); }
-        
-        .lb-top2 { background: linear-gradient(135deg, #f8fafc, #fff); border: 1px solid #cbd5e1; }
-        .lb-top2 .lb-rank { background: #94a3b8; color: white; }
-
-        .lb-top3 { background: linear-gradient(135deg, #fff7ed, #fff); border: 1px solid #fdba74; }
-        .lb-top3 .lb-rank { background: #d97706; color: white; }
+        .cal-day.active { background: var(--primary); color: white; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .cal-day.today { border: 2px solid var(--accent); color: var(--text); }
 
         /* --- Badges --- */
         .badges-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
         .badge-item { 
-            display: flex; align-items: center; gap: 6px; padding: 8px 12px; 
-            background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; 
-            font-size: 0.75rem; font-weight: 700; color: #9ca3af; opacity: 0.6; 
+            display: flex; align-items: center; gap: 5px; padding: 6px 10px; 
+            background: #fff; border: 1px solid #b0bec5; border-radius: 12px; 
+            font-size: 0.7rem; font-weight: 700; color: #90a4ae; opacity: 0.5; 
             filter: grayscale(1); transition: all 0.3s;
         }
         .badge-item.unlocked { 
             opacity: 1; filter: grayscale(0); border-color: var(--accent); 
-            background: linear-gradient(135deg, #fffbeb, #fff); 
-            color: #b45309; box-shadow: 0 4px 6px rgba(251, 191, 36, 0.1); 
-            transform: scale(1.02);
+            background: linear-gradient(135deg, #fffde7, #fff9c4); 
+            color: #f57f17; box-shadow: 0 4px 10px rgba(255, 179, 0, 0.25); 
+            transform: scale(1.05); animation: popIn 0.5s ease;
         }
 
-        /* --- Calendar UI --- */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 0.9rem; margin-top: 10px;}
-        .cal-day-header { font-weight: bold; color: #9ca3af; padding-bottom: 5px; font-size: 0.8rem; }
-        .cal-day { 
-            aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
-            border-radius: 10px; background: #f9fafb; color: #d1d5db; font-weight: 600;
+        /* --- Grouped List UI --- */
+        .group-header {
+            background: #e0f2f1; color: var(--primary); padding: 8px 12px;
+            border-radius: 8px; font-weight: 700; margin-top: 10px; margin-bottom: 5px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .cal-day.active { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .cal-day.today { border: 2px solid var(--accent); color: var(--text); }
-
+        .list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 8px; border-bottom: 1px solid #eee;
+        }
+        .list-item:last-child { border-bottom: none; }
+        .srs-level {
+            font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;
+            background: #eee; color: #78909c; margin-left: 5px;
+        }
+        .srs-lv-high { background: #e8f5e9; color: var(--success); }
+        .srs-lv-med { background: #fff8e1; color: #fbc02d; }
+        
         /* --- Utilities --- */
-        .app-footer { text-align: center; padding: 30px 20px; margin-top: auto; color: #9ca3af; font-size: 0.85rem; }
+        .app-footer { text-align: center; padding: 20px; margin-top: auto; color: #90a4ae; font-size: 0.85rem; }
         .heart-anim { color: #e91e63; display: inline-block; animation: heartBeat 1.5s infinite; }
         @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.3); } 28% { transform: scale(1); } 42% { transform: scale(1.3); } 70% { transform: scale(1); } }
         
-        #toast { visibility: hidden; min-width: 200px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; transform: translateX(-50%); opacity: 0; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-size: 0.95rem; font-weight: 500; }
+        #toast { visibility: hidden; min-width: 200px; background-color: #263238; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; transform: translateX(-50%); opacity: 0; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 0.9rem; }
         #toast.show { visibility: visible; opacity: 1; bottom: 100px; }
         #loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 200; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 10px; display: none;}
-        .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
+    <a href="https://ngxuanhai123.github.io/" class="floating-home-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Trang chủ</span>
+    </a>
+
     <div id="loading"><div class="spinner"></div></div>
     <div id="toast">Thông báo</div>
 
     <div id="login-screen">
         <div class="login-box">
-            <div style="font-size: 4rem; margin-bottom: 15px;">🥋</div>
-            <h1 style="color: var(--primary); margin: 0; font-size: 1.8rem; letter-spacing: -1px; margin-bottom: 10px;" id="loginTitle">Nhập Môn</h1>
-            <p style="color: #6b7280; margin-bottom: 30px; font-size: 1rem; line-height: 1.5;" id="loginMsg">Đăng nhập để lưu bí kíp<br>và tranh đoạt ngôi vị Minh Chủ</p>
+            <div style="font-size: 3rem; margin-bottom: 10px;">🔒</div>
+            <h1 style="color: var(--primary); margin: 0; font-size: 1.5rem; letter-spacing: -1px;" id="loginTitle">Đăng nhập để tiếp tục</h1>
+            <p style="color: #546e7a; margin-bottom: 25px; font-size: 0.95rem;" id="loginMsg">Lưu lại tiến độ SRS và đồng bộ hóa</p>
             <button class="btn btn-google" id="btnLogin">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" style="margin-right:10px">
-                Tiếp tục bằng Google
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="margin-right:8px">
+                Đăng nhập bằng Google
             </button>
-            <p style="font-size: 0.85rem; color: #9ca3af; margin-top: 25px;">Chân nhân bất lộ tướng (Miễn phí)</p>
+            <p style="font-size: 0.8rem; color: #90a4ae; margin-top: 20px;">Hoàn toàn miễn phí</p>
         </div>
     </div>
 
     <div id="app-screen">
         <header>
             <div class="brand">
-                <span class="brand-icon">⚕️</span>
+                <span style="font-size: 1.8rem;">⚕️</span>
                 <div class="brand-text">
                     <span>HiHi Med</span>
-                    <span class="slogan">Tuyệt Kỹ Y Học: Chữa được là nhờ thuốc không chữa được là tại… duyên phận</span>
+                    <span class="slogan">Tuyệt kỹ y học</span>
                 </div>
             </div>
             <div class="user-profile">
-                <div class="user-info" id="headerUserInfo">
-                    <div class="user-name" id="displayUserName">Khách</div>
-                    <div class="user-title" id="displayUserTitle">Lang Băm</div>
-                </div>
+                <span id="guestLabel" style="font-size: 0.8rem; color: #78909c; font-weight: 600; margin-right: 5px;">Khách</span>
                 <img id="userAvatar" class="avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NmZDhkYyI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPjwvc3ZnPg==" alt="">
-                <button class="btn btn-primary btn-xs" style="display:none;" id="btnLogout">Thoát</button>
-                <button class="btn btn-primary btn-xs" id="btnLoginHeader">Vào</button>
+                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem; display:none;" id="btnLogout">Thoát</button>
+                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 0.75rem;" id="btnLoginHeader">Đăng nhập</button>
             </div>
         </header>
 
@@ -244,9 +273,9 @@
             <div id="tab-quiz" class="view active">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin:0; font-size: 1.1rem; color: var(--primary-dark);">Luyện Tập <span id="limitCounter" style="font-size: 0.8rem; color: #f59e0b; display:none;">(0/10)</span></h3>
-                        <select id="quizGroupSelect" style="width: auto; margin:0; padding: 6px 12px; font-size: 0.85rem; border-radius: 20px; background: #f3f4f6; border: none;">
-                            <option value="all">Tất cả chiêu thức</option>
+                        <h3 style="margin:0; font-size: 1.1rem;">Luyện Tập <span id="limitCounter" style="font-size: 0.8rem; color: #f57c00; display:none;">(0/10)</span></h3>
+                        <select id="quizGroupSelect" style="width: auto; margin:0; padding: 6px 12px; font-size: 0.85rem; border-radius: 20px;">
+                            <option value="all">Tất cả</option>
                         </select>
                     </div>
 
@@ -257,52 +286,49 @@
                         <p class="quiz-desc" id="qDesc">...</p>
                         
                         <button class="btn btn-search" id="btnSearchImg">
-                            🔍 Bấm để xem chân dung huyệt đạo (Google)
+                            🔍 Bấm để xem ảnh minh họa (Google)
                         </button>
                         
-                        <input type="text" id="qInput" placeholder="Nhập tên huyệt..." autocomplete="off" style="font-size: 1.1rem; text-align: center; font-weight: 600;">
+                        <input type="text" id="qInput" placeholder="Nhập tên huyệt (có dấu/không dấu đều được)..." autocomplete="off">
                         
                         <div class="feedback" id="qFeedback"></div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px;">
                             <button class="btn btn-accent" id="btnHint">💡 Gợi ý</button>
-                            <button class="btn btn-secondary" id="btnShowAns">👁️ Xem Đáp án</button>
+                            <button class="btn btn-secondary" id="btnShowAns">👁️ Đáp án</button>
                         </div>
-                        <button class="btn btn-secondary" style="width: 100%; margin-top: 12px; background: white; border: 1px solid #e5e7eb; color: #9ca3af;" id="btnNext">Bỏ qua chiêu này ➜</button>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 10px; background: #eceff1; color: #78909c" id="btnNext">Bỏ qua câu này ➜</button>
                     </div>
                     
-                    <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 40px 20px;">
-                        <div style="font-size: 4rem; margin-bottom: 10px;">🧘</div>
-                        <h2 style="margin: 0; color: var(--primary);">Đắc Đạo Thành Tiên</h2>
-                        <p id="emptyMsgText" style="color: #6b7280;">Hôm nay bạn đã luyện hết các bài cần ôn.</p>
-                        <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()" style="margin-top: 15px;">♻️ Tải bí kíp nhập môn</button>
+                    <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 30px;">
+                        <div style="font-size: 3rem;">🎉</div>
+                        <p id="emptyMsgText">Bạn đã hoàn thành bài học hôm nay!</p>
+                        <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()">♻️ Tải dữ liệu mẫu</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-dashboard" class="view">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-                    <div class="card" style="margin:0; text-align:center; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border:none;">
-                        <div style="font-size: 2.5rem; font-weight: 800;" id="stat-streak">0</div>
-                        <div style="font-size: 0.85rem; opacity: 0.9; font-weight: 600;">Ngày Tu Luyện</div>
+                    <div class="card" style="margin:0; text-align:center; background: linear-gradient(135deg, var(--primary), #004d40); color: white; border:none;">
+                        <div style="font-size: 2rem; font-weight: 800;" id="stat-streak">0</div>
+                        <div style="font-size: 0.8rem; opacity: 0.9;">Chuỗi ngày học</div>
                     </div>
                     <div class="card" style="margin:0; text-align:center;">
-                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);" id="stat-mastered">0</div>
-                        <div style="font-size: 0.85rem; color: #6b7280; font-weight: 600;">Chiêu Đã Thuộc</div>
+                        <div style="font-size: 2rem; font-weight: 800; color: var(--primary);" id="stat-mastered">0</div>
+                        <div style="font-size: 0.8rem; color: #78909c;">Đã tinh thông</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-top:0; margin-bottom:15px; font-size: 1.1rem; text-align: center;">🏅 Bộ Sưu Tập Danh Hiệu</h3>
+                    <h3 style="margin-top:0; margin-bottom:10px; font-size: 1.1rem;">🏅 Danh Hiệu Võ Lâm</h3>
                     <div class="badges-container">
                         <div class="badge-item" id="badge-novice">🌱 Lang Băm Tập Sự</div>
-                        <div class="badge-item" id="badge-streak3">🔥 Hỏa Nhãn Kim Tinh (3 ngày)</div>
                         <div class="badge-item" id="badge-master5">📖 Sách Y Chạy Bằng Cơm</div>
-                        <div class="badge-item" id="badge-streak7">📡 Bắt Mạch Online (7 ngày)</div>
-                        <div class="badge-item" id="badge-streak14">🏯 Thái Y Viện Trưởng (14 ngày)</div>
-                        <div class="badge-item" id="badge-streak30">🐉 Độc Cô Cầu Bại (30 ngày)</div>
-                        <div class="badge-item" id="badge-master20">✨ Hoa Đà Tái Thế (20 bài)</div>
-                        <div class="badge-item" id="badge-master50">🌩️ Thần Y Hạ Phàm (50 bài)</div>
+                        <div class="badge-item" id="badge-streak3">💉 Thần Kim Diệu Thủ</div>
+                        <div class="badge-item" id="badge-streak7">📡 Bắt Mạch Online</div>
+                        <div class="badge-item" id="badge-streak14">🏯 Thái Y Viện Trưởng</div>
+                        <div class="badge-item" id="badge-master20">✨ Hoa Đà Tái Thế</div>
                     </div>
                 </div>
 
@@ -320,15 +346,15 @@
                     <div id="calendarGrid" class="cal-grid"></div>
                 </div>
 
-                <h3 style="margin: 20px 0 15px; font-size: 1.2rem; color: var(--primary-dark); text-align: center; font-weight: 800;">🏆 Thiên Hạ Đệ Nhất Bang</h3>
-                <div id="leaderboardList" class="lb-container">
-                    <div style="text-align:center; padding: 20px; color: #9ca3af;">Đang triệu hồi bảng xếp hạng...</div>
+                <h3 style="margin: 10px 0; font-size: 1.1rem; color: #37474f;">🏆 Bảng vàng Top 20</h3>
+                <div id="leaderboardList">
+                    <div style="text-align:center; padding: 20px; color: #90a4ae;">Đang tải xếp hạng...</div>
                 </div>
             </div>
 
             <div id="tab-manage" class="view">
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Sáng Tạo Chiêu Thức Mới</h3>
+                    <h3 style="margin-top:0; font-size: 1.1rem;">Thêm huyệt mới</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                         <input type="text" id="inpGroup" placeholder="Nhóm (VD: Đau đầu)" list="groupSuggestions">
                         <input type="text" id="inpName" placeholder="Tên Huyệt">
@@ -337,8 +363,8 @@
                     <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí, tác dụng..."></textarea>
                     <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu Bí Kíp</button>
                     
-                    <div style="margin-top: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px;">
-                        <button class="btn btn-secondary" style="width: 100%; font-size: 0.9rem;" onclick="initDefaultData()">
+                    <div style="margin-top: 15px; border-top: 1px dashed #cfd8dc; padding-top: 15px;">
+                        <button class="btn btn-secondary" style="width: 100%; font-size: 0.85rem;" onclick="initDefaultData()">
                             📚 Tải bí kíp mẫu (Nếu chưa có)
                         </button>
                     </div>
@@ -352,8 +378,7 @@
         </div>
 
         <footer class="app-footer">
-            HiHi Med - Tuyệt Kỹ Y Học &copy; 2025<br>
-            Made with <span class="heart-anim">❤</span> by Xuân Hải
+            HiHi Med &copy; 2025<br>Made with <span class="heart-anim">❤</span> by Xuân Hải
         </footer>
     </div>
 
@@ -390,7 +415,6 @@
         let attendanceDates = new Set();
         let calViewMode = 'week'; 
         let isProcessing = false;
-        let currentTitle = "Lang Băm";
 
         const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
 
@@ -416,11 +440,7 @@
             btnLoginHeader: document.getElementById('btnLoginHeader'),
             btnLogout: document.getElementById('btnLogout'),
             userAvatar: document.getElementById('userAvatar'),
-            // Header Info
-            headerUserInfo: document.getElementById('headerUserInfo'),
-            displayUserName: document.getElementById('displayUserName'),
-            displayUserTitle: document.getElementById('displayUserTitle'),
-            
+            guestLabel: document.getElementById('guestLabel'),
             navItems: document.querySelectorAll('.nav-item'),
             views: document.querySelectorAll('.view'),
             // Manage
@@ -436,7 +456,7 @@
             qQuestion: document.getElementById('qQuestion'),
             qDesc: document.getElementById('qDesc'),
             qInput: document.getElementById('qInput'),
-            btnSearchImg: document.getElementById('btnSearchImg'),
+            btnSearchImg: document.getElementById('btnSearchImg'), // Nút mới
             qFeedback: document.getElementById('qFeedback'),
             btnShowAns: document.getElementById('btnShowAns'),
             btnHint: document.getElementById('btnHint'),
@@ -453,20 +473,18 @@
             calendarGrid: document.getElementById('calendarGrid'),
             viewWeek: document.getElementById('viewWeek'),
             viewMonth: document.getElementById('viewMonth'),
-            // Badges
+            // Badges (UPDATED)
             badges: {
                 novice: document.getElementById('badge-novice'),
                 master5: document.getElementById('badge-master5'),
                 streak3: document.getElementById('badge-streak3'),
                 streak7: document.getElementById('badge-streak7'),
                 streak14: document.getElementById('badge-streak14'),
-                streak30: document.getElementById('badge-streak30'),
-                master20: document.getElementById('badge-master20'),
-                master50: document.getElementById('badge-master50')
+                master20: document.getElementById('badge-master20')
             }
         };
 
-        // --- UTILS ---
+        // --- UTILS: SOUND & TEXT PROCESSING ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -489,9 +507,14 @@
             }
         }
 
+        // HÀM CHUẨN HÓA TIẾNG VIỆT MẠNH MẼ HƠN
         function cleanText(str) {
             if (!str) return "";
-            str = str.toLowerCase().normalize("NFC");
+            // 1. Chuyển về chữ thường
+            str = str.toLowerCase();
+            // 2. Chuẩn hóa Unicode (dựng sẵn) để tránh lỗi mã
+            str = str.normalize("NFC");
+            // 3. Xóa dấu
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
             str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
             str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -499,7 +522,9 @@
             str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
             str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
             str = str.replace(/đ/g, "d");
-            str = str.replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, ""); 
+            // 4. Xóa ký tự đặc biệt, chỉ giữ chữ và số
+            str = str.replace(/[\u0300-\u036f]/g, ""); // Remove combining diacritics
+            str = str.replace(/[^a-z0-9\s]/g, ""); 
             return str.trim();
         }
 
@@ -508,10 +533,10 @@
             els.loginScreen.style.display = 'flex';
             if(isForced) {
                 els.loginTitle.textContent = "Hết lượt luyện công";
-                els.loginMsg.textContent = "Đại hiệp đã luyện đủ 10 chiêu. Vui lòng đăng nhập để tiếp tục con đường y đạo.";
+                els.loginMsg.textContent = "Bạn đã học đủ 10 chiêu. Đăng nhập để tiếp tục.";
             } else {
-                els.loginTitle.textContent = "Nhập Môn";
-                els.loginMsg.textContent = "Đăng nhập để lưu bí kíp và tranh đoạt ngôi vị Minh Chủ";
+                els.loginTitle.textContent = "Đăng nhập";
+                els.loginMsg.textContent = "Lưu lại tiến độ luyện tập";
             }
         }
 
@@ -525,27 +550,21 @@
                 isGuest = false; currentUser = user;
                 els.userAvatar.src = user.photoURL;
                 els.btnLogout.style.display = 'inline-block'; els.btnLoginHeader.style.display = 'none';
-                els.headerUserInfo.style.display = 'block';
-                els.displayUserName.textContent = user.displayName;
-                
+                els.guestLabel.style.display = 'none'; els.limitCounter.style.display = 'none';
                 showLoading(true);
                 await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
                 showLoading(false);
-                showToast(`Mừng ${user.displayName} đại hiệp quay lại!`);
+                showToast(`Mừng đại hiệp ${user.displayName} quay lại!`);
             } else {
                 isGuest = true; currentUser = null; guestQuizCount = 0;
                 els.btnLogout.style.display = 'none'; els.btnLoginHeader.style.display = 'inline-block';
-                els.headerUserInfo.style.display = 'none'; // Ẩn info nếu là khách
-                els.limitCounter.style.display = 'inline-block';
+                els.guestLabel.style.display = 'inline-block'; els.limitCounter.style.display = 'inline-block';
                 els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
                 
                 const localData = localStorage.getItem('guest_acupoints');
                 if (localData) { acupoints = JSON.parse(localData); } 
                 else { acupoints = defaultAcupoints.map((item, index) => ({ id: 'guest_' + index, ...item, srsLevel: 0, nextReview: 0 })); }
                 renderListGrouped(); updateGroupSelect(); prepareQuiz();
-                
-                // FORCE LOAD QUESTION FOR GUEST IMMEDIATELY
-                startQuiz();
             }
             setupNavigation(); renderCalendar(); updateBadges();
         });
@@ -565,9 +584,6 @@
                 acupoints = [];
                 snap.forEach((doc) => acupoints.push({ id: doc.id, ...doc.data() }));
                 renderListGrouped(); updateGroupSelect(); prepareQuiz();
-                
-                // FORCE LOAD QUESTION IMMEDIATELY AFTER DATA IS READY
-                startQuiz();
             } catch (e) { console.error(e); }
         }
 
@@ -672,9 +688,6 @@
 
         function startQuiz() {
             isProcessing = false;
-            // Chỉ chạy khi đang ở tab Quiz
-            if (!document.getElementById('tab-quiz').classList.contains('active')) return;
-
             if(isGuest && guestQuizCount >= GUEST_LIMIT) { showLoginScreen(true); return; }
 
             const filter = els.quizGroupSelect.value;
@@ -692,7 +705,6 @@
             }
             
             pool.sort((a, b) => (a.nextReview || 0) - (b.nextReview || 0));
-            // Random nhẹ trong 3 câu đầu để đỡ chán
             const idx = Math.floor(Math.random() * Math.min(3, pool.length));
             currentQuizItem = pool[idx];
             currentHintIndex = 0;
@@ -705,6 +717,7 @@
             els.qFeedback.textContent = ''; els.qFeedback.className = 'feedback';
         }
 
+        // XỬ LÝ NÚT TÌM KIẾM ẢNH
         els.btnSearchImg.addEventListener('click', () => {
             if(!currentQuizItem) return;
             const query = encodeURIComponent(`huyệt ${currentQuizItem.name} vị trí`);
@@ -723,7 +736,7 @@
                 playTone('correct');
                 els.qFeedback.innerHTML = "🎉 Tuyệt vời! Chính xác!";
                 els.qFeedback.className = 'feedback correct';
-                if(Math.random() > 0.7) confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+                if(Math.random() > 0.7) confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
             } else {
                 newLevel = 0; nextReview = Date.now();
                 playTone('wrong');
@@ -745,17 +758,23 @@
             }
 
             if(isCorrect) {
-                tryAutoCheckIn(); setTimeout(() => { startQuiz(); }, 1000);
+                tryAutoCheckIn(); setTimeout(() => { startQuiz(); }, 1200);
             }
         }
 
+        // INPUT LOGIC ĐƯỢC CẬP NHẬT ĐỂ SO SÁNH THÔNG MINH HƠN
         els.qInput.addEventListener('input', () => {
             if(!currentQuizItem || isProcessing) return;
+            
+            // 1. So sánh chuẩn hóa không dấu (cho người gõ nhanh)
             const inputClean = cleanText(els.qInput.value);
             const targetClean = cleanText(currentQuizItem.name);
+
+            // 2. So sánh chính xác có dấu (để đảm bảo gõ có dấu cũng đúng)
             const inputExact = els.qInput.value.trim().toLowerCase();
             const targetExact = currentQuizItem.name.trim().toLowerCase();
 
+            // Nếu đúng 1 trong 2 trường hợp
             if ((inputClean.length >= 2 && inputClean === targetClean) || 
                 (inputExact.length >= 2 && inputExact === targetExact)) {
                 isProcessing = true;
@@ -763,8 +782,10 @@
             }
         });
 
+        // Thêm bắt sự kiện Enter cho tiện
         els.qInput.addEventListener('keypress', (e) => {
             if(e.key === 'Enter') {
+                // Nếu chưa đúng mà bấm Enter -> Coi như không biết -> Hiện đáp án
                 if (!isProcessing) els.btnShowAns.click();
             }
         });
@@ -785,11 +806,12 @@
                 currentHintIndex++;
                 els.qInput.value = name.substring(0, currentHintIndex);
                 els.qInput.focus();
+                // Check lại ngay sau khi gợi ý
                 els.qInput.dispatchEvent(new Event('input'));
             }
         });
 
-        // --- STATS & BADGES ---
+        // --- STATS ---
         async function checkAttendance() {
             if(isGuest) { els.statStreak.textContent = "0"; return; }
             const today = new Date().toISOString().split('T')[0];
@@ -800,34 +822,25 @@
             todayCheckedIn = attendanceDates.has(today);
             els.statStreak.textContent = streakCount;
             updateBadges(streakCount);
-
-            // Cập nhật danh hiệu lên Header và Firebase
-            els.displayUserTitle.textContent = currentTitle;
-
             try {
                 await setDoc(doc(db, "profiles", currentUser.uid), {
-                    displayName: currentUser.displayName, streak: streakCount, 
-                    photoURL: currentUser.photoURL, lastActive: serverTimestamp(),
-                    title: currentTitle
+                    displayName: currentUser.displayName, streak: streakCount, photoURL: currentUser.photoURL, lastActive: serverTimestamp()
                 }, { merge: true });
             } catch(e) {}
         }
 
         function updateBadges(streak = 0) {
+            // Mặc định luôn mở khóa Lang Băm Tập Sự
             els.badges.novice.classList.add('unlocked');
-            currentTitle = "Lang Băm Tập Sự"; // Default
 
+            // Logic mở khóa danh hiệu mới
             const mastered = acupoints.filter(i => (i.srsLevel || 0) >= 4).length;
 
-            // Logic xét danh hiệu cao nhất để hiển thị
-            if (mastered >= 5) { els.badges.master5.classList.add('unlocked'); }
-            if (streak >= 3) { els.badges.streak3.classList.add('unlocked'); currentTitle = "Hỏa Nhãn Kim Tinh"; }
-            if (streak >= 7) { els.badges.streak7.classList.add('unlocked'); currentTitle = "Bắt Mạch Online"; }
-            if (streak >= 14) { els.badges.streak14.classList.add('unlocked'); currentTitle = "Thái Y Viện Trưởng"; }
-            if (streak >= 30) { els.badges.streak30.classList.add('unlocked'); currentTitle = "Độc Cô Cầu Bại"; }
-            
-            if (mastered >= 20) { els.badges.master20.classList.add('unlocked'); currentTitle = "Hoa Đà Tái Thế"; }
-            if (mastered >= 50) { els.badges.master50.classList.add('unlocked'); currentTitle = "Thần Y Hạ Phàm"; }
+            if (mastered >= 5) els.badges.master5.classList.add('unlocked');
+            if (streak >= 3) els.badges.streak3.classList.add('unlocked');
+            if (streak >= 7) els.badges.streak7.classList.add('unlocked');
+            if (streak >= 14) els.badges.streak14.classList.add('unlocked');
+            if (mastered >= 20) els.badges.master20.classList.add('unlocked');
         }
 
         async function tryAutoCheckIn() {
@@ -854,24 +867,16 @@
                     const div = document.createElement('div');
                     let rankClass = '';
                     if (rank === 1) rankClass = 'lb-top1'; else if (rank === 2) rankClass = 'lb-top2'; else if (rank === 3) rankClass = 'lb-top3';
-                    
                     div.className = `lb-item ${rankClass}`;
-                    if(isMe) div.style.borderLeft = '4px solid var(--primary)';
-                    
-                    div.innerHTML = `
-                        <div class="lb-rank">${rank}</div>
-                        <img src="${data.photoURL}" class="avatar" style="width:36px; height:36px; margin-right:12px; border:none;">
-                        <div class="lb-info">
-                            <div class="lb-name">${data.displayName} ${isMe ? '(Bạn)' : ''}</div>
-                            <div class="lb-detail">${data.title || 'Lang Băm'}</div>
-                        </div>
+                    if(isMe) div.style.border = '2px solid var(--primary)';
+                    div.innerHTML = `<div class="lb-rank">#${rank}</div>
+                        <img src="${data.photoURL}" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
+                        <div class="lb-name">${data.displayName} ${isMe ? '(Bạn)' : ''}</div>
                         <div class="lb-score">${data.streak} ngày</div>`;
                     els.leaderboardList.appendChild(div);
                     rank++;
                 });
-            } catch(e) {
-                els.leaderboardList.innerHTML = '<div style="text-align:center; padding:10px;">Đăng nhập để xem BXH</div>';
-            }
+            } catch(e) {}
         }
 
         els.viewWeek.addEventListener('click', () => { calViewMode = 'week'; renderCalendar(); });
@@ -892,12 +897,12 @@
                 const currentDate = new Date(startDate); currentDate.setDate(startDate.getDate() + i);
                 const year = currentDate.getFullYear(); const month = String(currentDate.getMonth() + 1).padStart(2, '0'); const day = String(currentDate.getDate()).padStart(2, '0');
                 const dateString = `${year}-${month}-${day}`;
+                const isToday = (today.getDate() === currentDate.getDate() && today.getMonth() === currentDate.getMonth() && today.getFullYear() === currentDate.getFullYear());
                 const hasStudied = attendanceDates.has(dateString);
                 const isCurrentMonth = currentDate.getMonth() === today.getMonth();
                 const opacity = (calViewMode === 'month' && !isCurrentMonth) ? '0.3' : '1';
                 const div = document.createElement('div');
-                div.className = `cal-day ${hasStudied ? 'active' : ''}`;
-                if (today.getDate() === currentDate.getDate() && today.getMonth() === currentDate.getMonth()) div.classList.add('today');
+                div.className = `cal-day ${hasStudied ? 'active' : ''} ${isToday ? 'today' : ''}`;
                 div.style.opacity = opacity; div.textContent = currentDate.getDate();
                 els.calendarGrid.appendChild(div);
             }
@@ -920,7 +925,7 @@
             const groups = [...new Set(acupoints.map(i => i.group))];
             els.groupSuggestions.innerHTML = groups.map(g => `<option value="${g}">`).join('');
             const currentVal = els.quizGroupSelect.value;
-            els.quizGroupSelect.innerHTML = '<option value="all">Tất cả chiêu thức</option>';
+            els.quizGroupSelect.innerHTML = '<option value="all">Tất cả</option>';
             groups.forEach(g => {
                 const opt = document.createElement('option'); opt.value = g; opt.textContent = g;
                 els.quizGroupSelect.appendChild(opt);
