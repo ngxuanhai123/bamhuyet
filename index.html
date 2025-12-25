@@ -260,7 +260,6 @@
     <div id="loading"><div class="spinner"></div></div>
     <div id="toast">Thông báo</div>
 
-    <!-- Modal Chi Tiết -->
     <div id="detailModal">
         <div class="detail-sheet">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -431,8 +430,7 @@
                     </div>
                     
                     <div id="libraryContent">
-                        <!-- Content rendered by JS -->
-                    </div>
+                        </div>
                     
                     <div style="margin-top: 20px; text-align:center;">
                          <button class="btn btn-secondary btn-xs" onclick="initDefaultData()">♻️ Khôi phục gốc (361 huyệt)</button>
@@ -600,24 +598,29 @@
         // --- UTILS ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            if (type === 'correct') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            } else {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            // Fix: Check safely for browser autoplay policies
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(e => console.log("Audio resume needed interaction"));
             }
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                if (type === 'correct') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+                } else {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+                }
+            } catch (e) { console.log("Audio error", e); }
         }
 
         function cleanText(str) {
@@ -638,7 +641,7 @@
         function showLoginScreen(isForced = false) {
             els.loginScreen.style.display = 'flex';
             if(isForced) {
-                els.loginTitle.textContent = "Thuốc hết hạn, đại hiệp 'thoát vị" khỏi game";
+                els.loginTitle.textContent = "Thuốc hết hạn, đại hiệp 'thoát vị' khỏi game";
                 els.loginMsg.textContent = "Đại hiệp đã luyện đủ 10 chiêu. Vui lòng đăng nhập để tiếp tục con đường y đạo.";
             } else {
                 els.loginTitle.textContent = "Nhập Môn";
@@ -660,13 +663,15 @@
                 els.displayUserName.textContent = user.displayName;
                 
                 showLoading(true);
-                await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
+                try {
+                    await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
+                } catch(e) { console.error("Load error:", e); }
                 showLoading(false);
                 showToast(`Chào mừng ${user.displayName} Bác sĩ tương lai!`);
             } else {
                 isGuest = true; currentUser = null; guestQuizCount = 0;
                 els.btnLogout.style.display = 'none'; els.btnLoginHeader.style.display = 'inline-block';
-                els.headerUserInfo.style.display = 'none'; // Ẩn info nếu là khách
+                els.headerUserInfo.style.display = 'none'; 
                 els.limitCounter.style.display = 'inline-block';
                 els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
                 
@@ -697,12 +702,11 @@
                 snap.forEach((doc) => acupoints.push({ id: doc.id, ...doc.data() }));
                 renderListGrouped(); updateGroupSelect(); prepareQuiz();
                 
-                // FORCE LOAD QUESTION IMMEDIATELY AFTER DATA IS READY
                 startQuiz();
             } catch (e) { console.error(e); }
         }
 
-        // --- LIBRARY RENDER (NEW) ---
+        // --- LIBRARY RENDER ---
         function renderListGrouped() {
             els.libraryContent.innerHTML = '';
             const groups = {};
@@ -710,14 +714,13 @@
             const filterText = els.libSearch.value.trim().toLowerCase();
             const filterType = els.libFilter.value;
 
-            // Grouping and Filtering
             acupoints.forEach(item => {
                 const level = item.srsLevel || 0;
                 if(level >= 4) masteredCount++;
                 
                 // Search filter
-                const name = item.name.toLowerCase();
-                const code = item.name.split(' ')[0].toLowerCase();
+                const name = item.name ? item.name.toLowerCase() : "";
+                const code = name.split(' ')[0] || "";
                 if(filterText && !name.includes(filterText) && !code.includes(filterText)) return;
                 
                 // Type filter
@@ -750,8 +753,6 @@
                 header.onclick = () => {
                     const content = itemDiv.querySelector('.accordion-content');
                     const isActive = header.classList.contains('active');
-                    // Collapse all others (optional - here we allow multiple open)
-                    // Toggle current
                     if(isActive) {
                         header.classList.remove('active');
                         content.classList.remove('open');
@@ -767,7 +768,6 @@
                 const content = document.createElement('div');
                 content.className = 'accordion-content';
                 
-                // Auto expand if searching
                 if(filterText) {
                     header.classList.add('active');
                     content.classList.add('open');
@@ -827,11 +827,7 @@
             if(acupoints.length > 0 && !confirm("Dữ liệu hiện tại sẽ được thay thế bằng 361 huyệt chuẩn. Tiếp tục?")) return;
             showLoading(true);
             try {
-                // Batch write limitation is 500, we have 361, so 1 batch is fine or split to be safe
                 const batch = writeBatch(db);
-                // Clear old data first? Realistically users might just want to add.
-                // But for a "Reset" feature, we usually clear. Here we just add.
-                
                 defaultAcupoints.forEach(item => {
                     const docRef = doc(collection(db, "acupoints"));
                     batch.set(docRef, {
@@ -888,7 +884,6 @@
 
         function startQuiz() {
             isProcessing = false;
-            // Chỉ chạy khi đang ở tab Quiz
             if (!document.getElementById('tab-quiz').classList.contains('active')) return;
 
             if(isGuest && guestQuizCount >= GUEST_LIMIT) { showLoginScreen(true); return; }
@@ -908,8 +903,9 @@
             }
             
             pool.sort((a, b) => (a.nextReview || 0) - (b.nextReview || 0));
-            // Random nhẹ trong 3 câu đầu để đỡ chán
-            const idx = Math.floor(Math.random() * Math.min(3, pool.length));
+            // Random safely
+            const safeMax = Math.min(3, pool.length);
+            const idx = safeMax > 0 ? Math.floor(Math.random() * safeMax) : 0;
             currentQuizItem = pool[idx];
             currentHintIndex = 0;
 
@@ -939,7 +935,10 @@
                 playTone('correct');
                 els.qFeedback.innerHTML = "🎉 Tuyệt vời! Chính xác!";
                 els.qFeedback.className = 'feedback correct';
-                if(Math.random() > 0.7) confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+                // Safe check for confetti
+                if(Math.random() > 0.7 && typeof confetti === 'function') {
+                    confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+                }
             } else {
                 newLevel = 0; nextReview = Date.now();
                 playTone('wrong');
@@ -969,7 +968,6 @@
             if(!currentQuizItem || isProcessing) return;
             const inputClean = cleanText(els.qInput.value);
             const targetClean = cleanText(currentQuizItem.name);
-            // Check against name including code OR just the name part
             const nameParts = currentQuizItem.name.split(' ');
             const realNameClean = cleanText(nameParts.slice(1).join(' '));
             
@@ -1009,34 +1007,32 @@
         // --- STATS & BADGES ---
         async function checkAttendance() {
             if(isGuest) { els.statStreak.textContent = "0"; return; }
-            const today = new Date().toISOString().split('T')[0];
-            const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
-            const snap = await getDocs(q);
-            attendanceDates.clear(); snap.forEach(doc => attendanceDates.add(doc.data().date));
-            const streakCount = attendanceDates.size;
-            todayCheckedIn = attendanceDates.has(today);
-            els.statStreak.textContent = streakCount;
-            updateBadges(streakCount);
-
-            // Cập nhật danh hiệu lên Header và Firebase
-            els.displayUserTitle.textContent = currentTitle;
-
             try {
+                const today = new Date().toISOString().split('T')[0];
+                const q = query(collection(db, "attendance"), where("uid", "==", currentUser.uid));
+                const snap = await getDocs(q);
+                attendanceDates.clear(); snap.forEach(doc => attendanceDates.add(doc.data().date));
+                const streakCount = attendanceDates.size;
+                todayCheckedIn = attendanceDates.has(today);
+                els.statStreak.textContent = streakCount;
+                updateBadges(streakCount);
+
+                els.displayUserTitle.textContent = currentTitle;
+
                 await setDoc(doc(db, "profiles", currentUser.uid), {
                     displayName: currentUser.displayName, streak: streakCount, 
                     photoURL: currentUser.photoURL, lastActive: serverTimestamp(),
                     title: currentTitle
                 }, { merge: true });
-            } catch(e) {}
+            } catch(e) { console.error("Attendance check fail", e); }
         }
 
         function updateBadges(streak = 0) {
             els.badges.novice.classList.add('unlocked');
-            currentTitle = "Lang Băm Tập Sự"; // Default
+            currentTitle = "Lang Băm Tập Sự"; 
 
             const mastered = acupoints.filter(i => (i.srsLevel || 0) >= 4).length;
 
-            // Logic xét danh hiệu cao nhất để hiển thị
             if (mastered >= 5) { els.badges.master5.classList.add('unlocked'); }
             if (streak >= 3) { els.badges.streak3.classList.add('unlocked'); currentTitle = "Hỏa Nhãn Kim Tinh"; }
             if (streak >= 7) { els.badges.streak7.classList.add('unlocked'); currentTitle = "Bắt Mạch Online"; }
@@ -1053,7 +1049,8 @@
                 const today = new Date().toISOString().split('T')[0];
                 await addDoc(collection(db, "attendance"), { uid: currentUser.uid, date: today, timestamp: serverTimestamp() });
                 todayCheckedIn = true; attendanceDates.add(today);
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                // Safe confetti
+                if (typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 showToast("✅ Điểm danh thành công!");
                 checkAttendance(); renderCalendar(); 
             } catch(e) { console.error(e); }
