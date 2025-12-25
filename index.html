@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiHi Med - Tuyệt Kỹ Y Học</title>
+    <title>HiHi Med - 361 Huyệt Đạo</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -15,6 +15,7 @@
             --bg: #f3f4f6;
             --surface: #ffffff;
             --text: #1f2937;
+            --text-light: #6b7280;
             --success: #10b981;
             --error: #ef4444;
             --radius: 16px;
@@ -35,7 +36,7 @@
 
         /* --- Components --- */
         .btn {
-            padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer;
+            padding: 10px 18px; border: none; border-radius: 12px; cursor: pointer;
             font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
         }
@@ -50,6 +51,8 @@
         .btn-search:hover { background: #dbeafe; }
         .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
         .btn-xs { padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
+        .btn-icon { padding: 8px; border-radius: 50%; background: transparent; color: var(--text-light); }
+        .btn-icon:hover { background: #f3f4f6; color: var(--error); }
 
         .card {
             background: var(--surface); border-radius: var(--radius); padding: 20px;
@@ -86,19 +89,19 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         .brand { 
-            font-weight: 800; color: var(--primary); font-size: 1.5rem; 
-            display: flex; align-items: center; gap: 10px; 
+            font-weight: 800; color: var(--primary); font-size: 1.3rem; 
+            display: flex; align-items: center; gap: 8px; 
         }
-        .brand-icon { font-size: 2.4rem; } 
+        .brand-icon { font-size: 2rem; } 
         .brand-text { display: flex; flex-direction: column; line-height: 1; }
-        .slogan { font-size: 0.7rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;}
+        .slogan { font-size: 0.65rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;}
         
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .user-info { text-align: right; display: none; }
         .user-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
         .user-title { font-size: 0.75rem; color: var(--accent); font-weight: 600; text-transform: uppercase; }
         
-        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background: #eee; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background: #eee; }
 
         .container { max-width: 800px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; }
 
@@ -126,6 +129,47 @@
         .feedback.correct { color: var(--success); animation: popIn 0.3s; }
         .feedback.wrong { color: var(--error); animation: shake 0.4s; }
 
+        /* --- Library UI (Tàng Kinh Các) --- */
+        .lib-search-box { position: sticky; top: 0; background: var(--surface); z-index: 10; padding: 10px 0; margin-bottom: 10px; }
+        .lib-controls { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+        
+        .accordion-item { border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 8px; overflow: hidden; background: white; }
+        .accordion-header { 
+            padding: 12px 16px; background: #f9fafb; cursor: pointer; font-weight: 600; 
+            display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;
+        }
+        .accordion-header:hover { background: #f3f4f6; }
+        .accordion-header.active { background: #e0f2f1; color: var(--primary); }
+        .accordion-content { display: none; padding: 10px; background: white; }
+        .accordion-content.open { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+
+        .lib-card { 
+            border: 1px solid #f3f4f6; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px;
+            cursor: pointer; transition: all 0.2s; position: relative;
+        }
+        .lib-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-color: var(--primary-light); }
+        .lib-code { font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; width: fit-content; }
+        .lib-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+        .lib-srs { font-size: 0.75rem; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 2px; }
+        .lib-del { position: absolute; top: 5px; right: 5px; opacity: 0; transition: 0.2s; color: var(--error); background: none; border: none; cursor: pointer; font-size: 1.1rem;}
+        .lib-card:hover .lib-del { opacity: 1; }
+
+        /* Modal Details */
+        #detailModal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
+            display: none; justify-content: center; align-items: flex-end;
+        }
+        #detailModal.show { display: flex; animation: fadeIn 0.2s; }
+        .detail-sheet {
+            background: white; width: 100%; max-width: 600px; 
+            border-radius: 20px 20px 0 0; padding: 25px;
+            animation: slideUp 0.3s; max-height: 85vh; overflow-y: auto;
+        }
+        @media(min-width: 600px) {
+            #detailModal { align-items: center; }
+            .detail-sheet { border-radius: 20px; width: 90%; }
+        }
+
         /* --- Leaderboard UI --- */
         .lb-container { display: flex; flex-direction: column; gap: 10px; }
         .lb-item { 
@@ -133,8 +177,6 @@
             border-radius: 16px; border: 1px solid #f3f4f6;
             transition: transform 0.2s;
         }
-        .lb-item:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        
         .lb-rank { 
             font-weight: 800; font-size: 1rem; width: 30px; height: 30px; 
             display: flex; justify-content: center; align-items: center; 
@@ -147,7 +189,6 @@
             font-weight: 800; color: var(--primary); background: #ecfdf5; 
             padding: 6px 12px; border-radius: 12px; font-size: 0.9rem;
         }
-
         .lb-top1 { background: linear-gradient(135deg, #fffbeb, #fff); border: 1px solid #fcd34d; }
         .lb-top1 .lb-rank { background: #f59e0b; color: white; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3); }
         .lb-top2 { background: linear-gradient(135deg, #f8fafc, #fff); border: 1px solid #cbd5e1; }
@@ -191,51 +232,19 @@
         .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- Floating Home Button (Đã chỉnh vị trí) --- */
+        /* --- Floating Home Button --- */
         .floating-home-btn {
-            position: fixed;
-            bottom: 30px; /* Đặt ở dưới để tránh logo header */
-            left: 20px;
-            z-index: 900; /* Thấp hơn login screen (1000) */
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2); /* Glass effect */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px;
-            color: var(--primary);
-            text-decoration: none;
-            font-family: 'Be Vietnam Pro', sans-serif;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            overflow: hidden;
+            position: fixed; bottom: 30px; left: 20px; z-index: 900;
+            display: flex; align-items: center; gap: 10px; padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50px;
+            color: var(--primary); text-decoration: none; font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;
         }
-        
-        [data-theme="light"] .floating-home-btn {
-            background: rgba(255,255,255,0.8); color: var(--primary-dark); border-color: rgba(0,0,0,0.05);
-        }
-        
+        .floating-home-btn:hover { background: linear-gradient(90deg, #4db6ac, #00695c); transform: translateY(-3px); color: white; border-color: transparent; }
         .floating-home-btn svg { width: 24px; height: 24px; transition: transform 0.3s ease; }
-        
-        .floating-home-btn:hover {
-            background: linear-gradient(90deg, #4db6ac, #00695c);
-            transform: translateY(-3px); /* Bay lên nhẹ */
-            box-shadow: 0 10px 20px rgba(0, 105, 92, 0.4);
-            border-color: transparent;
-            color: white; 
-        }
-        
         .floating-home-btn:hover svg { transform: scale(1.1); }
-        
-        /* Responsive cho điện thoại: Ẩn chữ, chỉ hiện icon tròn */
-        @media (max-width: 640px) {
-            .floating-home-btn span { display: none; }
-            .floating-home-btn { padding: 12px; border-radius: 50%; bottom: 20px; left: 15px; }
-        }
+        @media (max-width: 640px) { .floating-home-btn span { display: none; } .floating-home-btn { padding: 12px; border-radius: 50%; bottom: 20px; left: 15px; } }
 
     </style>
 </head>
@@ -250,6 +259,25 @@
 
     <div id="loading"><div class="spinner"></div></div>
     <div id="toast">Thông báo</div>
+
+    <!-- Modal Chi Tiết -->
+    <div id="detailModal">
+        <div class="detail-sheet">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <span id="modalCode" style="background:var(--primary); color:white; padding:4px 8px; border-radius:6px; font-weight:800; font-size:0.8rem;">CODE</span>
+                <button onclick="document.getElementById('detailModal').classList.remove('show')" style="border:none; background:none; font-size:1.5rem; color:#999; cursor:pointer;">&times;</button>
+            </div>
+            <h2 id="modalName" style="margin:0 0 5px 0; color:var(--primary-dark);">Tên Huyệt</h2>
+            <div id="modalGroup" style="color:var(--text-light); font-size:0.9rem; font-style:italic; margin-bottom:20px;">Nhóm huyệt</div>
+            
+            <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
+                <h4 style="margin:0 0 8px 0;">Vị trí & Mô tả</h4>
+                <p id="modalDesc" style="margin:0; line-height:1.6; color:#4b5563;">Mô tả chi tiết...</p>
+            </div>
+            
+            <button class="btn btn-search" id="modalSearchBtn">🔍 Xem hình ảnh trên Google</button>
+        </div>
+    </div>
 
     <div id="login-screen">
         <div class="login-box">
@@ -270,7 +298,7 @@
                 <span class="brand-icon">⚕️</span>
                 <div class="brand-text">
                     <span>HiHi Med</span>
-                    <span class="slogan">Tuyệt Kỹ Y Học: Chữa được là nhờ thuốc không chữa được là tại… duyên phận</span>
+                    <span class="slogan">Tuyệt Kỹ Y Học</span>
                 </div>
             </div>
             <div class="user-profile">
@@ -325,7 +353,7 @@
                         <div style="font-size: 4rem; margin-bottom: 10px;">🧘</div>
                         <h2 style="margin: 0; color: var(--primary);">Đắc Đạo Thành Tiên</h2>
                         <p id="emptyMsgText" style="color: #6b7280;">Hôm nay bạn đã luyện hết các bài cần ôn.</p>
-                        <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()" style="margin-top: 15px;">♻️ Tải bí kíp nhập môn</button>
+                        <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()" style="margin-top: 15px;">♻️ Tải bí kíp nhập môn (361 Huyệt)</button>
                     </div>
                 </div>
             </div>
@@ -378,25 +406,37 @@
 
             <div id="tab-manage" class="view">
                 <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Sáng Tạo Chiêu Thức Mới</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <input type="text" id="inpGroup" placeholder="Nhóm (VD: Đau đầu)" list="groupSuggestions">
-                        <input type="text" id="inpName" placeholder="Tên Huyệt">
-                    </div>
-                    <datalist id="groupSuggestions"></datalist>
-                    <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí, tác dụng..."></textarea>
-                    <button class="btn btn-primary" id="btnAddData" style="width: 100%">💾 Lưu Bí Kíp</button>
+                    <h3 style="margin-top:0; font-size: 1.2rem; display:flex; justify-content:space-between; align-items:center;">
+                        📖 Tàng Kinh Các
+                        <button class="btn btn-xs btn-secondary" onclick="document.getElementById('addForm').style.display = document.getElementById('addForm').style.display=='none'?'block':'none'">+ Thêm mới</button>
+                    </h3>
                     
-                    <div style="margin-top: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px;">
-                        <button class="btn btn-secondary" style="width: 100%; font-size: 0.9rem;" onclick="initDefaultData()">
-                            📚 Tải bí kíp mẫu (Nếu chưa có)
-                        </button>
+                    <div id="addForm" style="display:none; margin-bottom:15px; padding:15px; background:#f9fafb; border-radius:12px;">
+                        <input type="text" id="inpGroup" placeholder="Nhóm (VD: Phế Kinh)" list="groupSuggestions">
+                        <input type="text" id="inpName" placeholder="Tên Huyệt (VD: LU1 Trung Phủ)">
+                        <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí..."></textarea>
+                        <button class="btn btn-primary" id="btnAddData" style="width: 100%">Lưu</button>
+                        <datalist id="groupSuggestions"></datalist>
                     </div>
-                </div>
 
-                <div class="card">
-                    <h3 style="margin-top:0; font-size: 1.1rem;">Tàng Kinh Các (Kho dữ liệu)</h3>
-                    <div id="dataList" style="max-height: 500px; overflow-y: auto;"></div>
+                    <div class="lib-search-box">
+                        <div class="lib-controls">
+                            <input type="text" id="libSearch" placeholder="🔍 Tìm huyệt..." style="margin:0;">
+                            <select id="libFilter" style="margin:0; width:auto;">
+                                <option value="all">Tất cả</option>
+                                <option value="learned">Đã thuộc</option>
+                                <option value="new">Chưa học</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="libraryContent">
+                        <!-- Content rendered by JS -->
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align:center;">
+                         <button class="btn btn-secondary btn-xs" onclick="initDefaultData()">♻️ Khôi phục gốc (361 huyệt)</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -444,16 +484,47 @@
 
         const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
 
-        // --- BỘ DỮ LIỆU MẪU ---
+        // --- FULL 361 HUYỆT VỊ ---
+        // Helper để tạo danh sách nhanh
+        const createPoints = (code, groupName, names) => {
+            return names.map((n, i) => ({
+                group: groupName,
+                name: `${code}${i+1} ${n}`,
+                desc: `Huyệt thứ ${i+1} của ${groupName}.`
+            }));
+        };
+
+        // Danh sách tên huyệt
+        const luNames = ["Trung Phủ","Vân Môn","Thiên Phủ","Hiệp Bạch","Xích Trạch","Khổng Tối","Liệt Khuyết","Kinh Cừ","Thái Uyên","Ngư Tế","Thiếu Thương"];
+        const liNames = ["Thương Dương","Nhị Gian","Tam Gian","Hợp Cốc","Dương Khê","Thiên Lịch","Ôn Lưu","Hạ Liêm","Thượng Liêm","Thủ Tam Lý","Khúc Trì","Trửu Liêu","Thủ Ngũ Lý","Tí Nhu","Kiên Ngung","Cự Cốt","Thiên Đỉnh","Phù Đột","Hòa Liêu","Nghinh Hương"];
+        const stNames = ["Thừa Khấp","Tứ Bạch","Cự Liêu","Địa Thương","Đại Nghênh","Giáp Xa","Hạ Quan","Đầu Duy","Nhân Nghênh","Thủy Đột","Khí Xá","Khuyết Bồn","Khí Hộ","Khố Phòng","Ốc Ế","Ưng Song","Nhũ Trung","Nhũ Căn","Bất Dung","Thừa Mãn","Lương Môn","Quan Môn","Thái Ất","Hoạt Nhục Môn","Thiên Khu","Ngoại Lăng","Đại Cự","Thủy Đạo","Quy Lai","Khí Xung","Bễ Quan","Phục Thỏ","Âm Thị","Lương Khâu","Độc Tị","Túc Tam Lý","Thượng Cự Hư","Điều Khẩu","Hạ Cự Hư","Phong Long","Giải Khê","Xung Dương","Hãm Cốc","Nội Đình","Lệ Đoài"];
+        const spNames = ["Ẩn Bạch","Đại Đô","Thái Bạch","Công Tôn","Thương Khâu","Tam Âm Giao","Lậu Cốc","Địa Cơ","Âm Lăng Tuyền","Huyết Hải","Cơ Môn","Xung Môn","Phủ Xá","Phúc Kết","Đại Hoành","Phúc Ai","Thực Đậu","Thiên Khê","Hung Hương","Chu Vinh","Đại Bao"];
+        const htNames = ["Cực Tuyền","Thanh Linh","Thiếu Hải","Linh Đạo","Thông Lý","Âm Khích","Thần Môn","Thiếu Phủ","Thiếu Xung"];
+        const siNames = ["Thiếu Trạch","Tiền Cốc","Hậu Khê","Uyển Cốt","Dương Cốc","Dưỡng Lão","Chi Chính","Tiểu Hải","Kiên Trinh","Nhu Du","Thiên Tông","Bỉnh Phong","Khúc Viên","Kiên Ngoại Du","Kiên Trung Du","Thiên Song","Thiên Dung","Quyền Liêu","Thính Cung"];
+        const blNames = ["Tình Minh","Toản Trúc","Mi Xung","Khúc Sai","Ngũ Xứ","Thừa Quang","Thông Thiên","Lạc Khước","Ngọc Chẩm","Thiên Trụ","Đại Trữ","Phong Môn","Phế Du","Quyết Âm Du","Tâm Du","Đốc Du","Cách Du","Can Du","Đởm Du","Tỳ Du","Vị Du","Tam Tiêu Du","Thận Du","Khí Hải Du","Đại Trường Du","Quan Nguyên Du","Tiểu Trường Du","Bàng Quang Du","Trung Lữ Du","Bạch Hoàn Du","Thượng Liêu","Thứ Liêu","Trung Liêu","Hạ Liêu","Hội Dương","Thừa Phù","Ân Môn","Phù Khích","Ủy Dương","Ủy Trung","Phụ Phân","Phách Hộ","Cao Hoang","Thần Đường","Y Hy","Cách Quan","Hồn Môn","Dương Cương","Ý Xá","Vị Thương","Hoang Môn","Chí Thất","Bào Hoang","Trật Biên","Hợp Dương","Thừa Cân","Thừa Sơn","Phi Dương","Phụ Dương","Côn Lôn","Bộc Tham","Thân Mạch","Kim Môn","Kinh Cốt","Thúc Cốt","Thông Cốc","Chí Âm"];
+        const kiNames = ["Dũng Tuyền","Nhiên Cốc","Thái Khê","Đại Chung","Thủy Tuyền","Chiếu Hải","Phục Lưu","Giao Tín","Trúc Tân","Âm Cốc","Hoành Cốt","Đại Hách","Khí Huyệt","Tứ Mãn","Trung Chú","Hoang Du","Thương Khúc","Thạch Quan","Âm Đô","Phúc Thông Cốc","U Môn","Bộ Lang","Thần Phong","Linh Khư","Thần Tàng","Vực Trung","Du Phủ"];
+        const pcNames = ["Thiên Trì","Thiên Tuyền","Khúc Trạch","Khích Môn","Giản Sử","Nội Quan","Đại Lăng","Lao Cung","Trung Xung"];
+        const teNames = ["Quan Xung","Dịch Môn","Trung Chử","Dương Trì","Ngoại Quan","Chi Cấu","Hội Tông","Tam Dương Lạc","Tứ Độc","Thiên Tỉnh","Thanh Lãnh Uyên","Tiêu Lạc","Nhu Hội","Kiên Liêu","Thiên Liêu","Thiên Dũ","Ế Phong","Khế Mạch","Lô Tức","Giác Tôn","Nhĩ Môn","Hòa Liêu","Ty Trúc Không"];
+        const gbNames = ["Đồng Tử Liêu","Thính Hội","Thượng Quan","Hàm Yến","Huyền Lư","Huyền Ly","Khúc Mấn","Suất Cốc","Thiên Xung","Phù Bạch","Đầu Khiếu Âm","Hoàn Cốt","Bản Thần","Dương Bạch","Đầu Lâm Khấp","Mục Song","Chính Dinh","Thừa Linh","Não Không","Phong Trì","Kiên Tỉnh","Uyên Dịch","Triếp Cân","Nhật Nguyệt","Kinh Môn","Đới Mạch","Ngũ Khu","Duy Đạo","Cự Liêu","Hoàn Khiêu","Phong Thị","Trung Độc","Túc Dương Quan","Dương Lăng Tuyền","Dương Giao","Ngoại Khâu","Quang Minh","Dương Phụ","Huyền Chung","Khâu Khư","Túc Lâm Khấp","Địa Ngũ Hội","Hiệp Khê","Túc Khiếu Âm"];
+        const lrNames = ["Đại Đôn","Hành Gian","Thái Xung","Trung Phong","Lãi Câu","Trung Đô","Tất Quan","Khúc Tuyền","Âm Bao","Túc Ngũ Lý","Âm Liêm","Cấp Mạch","Chương Môn","Kỳ Môn"];
+        const gvNames = ["Trường Cường","Yêu Du","Yêu Dương Quan","Mệnh Môn","Huyền Khu","Tích Trung","Trung Khu","Cân Súc","Chí Dương","Linh Đài","Thần Đạo","Thân Trụ","Đào Đạo","Đại Chùy","Á Môn","Phong Phủ","Não Hộ","Cường Gian","Hậu Đỉnh","Bách Hội","Tiền Đỉnh","Tín Hội","Thượng Tinh","Thần Đình","Tố Liêu","Nhân Trung","Đoài Đoan","Ngân Giao"];
+        const cvNames = ["Hội Âm","Khúc Cốt","Trung Cực","Quan Nguyên","Thạch Môn","Khí Hải","Âm Giao","Thần Khuyết","Thủy Phân","Hạ Quản","Kiến Lý","Trung Quản","Thượng Quản","Cự Khuyết","Cưu Vĩ","Trung Đình","Đản Trung","Ngọc Đường","Tử Cung","Hoa Cái","Toàn Cơ","Thiên Đột","Liêm Tuyền","Thừa Tương"];
+
         const defaultAcupoints = [
-            { group: "Đau đầu", name: "Hợp Cốc", desc: "Nằm ở hổ khẩu, giữa xương đốt bàn ngón cái và ngón trỏ." },
-            { group: "Đau đầu", name: "Thái Dương", desc: "Chỗ lõm phía sau đuôi lông mày và đuôi mắt khoảng 1 thốn." },
-            { group: "Đau đầu", name: "Ấn Đường", desc: "Điểm chính giữa đường nối hai đầu lông mày." },
-            { group: "Mất ngủ", name: "Nội Quan", desc: "Mặt trước cổ tay, từ lằn chỉ đo lên 2 thốn, giữa hai gân." },
-            { group: "Mất ngủ", name: "Dũng Tuyền", desc: "Chỗ lõm dưới gan bàn chân, tại điểm nối 1/3 trước và 2/3 sau." },
-            { group: "Đau lưng", name: "Ủy Trung", desc: "Điểm chính giữa nếp lằn khoeo chân (sau đầu gối)." },
-            { group: "Tiêu hóa", name: "Túc Tam Lý", desc: "Dưới mắt gối ngoài 3 thốn, cách mào chày 1 khoát ngón tay." },
-            { group: "Thư giãn", name: "Bách Hội", desc: "Điểm chính giữa đỉnh đầu." }
+            ...createPoints("LU", "Phế Kinh", luNames),
+            ...createPoints("LI", "Đại Trường Kinh", liNames),
+            ...createPoints("ST", "Vị Kinh", stNames),
+            ...createPoints("SP", "Tỳ Kinh", spNames),
+            ...createPoints("HT", "Tâm Kinh", htNames),
+            ...createPoints("SI", "Tiểu Trường Kinh", siNames),
+            ...createPoints("BL", "Bàng Quang Kinh", blNames),
+            ...createPoints("KI", "Thận Kinh", kiNames),
+            ...createPoints("PC", "Tâm Bào Kinh", pcNames),
+            ...createPoints("TE", "Tam Tiêu Kinh", teNames),
+            ...createPoints("GB", "Đởm Kinh", gbNames),
+            ...createPoints("LR", "Can Kinh", lrNames),
+            ...createPoints("GV", "Mạch Đốc", gvNames),
+            ...createPoints("CV", "Mạch Nhâm", cvNames)
         ];
 
         // ELEMENTS
@@ -478,8 +549,18 @@
             inpName: document.getElementById('inpName'),
             inpDesc: document.getElementById('inpDesc'),
             btnAddData: document.getElementById('btnAddData'),
-            dataList: document.getElementById('dataList'),
+            libraryContent: document.getElementById('libraryContent'),
+            libSearch: document.getElementById('libSearch'),
+            libFilter: document.getElementById('libFilter'),
             groupSuggestions: document.getElementById('groupSuggestions'),
+            // Modal
+            detailModal: document.getElementById('detailModal'),
+            modalCode: document.getElementById('modalCode'),
+            modalName: document.getElementById('modalName'),
+            modalGroup: document.getElementById('modalGroup'),
+            modalDesc: document.getElementById('modalDesc'),
+            modalSearchBtn: document.getElementById('modalSearchBtn'),
+
             // Quiz
             quizGroupSelect: document.getElementById('quizGroupSelect'),
             qGroup: document.getElementById('qGroup'),
@@ -621,51 +702,136 @@
             } catch (e) { console.error(e); }
         }
 
+        // --- LIBRARY RENDER (NEW) ---
         function renderListGrouped() {
-            els.dataList.innerHTML = '';
+            els.libraryContent.innerHTML = '';
             const groups = {};
             let masteredCount = 0;
+            const filterText = els.libSearch.value.trim().toLowerCase();
+            const filterType = els.libFilter.value;
+
+            // Grouping and Filtering
             acupoints.forEach(item => {
+                const level = item.srsLevel || 0;
+                if(level >= 4) masteredCount++;
+                
+                // Search filter
+                const name = item.name.toLowerCase();
+                const code = item.name.split(' ')[0].toLowerCase();
+                if(filterText && !name.includes(filterText) && !code.includes(filterText)) return;
+                
+                // Type filter
+                if(filterType === 'learned' && level < 1) return;
+                if(filterType === 'new' && level > 0) return;
+
                 if(!groups[item.group]) groups[item.group] = [];
                 groups[item.group].push(item);
-                if((item.srsLevel || 0) >= 4) masteredCount++;
             });
 
             els.statMastered.textContent = masteredCount;
 
-            Object.keys(groups).sort().forEach(gName => {
-                const header = document.createElement('div');
-                header.className = 'group-header';
-                header.innerHTML = `<span>📂 ${gName}</span> <span style="font-size:0.8rem; opacity:0.8">${groups[gName].length} chiêu</span>`;
-                els.dataList.appendChild(header);
+            const groupKeys = Object.keys(groups).sort();
+            
+            if(groupKeys.length === 0) {
+                els.libraryContent.innerHTML = '<div style="text-align:center; padding:30px; color:#9ca3af;">Không tìm thấy bí kíp nào.</div>';
+                return;
+            }
 
-                groups[gName].forEach(item => {
+            // Accordion Rendering
+            groupKeys.forEach(gName => {
+                const groupItems = groups[gName];
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'accordion-item';
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                header.innerHTML = `<span>${gName} (${groupItems.length})</span> <span>▼</span>`;
+                header.onclick = () => {
+                    const content = itemDiv.querySelector('.accordion-content');
+                    const isActive = header.classList.contains('active');
+                    // Collapse all others (optional - here we allow multiple open)
+                    // Toggle current
+                    if(isActive) {
+                        header.classList.remove('active');
+                        content.classList.remove('open');
+                        header.lastElementChild.textContent = '▼';
+                    } else {
+                        header.classList.add('active');
+                        content.classList.add('open');
+                        header.lastElementChild.textContent = '▲';
+                    }
+                };
+
+                // Content Grid
+                const content = document.createElement('div');
+                content.className = 'accordion-content';
+                
+                // Auto expand if searching
+                if(filterText) {
+                    header.classList.add('active');
+                    content.classList.add('open');
+                    header.lastElementChild.textContent = '▲';
+                }
+
+                groupItems.forEach(item => {
                     const level = item.srsLevel || 0;
-                    let lvClass = '';
-                    if(level >= 4) lvClass = 'srs-lv-high'; else if(level >= 1) lvClass = 'srs-lv-med';
-                    const div = document.createElement('div');
-                    div.className = 'list-item';
-                    div.innerHTML = `
-                        <div>
-                            <div style="font-weight:600; display:flex; align-items:center;">
-                                ${item.name} <span class="srs-level ${lvClass}">Tầng ${level}</span>
-                            </div>
-                            <div style="font-size:0.85rem; color:#666; margin-top:2px">${item.desc}</div>
-                        </div>
-                        <button onclick="deleteAcupoint('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem; opacity:0.4; color:red;">&times;</button>
+                    const card = document.createElement('div');
+                    card.className = 'lib-card';
+                    card.onclick = (e) => {
+                        if(e.target.classList.contains('lib-del')) return;
+                        openDetail(item);
+                    };
+
+                    const parts = item.name.split(' ');
+                    const code = parts[0];
+                    const realName = parts.slice(1).join(' ');
+
+                    let lvText = level >= 4 ? '⭐ Đã thuộc' : (level > 0 ? `🔥 Tầng ${level}` : '🌱 Chưa học');
+                    
+                    card.innerHTML = `
+                        <div class="lib-code">${code}</div>
+                        <div class="lib-name">${realName}</div>
+                        <div class="lib-srs">${lvText}</div>
+                        <button class="lib-del" onclick="deleteAcupoint('${item.id}')">&times;</button>
                     `;
-                    els.dataList.appendChild(div);
+                    content.appendChild(card);
                 });
+
+                itemDiv.appendChild(header);
+                itemDiv.appendChild(content);
+                els.libraryContent.appendChild(itemDiv);
             });
-            if(acupoints.length === 0) els.dataList.innerHTML = '<div style="text-align:center; padding:20px; color:#999">Chưa có bí kíp nào.</div>';
+        }
+
+        // --- FILTER EVENTS ---
+        els.libSearch.addEventListener('input', renderListGrouped);
+        els.libFilter.addEventListener('change', renderListGrouped);
+
+        // --- DETAIL MODAL ---
+        function openDetail(item) {
+            els.modalCode.textContent = item.name.split(' ')[0];
+            els.modalName.textContent = item.name;
+            els.modalGroup.textContent = `Thuộc: ${item.group}`;
+            els.modalDesc.textContent = item.desc || "Chưa có mô tả.";
+            els.detailModal.classList.add('show');
+            
+            els.modalSearchBtn.onclick = () => {
+                 const query = encodeURIComponent(`huyệt ${item.name} vị trí`);
+                 window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank');
+            };
         }
 
         window.initDefaultData = async () => {
             if(isGuest) return showToast("Dữ liệu mẫu đã có sẵn cho khách.");
-            if(acupoints.length > 0 && !confirm("Thêm dữ liệu mẫu vào danh sách hiện tại?")) return;
+            if(acupoints.length > 0 && !confirm("Dữ liệu hiện tại sẽ được thay thế bằng 361 huyệt chuẩn. Tiếp tục?")) return;
             showLoading(true);
             try {
+                // Batch write limitation is 500, we have 361, so 1 batch is fine or split to be safe
                 const batch = writeBatch(db);
+                // Clear old data first? Realistically users might just want to add.
+                // But for a "Reset" feature, we usually clear. Here we just add.
+                
                 defaultAcupoints.forEach(item => {
                     const docRef = doc(collection(db, "acupoints"));
                     batch.set(docRef, {
@@ -674,7 +840,7 @@
                     });
                 });
                 await batch.commit(); await loadData();
-                showToast("✅ Đã nạp bí kíp y học!");
+                showToast("✅ Đã nạp 361 huyệt đạo!");
                 document.querySelector('[data-target="tab-quiz"]').click();
             } catch(e) { showToast("Lỗi: " + e.message); }
             showLoading(false);
@@ -803,11 +969,12 @@
             if(!currentQuizItem || isProcessing) return;
             const inputClean = cleanText(els.qInput.value);
             const targetClean = cleanText(currentQuizItem.name);
-            const inputExact = els.qInput.value.trim().toLowerCase();
-            const targetExact = currentQuizItem.name.trim().toLowerCase();
-
+            // Check against name including code OR just the name part
+            const nameParts = currentQuizItem.name.split(' ');
+            const realNameClean = cleanText(nameParts.slice(1).join(' '));
+            
             if ((inputClean.length >= 2 && inputClean === targetClean) || 
-                (inputExact.length >= 2 && inputExact === targetExact)) {
+                (inputClean.length >= 2 && inputClean === realNameClean)) {
                 isProcessing = true;
                 handleAnswer(true);
             }
