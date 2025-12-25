@@ -823,7 +823,7 @@
         }
 
         window.initDefaultData = async () => {
-            if(isGuest) return showToast("Dữ liệu mẫu đã có sẵn cho khách.");
+            if(isGuest) return showToast("Dữ liệu đã được cập nhật cho các hạ.");
             if(acupoints.length > 0 && !confirm("Dữ liệu hiện tại sẽ được thay thế bằng 361 huyệt chuẩn. Tiếp tục?")) return;
             showLoading(true);
             try {
