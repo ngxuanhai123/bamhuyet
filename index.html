@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiHi Med </title>
+    <title>HiHi Med - Nâng Cấp</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -51,8 +51,8 @@
         .btn-search:hover { background: #dbeafe; }
         .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
         .btn-xs { padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
-        .btn-icon { padding: 8px; border-radius: 50%; background: transparent; color: var(--text-light); }
-        .btn-icon:hover { background: #f3f4f6; color: var(--error); }
+        .btn-icon { padding: 8px; border-radius: 50%; background: transparent; color: var(--text-light); cursor: pointer; border: none;}
+        .btn-icon:hover { background: #f3f4f6; color: var(--primary); }
 
         .card {
             background: var(--surface); border-radius: var(--radius); padding: 20px;
@@ -154,7 +154,14 @@
         .lib-del { position: absolute; top: 5px; right: 5px; opacity: 0; transition: 0.2s; color: var(--error); background: none; border: none; cursor: pointer; font-size: 1.1rem;}
         .lib-card:hover .lib-del { opacity: 1; }
 
-        /* Modal Details */
+        /* Feature: Treats Tag */
+        .tag-treat {
+            font-size: 0.7rem; color: var(--primary-dark); background: var(--primary-light); 
+            padding: 2px 6px; border-radius: 6px; margin-top: 4px; display: inline-block; 
+            font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+        }
+
+        /* Modal Details & Edit */
         #detailModal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
             display: none; justify-content: center; align-items: flex-end;
@@ -164,6 +171,7 @@
             background: white; width: 100%; max-width: 600px; 
             border-radius: 20px 20px 0 0; padding: 25px;
             animation: slideUp 0.3s; max-height: 85vh; overflow-y: auto;
+            display: flex; flex-direction: column;
         }
         @media(min-width: 600px) {
             #detailModal { align-items: center; }
@@ -263,18 +271,51 @@
     <div id="detailModal">
         <div class="detail-sheet">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <span id="modalCode" style="background:var(--primary); color:white; padding:4px 8px; border-radius:6px; font-weight:800; font-size:0.8rem;">CODE</span>
+                <div>
+                    <span id="modalCode" style="background:var(--primary); color:white; padding:4px 8px; border-radius:6px; font-weight:800; font-size:0.8rem;">CODE</span>
+                    <button id="btnEditModal" class="btn-icon" title="Chỉnh sửa" style="margin-left: 10px;">✏️</button>
+                </div>
                 <button onclick="document.getElementById('detailModal').classList.remove('show')" style="border:none; background:none; font-size:1.5rem; color:#999; cursor:pointer;">&times;</button>
             </div>
-            <h2 id="modalName" style="margin:0 0 5px 0; color:var(--primary-dark);">Tên Huyệt</h2>
-            <div id="modalGroup" style="color:var(--text-light); font-size:0.9rem; font-style:italic; margin-bottom:20px;">Nhóm huyệt</div>
-            
-            <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
-                <h4 style="margin:0 0 8px 0;">Vị trí & Mô tả</h4>
-                <p id="modalDesc" style="margin:0; line-height:1.6; color:#4b5563;">Mô tả chi tiết...</p>
+
+            <!-- MODE: VIEW -->
+            <div id="modalViewContent">
+                <h2 id="modalName" style="margin:0 0 5px 0; color:var(--primary-dark);">Tên Huyệt</h2>
+                <div id="modalGroup" style="color:var(--text-light); font-size:0.9rem; font-style:italic; margin-bottom:10px;">Nhóm huyệt</div>
+                
+                <div id="modalTreatsContainer" style="margin-bottom: 15px;">
+                    <!-- Tags treats will be here -->
+                </div>
+
+                <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
+                    <h4 style="margin:0 0 8px 0;">Vị trí & Mô tả</h4>
+                    <p id="modalDesc" style="margin:0; line-height:1.6; color:#4b5563;">Mô tả chi tiết...</p>
+                </div>
+                
+                <button class="btn btn-search" id="modalSearchBtn">🔍 Xem hình ảnh trên Google</button>
             </div>
-            
-            <button class="btn btn-search" id="modalSearchBtn">🔍 Xem hình ảnh trên Google</button>
+
+            <!-- MODE: EDIT -->
+            <div id="modalEditContent" style="display: none;">
+                <h3 style="margin-top:0; color: var(--primary);">Chỉnh sửa Huyệt</h3>
+                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Nhóm huyệt</label>
+                <input type="text" id="editGroup" placeholder="Nhóm">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Tên huyệt</label>
+                <input type="text" id="editName" placeholder="Tên huyệt">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Chủ trị (Bệnh chữa được)</label>
+                <input type="text" id="editTreats" placeholder="VD: Đau đầu, mất ngủ...">
+
+                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Mô tả / Vị trí</label>
+                <textarea id="editDesc" rows="4" placeholder="Mô tả..."></textarea>
+                
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-primary" id="btnSaveEdit" style="flex:1;">Lưu Thay Đổi</button>
+                    <button class="btn btn-secondary" onclick="toggleEditMode(false)" style="flex:1;">Hủy</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -413,6 +454,8 @@
                     <div id="addForm" style="display:none; margin-bottom:15px; padding:15px; background:#f9fafb; border-radius:12px;">
                         <input type="text" id="inpGroup" placeholder="Nhóm (VD: Phế Kinh)" list="groupSuggestions">
                         <input type="text" id="inpName" placeholder="Tên Huyệt (VD: LU1 Trung Phủ)">
+                        <!-- Updated: Treats Input -->
+                        <input type="text" id="inpTreats" placeholder="Chủ trị (VD: Ho, suyễn, đau ngực...)">
                         <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí..."></textarea>
                         <button class="btn btn-primary" id="btnAddData" style="width: 100%">Lưu</button>
                         <datalist id="groupSuggestions"></datalist>
@@ -420,7 +463,8 @@
 
                     <div class="lib-search-box">
                         <div class="lib-controls">
-                            <input type="text" id="libSearch" placeholder="🔍 Tìm huyệt..." style="margin:0;">
+                            <!-- Updated: Smart Search Placeholder -->
+                            <input type="text" id="libSearch" placeholder="🔍 Tìm tên hoặc bệnh..." style="margin:0;">
                             <select id="libFilter" style="margin:0; width:auto;">
                                 <option value="all">Tất cả</option>
                                 <option value="learned">Đã thuộc</option>
@@ -473,6 +517,7 @@
         
         let acupoints = [];
         let currentQuizItem = null;
+        let currentEditingItem = null; // Store item being edited
         let currentHintIndex = 0;
         let todayCheckedIn = false;
         let attendanceDates = new Set();
@@ -483,12 +528,12 @@
         const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
 
         // --- FULL 361 HUYỆT VỊ ---
-        // Helper để tạo danh sách nhanh
         const createPoints = (code, groupName, names) => {
             return names.map((n, i) => ({
                 group: groupName,
                 name: `${code}${i+1} ${n}`,
-                desc: `Huyệt thứ ${i+1} của ${groupName}.`
+                desc: `Huyệt thứ ${i+1} của ${groupName}.`,
+                treats: "" // Default empty field
             }));
         };
 
@@ -546,6 +591,7 @@
             inpGroup: document.getElementById('inpGroup'),
             inpName: document.getElementById('inpName'),
             inpDesc: document.getElementById('inpDesc'),
+            inpTreats: document.getElementById('inpTreats'), // New Input
             btnAddData: document.getElementById('btnAddData'),
             libraryContent: document.getElementById('libraryContent'),
             libSearch: document.getElementById('libSearch'),
@@ -557,7 +603,17 @@
             modalName: document.getElementById('modalName'),
             modalGroup: document.getElementById('modalGroup'),
             modalDesc: document.getElementById('modalDesc'),
+            modalTreatsContainer: document.getElementById('modalTreatsContainer'), // New Container
             modalSearchBtn: document.getElementById('modalSearchBtn'),
+            // Modal Edit Elements
+            btnEditModal: document.getElementById('btnEditModal'),
+            modalViewContent: document.getElementById('modalViewContent'),
+            modalEditContent: document.getElementById('modalEditContent'),
+            editGroup: document.getElementById('editGroup'),
+            editName: document.getElementById('editName'),
+            editTreats: document.getElementById('editTreats'),
+            editDesc: document.getElementById('editDesc'),
+            btnSaveEdit: document.getElementById('btnSaveEdit'),
 
             // Quiz
             quizGroupSelect: document.getElementById('quizGroupSelect'),
@@ -598,7 +654,6 @@
         // --- UTILS ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(type) {
-            // Fix: Check safely for browser autoplay policies
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume().catch(e => console.log("Audio resume needed interaction"));
             }
@@ -680,7 +735,6 @@
                 else { acupoints = defaultAcupoints.map((item, index) => ({ id: 'guest_' + index, ...item, srsLevel: 0, nextReview: 0 })); }
                 renderListGrouped(); updateGroupSelect(); prepareQuiz();
                 
-                // FORCE LOAD QUESTION FOR GUEST IMMEDIATELY
                 startQuiz();
             }
             setupNavigation(); renderCalendar(); updateBadges();
@@ -718,10 +772,12 @@
                 const level = item.srsLevel || 0;
                 if(level >= 4) masteredCount++;
                 
-                // Search filter
+                // Smart Search: Check name, code, AND TREATS
                 const name = item.name ? item.name.toLowerCase() : "";
                 const code = name.split(' ')[0] || "";
-                if(filterText && !name.includes(filterText) && !code.includes(filterText)) return;
+                const treats = item.treats ? item.treats.toLowerCase() : "";
+
+                if(filterText && !name.includes(filterText) && !code.includes(filterText) && !treats.includes(filterText)) return;
                 
                 // Type filter
                 if(filterType === 'learned' && level < 1) return;
@@ -789,9 +845,20 @@
 
                     let lvText = level >= 4 ? '⭐ Đã thuộc' : (level > 0 ? `🔥 Tầng ${level}` : '🌱 Chưa học');
                     
+                    // Generate Treats Tags for Library view
+                    let treatsHtml = '';
+                    if(item.treats) {
+                        const tags = item.treats.split(',').slice(0, 2); // Show max 2 tags
+                        tags.forEach(t => {
+                            treatsHtml += `<span class="tag-treat">${t.trim()}</span>`;
+                        });
+                        if(item.treats.split(',').length > 2) treatsHtml += `<span class="tag-treat">...</span>`;
+                    }
+
                     card.innerHTML = `
                         <div class="lib-code">${code}</div>
                         <div class="lib-name">${realName}</div>
+                        <div>${treatsHtml}</div>
                         <div class="lib-srs">${lvText}</div>
                         <button class="lib-del" onclick="deleteAcupoint('${item.id}')">&times;</button>
                     `;
@@ -808,12 +875,97 @@
         els.libSearch.addEventListener('input', renderListGrouped);
         els.libFilter.addEventListener('change', renderListGrouped);
 
-        // --- DETAIL MODAL ---
+        // --- DETAIL MODAL & EDIT FEATURE ---
+        window.toggleEditMode = (isEdit) => {
+            if(isEdit) {
+                els.modalViewContent.style.display = 'none';
+                els.modalEditContent.style.display = 'block';
+                // Populate inputs
+                if(currentEditingItem) {
+                    els.editGroup.value = currentEditingItem.group || "";
+                    els.editName.value = currentEditingItem.name || "";
+                    els.editTreats.value = currentEditingItem.treats || "";
+                    els.editDesc.value = currentEditingItem.desc || "";
+                }
+            } else {
+                els.modalViewContent.style.display = 'block';
+                els.modalEditContent.style.display = 'none';
+            }
+        }
+
+        els.btnEditModal.addEventListener('click', () => {
+            if(isGuest) return showToast("Khách không được sửa bí kíp gia truyền!");
+            toggleEditMode(true);
+        });
+
+        els.btnSaveEdit.addEventListener('click', async () => {
+            if(!currentEditingItem) return;
+            const newGroup = els.editGroup.value.trim();
+            const newName = els.editName.value.trim();
+            const newTreats = els.editTreats.value.trim();
+            const newDesc = els.editDesc.value.trim();
+
+            if(!newGroup || !newName) return showToast("Tên và Nhóm không được để trống!");
+            
+            showLoading(true);
+            try {
+                // Update Firestore
+                const itemRef = doc(db, "acupoints", currentEditingItem.id);
+                await updateDoc(itemRef, {
+                    group: newGroup,
+                    name: newName,
+                    treats: newTreats,
+                    desc: newDesc
+                });
+
+                // Update Local Data
+                currentEditingItem.group = newGroup;
+                currentEditingItem.name = newName;
+                currentEditingItem.treats = newTreats;
+                currentEditingItem.desc = newDesc;
+
+                // Refresh UI
+                renderListGrouped();
+                updateGroupSelect();
+                
+                // Refresh Modal View
+                openDetail(currentEditingItem); 
+                showToast("✅ Đã cập nhật thành công!");
+            } catch(e) {
+                console.error(e);
+                showToast("Lỗi khi lưu: " + e.message);
+            }
+            showLoading(false);
+        });
+
         function openDetail(item) {
+            currentEditingItem = item;
+            // Reset to view mode
+            toggleEditMode(false);
+
             els.modalCode.textContent = item.name.split(' ')[0];
             els.modalName.textContent = item.name;
             els.modalGroup.textContent = `Thuộc: ${item.group}`;
             els.modalDesc.textContent = item.desc || "Chưa có mô tả.";
+            
+            // Render Treats Tags in Modal
+            els.modalTreatsContainer.innerHTML = '';
+            if(item.treats) {
+                const tags = item.treats.split(',');
+                tags.forEach(t => {
+                    if(t.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'tag-treat';
+                        span.style.fontSize = '0.85rem';
+                        span.style.padding = '4px 8px';
+                        span.textContent = t.trim();
+                        els.modalTreatsContainer.appendChild(span);
+                    }
+                });
+            } else {
+                els.modalTreatsContainer.innerHTML = '<span style="font-size:0.8rem; color:#999;">Chưa cập nhật chủ trị</span>';
+            }
+
             els.detailModal.classList.add('show');
             
             els.modalSearchBtn.onclick = () => {
@@ -832,6 +984,7 @@
                     const docRef = doc(collection(db, "acupoints"));
                     batch.set(docRef, {
                         uid: currentUser.uid, group: item.group, name: item.name, desc: item.desc, image: "",
+                        treats: "", // Initialize empty treats
                         srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
                     });
                 });
@@ -846,15 +999,17 @@
             if(isGuest) return showToast("Đăng nhập để lưu bí kíp của riêng bạn.");
             const group = els.inpGroup.value.trim();
             const name = els.inpName.value.trim();
+            const treats = els.inpTreats.value.trim(); // Capture Treats
             const desc = els.inpDesc.value.trim();
+
             if(!group || !name) return showToast("Thiếu tên hoặc nhóm!");
             showLoading(true);
             try {
                 const docRef = await addDoc(collection(db, "acupoints"), {
-                    uid: currentUser.uid, group, name, desc, image:"", srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
+                    uid: currentUser.uid, group, name, treats, desc, image:"", srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
                 });
-                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, desc, image:"", srsLevel: 0, nextReview: 0 });
-                els.inpName.value = ''; els.inpDesc.value = '';
+                acupoints.push({ id: docRef.id, uid: currentUser.uid, group, name, treats, desc, image:"", srsLevel: 0, nextReview: 0 });
+                els.inpName.value = ''; els.inpDesc.value = ''; els.inpTreats.value = '';
                 renderListGrouped(); updateGroupSelect(); prepareQuiz(); showToast("Đã lưu!");
             } catch (e) { showToast("Lỗi lưu."); }
             showLoading(false);
@@ -935,7 +1090,6 @@
                 playTone('correct');
                 els.qFeedback.innerHTML = "🎉 Tuyệt vời! Chính xác!";
                 els.qFeedback.className = 'feedback correct';
-                // Safe check for confetti
                 if(Math.random() > 0.7 && typeof confetti === 'function') {
                     confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
                 }
@@ -1049,7 +1203,6 @@
                 const today = new Date().toISOString().split('T')[0];
                 await addDoc(collection(db, "attendance"), { uid: currentUser.uid, date: today, timestamp: serverTimestamp() });
                 todayCheckedIn = true; attendanceDates.add(today);
-                // Safe confetti
                 if (typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 showToast("✅ Điểm danh thành công!");
                 checkAttendance(); renderCalendar(); 
