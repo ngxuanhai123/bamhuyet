@@ -278,14 +278,12 @@
                 <button onclick="document.getElementById('detailModal').classList.remove('show')" style="border:none; background:none; font-size:1.5rem; color:#999; cursor:pointer;">&times;</button>
             </div>
 
-            <!-- MODE: VIEW -->
             <div id="modalViewContent">
                 <h2 id="modalName" style="margin:0 0 5px 0; color:var(--primary-dark);">Tên Huyệt</h2>
                 <div id="modalGroup" style="color:var(--text-light); font-size:0.9rem; font-style:italic; margin-bottom:10px;">Nhóm huyệt</div>
                 
                 <div id="modalTreatsContainer" style="margin-bottom: 15px;">
-                    <!-- Tags treats will be here -->
-                </div>
+                    </div>
 
                 <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
                     <h4 style="margin:0 0 8px 0;">Vị trí & Mô tả</h4>
@@ -295,7 +293,6 @@
                 <button class="btn btn-search" id="modalSearchBtn">🔍 Xem hình ảnh trên Google</button>
             </div>
 
-            <!-- MODE: EDIT -->
             <div id="modalEditContent" style="display: none;">
                 <h3 style="margin-top:0; color: var(--primary);">Chỉnh sửa Huyệt</h3>
                 <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Nhóm huyệt</label>
@@ -454,7 +451,6 @@
                     <div id="addForm" style="display:none; margin-bottom:15px; padding:15px; background:#f9fafb; border-radius:12px;">
                         <input type="text" id="inpGroup" placeholder="Nhóm (VD: Phế Kinh)" list="groupSuggestions">
                         <input type="text" id="inpName" placeholder="Tên Huyệt (VD: LU1 Trung Phủ)">
-                        <!-- Updated: Treats Input -->
                         <input type="text" id="inpTreats" placeholder="Chủ trị (VD: Ho, suyễn, đau ngực...)">
                         <textarea id="inpDesc" rows="2" placeholder="Mô tả vị trí..."></textarea>
                         <button class="btn btn-primary" id="btnAddData" style="width: 100%">Lưu</button>
@@ -463,7 +459,6 @@
 
                     <div class="lib-search-box">
                         <div class="lib-controls">
-                            <!-- Updated: Smart Search Placeholder -->
                             <input type="text" id="libSearch" placeholder="🔍 Tìm tên hoặc bệnh..." style="margin:0;">
                             <select id="libFilter" style="margin:0; width:auto;">
                                 <option value="all">Tất cả</option>
@@ -527,47 +522,435 @@
 
         const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
 
-        // --- FULL 361 HUYỆT VỊ ---
-        const createPoints = (code, groupName, names) => {
-            return names.map((n, i) => ({
+        // --- FULL 361 HUYỆT VỊ (CẬP NHẬT CÓ CHỦ TRỊ) ---
+        const createPoints = (code, groupName, dataList) => {
+            return dataList.map((item, i) => ({
                 group: groupName,
-                name: `${code}${i+1} ${n}`,
+                name: `${code}${i+1} ${item.n}`,
                 desc: `Huyệt thứ ${i+1} của ${groupName}.`,
-                treats: "" // Default empty field
+                treats: item.t
             }));
         };
 
-        // Danh sách tên huyệt
-        const luNames = ["Trung Phủ","Vân Môn","Thiên Phủ","Hiệp Bạch","Xích Trạch","Khổng Tối","Liệt Khuyết","Kinh Cừ","Thái Uyên","Ngư Tế","Thiếu Thương"];
-        const liNames = ["Thương Dương","Nhị Gian","Tam Gian","Hợp Cốc","Dương Khê","Thiên Lịch","Ôn Lưu","Hạ Liêm","Thượng Liêm","Thủ Tam Lý","Khúc Trì","Trửu Liêu","Thủ Ngũ Lý","Tí Nhu","Kiên Ngung","Cự Cốt","Thiên Đỉnh","Phù Đột","Hòa Liêu","Nghinh Hương"];
-        const stNames = ["Thừa Khấp","Tứ Bạch","Cự Liêu","Địa Thương","Đại Nghênh","Giáp Xa","Hạ Quan","Đầu Duy","Nhân Nghênh","Thủy Đột","Khí Xá","Khuyết Bồn","Khí Hộ","Khố Phòng","Ốc Ế","Ưng Song","Nhũ Trung","Nhũ Căn","Bất Dung","Thừa Mãn","Lương Môn","Quan Môn","Thái Ất","Hoạt Nhục Môn","Thiên Khu","Ngoại Lăng","Đại Cự","Thủy Đạo","Quy Lai","Khí Xung","Bễ Quan","Phục Thỏ","Âm Thị","Lương Khâu","Độc Tị","Túc Tam Lý","Thượng Cự Hư","Điều Khẩu","Hạ Cự Hư","Phong Long","Giải Khê","Xung Dương","Hãm Cốc","Nội Đình","Lệ Đoài"];
-        const spNames = ["Ẩn Bạch","Đại Đô","Thái Bạch","Công Tôn","Thương Khâu","Tam Âm Giao","Lậu Cốc","Địa Cơ","Âm Lăng Tuyền","Huyết Hải","Cơ Môn","Xung Môn","Phủ Xá","Phúc Kết","Đại Hoành","Phúc Ai","Thực Đậu","Thiên Khê","Hung Hương","Chu Vinh","Đại Bao"];
-        const htNames = ["Cực Tuyền","Thanh Linh","Thiếu Hải","Linh Đạo","Thông Lý","Âm Khích","Thần Môn","Thiếu Phủ","Thiếu Xung"];
-        const siNames = ["Thiếu Trạch","Tiền Cốc","Hậu Khê","Uyển Cốt","Dương Cốc","Dưỡng Lão","Chi Chính","Tiểu Hải","Kiên Trinh","Nhu Du","Thiên Tông","Bỉnh Phong","Khúc Viên","Kiên Ngoại Du","Kiên Trung Du","Thiên Song","Thiên Dung","Quyền Liêu","Thính Cung"];
-        const blNames = ["Tình Minh","Toản Trúc","Mi Xung","Khúc Sai","Ngũ Xứ","Thừa Quang","Thông Thiên","Lạc Khước","Ngọc Chẩm","Thiên Trụ","Đại Trữ","Phong Môn","Phế Du","Quyết Âm Du","Tâm Du","Đốc Du","Cách Du","Can Du","Đởm Du","Tỳ Du","Vị Du","Tam Tiêu Du","Thận Du","Khí Hải Du","Đại Trường Du","Quan Nguyên Du","Tiểu Trường Du","Bàng Quang Du","Trung Lữ Du","Bạch Hoàn Du","Thượng Liêu","Thứ Liêu","Trung Liêu","Hạ Liêu","Hội Dương","Thừa Phù","Ân Môn","Phù Khích","Ủy Dương","Ủy Trung","Phụ Phân","Phách Hộ","Cao Hoang","Thần Đường","Y Hy","Cách Quan","Hồn Môn","Dương Cương","Ý Xá","Vị Thương","Hoang Môn","Chí Thất","Bào Hoang","Trật Biên","Hợp Dương","Thừa Cân","Thừa Sơn","Phi Dương","Phụ Dương","Côn Lôn","Bộc Tham","Thân Mạch","Kim Môn","Kinh Cốt","Thúc Cốt","Thông Cốc","Chí Âm"];
-        const kiNames = ["Dũng Tuyền","Nhiên Cốc","Thái Khê","Đại Chung","Thủy Tuyền","Chiếu Hải","Phục Lưu","Giao Tín","Trúc Tân","Âm Cốc","Hoành Cốt","Đại Hách","Khí Huyệt","Tứ Mãn","Trung Chú","Hoang Du","Thương Khúc","Thạch Quan","Âm Đô","Phúc Thông Cốc","U Môn","Bộ Lang","Thần Phong","Linh Khư","Thần Tàng","Vực Trung","Du Phủ"];
-        const pcNames = ["Thiên Trì","Thiên Tuyền","Khúc Trạch","Khích Môn","Giản Sử","Nội Quan","Đại Lăng","Lao Cung","Trung Xung"];
-        const teNames = ["Quan Xung","Dịch Môn","Trung Chử","Dương Trì","Ngoại Quan","Chi Cấu","Hội Tông","Tam Dương Lạc","Tứ Độc","Thiên Tỉnh","Thanh Lãnh Uyên","Tiêu Lạc","Nhu Hội","Kiên Liêu","Thiên Liêu","Thiên Dũ","Ế Phong","Khế Mạch","Lô Tức","Giác Tôn","Nhĩ Môn","Hòa Liêu","Ty Trúc Không"];
-        const gbNames = ["Đồng Tử Liêu","Thính Hội","Thượng Quan","Hàm Yến","Huyền Lư","Huyền Ly","Khúc Mấn","Suất Cốc","Thiên Xung","Phù Bạch","Đầu Khiếu Âm","Hoàn Cốt","Bản Thần","Dương Bạch","Đầu Lâm Khấp","Mục Song","Chính Dinh","Thừa Linh","Não Không","Phong Trì","Kiên Tỉnh","Uyên Dịch","Triếp Cân","Nhật Nguyệt","Kinh Môn","Đới Mạch","Ngũ Khu","Duy Đạo","Cự Liêu","Hoàn Khiêu","Phong Thị","Trung Độc","Túc Dương Quan","Dương Lăng Tuyền","Dương Giao","Ngoại Khâu","Quang Minh","Dương Phụ","Huyền Chung","Khâu Khư","Túc Lâm Khấp","Địa Ngũ Hội","Hiệp Khê","Túc Khiếu Âm"];
-        const lrNames = ["Đại Đôn","Hành Gian","Thái Xung","Trung Phong","Lãi Câu","Trung Đô","Tất Quan","Khúc Tuyền","Âm Bao","Túc Ngũ Lý","Âm Liêm","Cấp Mạch","Chương Môn","Kỳ Môn"];
-        const gvNames = ["Trường Cường","Yêu Du","Yêu Dương Quan","Mệnh Môn","Huyền Khu","Tích Trung","Trung Khu","Cân Súc","Chí Dương","Linh Đài","Thần Đạo","Thân Trụ","Đào Đạo","Đại Chùy","Á Môn","Phong Phủ","Não Hộ","Cường Gian","Hậu Đỉnh","Bách Hội","Tiền Đỉnh","Tín Hội","Thượng Tinh","Thần Đình","Tố Liêu","Nhân Trung","Đoài Đoan","Ngân Giao"];
-        const cvNames = ["Hội Âm","Khúc Cốt","Trung Cực","Quan Nguyên","Thạch Môn","Khí Hải","Âm Giao","Thần Khuyết","Thủy Phân","Hạ Quản","Kiến Lý","Trung Quản","Thượng Quản","Cự Khuyết","Cưu Vĩ","Trung Đình","Đản Trung","Ngọc Đường","Tử Cung","Hoa Cái","Toàn Cơ","Thiên Đột","Liêm Tuyền","Thừa Tương"];
+        // Danh sách dữ liệu đầy đủ (Tên + Chủ trị)
+        const luData = [
+            {n:"Trung Phủ", t:"Ho, suyễn, đau ngực, vai đau, viêm phế quản"},
+            {n:"Vân Môn", t:"Ho, suyễn, đầy tức ngực, đau vai"},
+            {n:"Thiên Phủ", t:"Ho, suyễn, chảy máu mũi, đau cánh tay"},
+            {n:"Hiệp Bạch", t:"Ho, khí nghịch, đau mặt trước ngoài cánh tay"},
+            {n:"Xích Trạch", t:"Ho, sốt, họng sưng đau, khuỷu tay đau"},
+            {n:"Khổng Tối", t:"Ho ra máu, đau họng, mất tiếng, khuỷu tay đau"},
+            {n:"Liệt Khuyết", t:"Đau đầu, đau cổ gáy, ho, liệt mặt, đau cổ tay"},
+            {n:"Kinh Cừ", t:"Ho, suyễn, đau họng, đau cổ tay"},
+            {n:"Thái Uyên", t:"Ho, đờm nhiều, đau ngực, mạch yếu, đau cổ tay"},
+            {n:"Ngư Tế", t:"Ho, đau họng, mất tiếng, sốt, đau ngón cái"},
+            {n:"Thiếu Thương", t:"Sốt cao, đau họng, trúng gió, chảy máu cam"}
+        ];
+
+        const liData = [
+            {n:"Thương Dương", t:"Đau răng, đau họng, sốt cao, ngón tay tê"},
+            {n:"Nhị Gian", t:"Chảy máu cam, đau răng, đau họng, mắt mờ"},
+            {n:"Tam Gian", t:"Đau răng, đau họng, đầy bụng, đau ngón tay"},
+            {n:"Hợp Cốc", t:"Đau đầu, đau răng, cảm cúm, đau bụng, liệt mặt"},
+            {n:"Dương Khê", t:"Đau đầu, mắt đỏ, đau cổ tay, ù tai"},
+            {n:"Thiên Lịch", t:"Chảy máu cam, đau họng, phù thũng, đau cánh tay"},
+            {n:"Ôn Lưu", t:"Đau đầu, sưng mặt, đau vai, đau họng"},
+            {n:"Hạ Liêm", t:"Đau bụng, đau khuỷu tay, đau vú"},
+            {n:"Thượng Liêm", t:"Đau vai, liệt tay, đau bụng, bán thân bất toại"},
+            {n:"Thủ Tam Lý", t:"Liệt tay, đau vai, đau bụng, tiêu chảy"},
+            {n:"Khúc Trì", t:"Sốt, dị ứng, huyết áp cao, đau khuỷu tay, liệt tay"},
+            {n:"Trửu Liêu", t:"Đau khuỷu tay, tê tay, lồi cầu xương cánh tay viêm"},
+            {n:"Thủ Ngũ Lý", t:"Ho ra máu, lao hạch, đau khuỷu tay, đau vai"},
+            {n:"Tí Nhu", t:"Đau vai, không giơ tay được, bệnh về mắt"},
+            {n:"Kiên Ngung", t:"Đau vai, liệt tay, nổi mề đay, teo cơ"},
+            {n:"Cự Cốt", t:"Đau vai, đau cánh tay, lao hạch"},
+            {n:"Thiên Đỉnh", t:"Đau họng, mất tiếng, lao hạch"},
+            {n:"Phù Đột", t:"Ho, suyễn, đau họng, khản tiếng"},
+            {n:"Hòa Liêu", t:"Chảy máu cam, ngạt mũi, méo miệng"},
+            {n:"Nghinh Hương", t:"Ngạt mũi, viêm mũi, chảy máu cam, liệt mặt"}
+        ];
+
+        const stData = [
+            {n:"Thừa Khấp", t:"Mắt đỏ, quáng gà, chảy nước mắt, liệt mặt"},
+            {n:"Tứ Bạch", t:"Mắt đỏ, ngứa mắt, đau đầu, liệt mặt, đau thần kinh tam thoa"},
+            {n:"Cự Liêu", t:"Liệt mặt, chảy máu cam, đau răng, sưng má"},
+            {n:"Địa Thương", t:"Méo miệng, chảy nước dãi, liệt mặt"},
+            {n:"Đại Nghênh", t:"Đau răng, sưng má, liệt mặt"},
+            {n:"Giáp Xa", t:"Đau răng, cứng hàm, liệt mặt, quai bị"},
+            {n:"Hạ Quan", t:"Ù tai, điếc tai, đau răng, trật khớp hàm"},
+            {n:"Đầu Duy", t:"Đau đầu, chóng mặt, chảy nước mắt"},
+            {n:"Nhân Nghênh", t:"Đau họng, hen suyễn, cao huyết áp"},
+            {n:"Thủy Đột", t:"Đau họng, ho, suyễn"},
+            {n:"Khí Xá", t:"Đau họng, bướu cổ, cứng cổ"},
+            {n:"Khuyết Bồn", t:"Ho, suyễn, đau họng, đau vai"},
+            {n:"Khí Hộ", t:"Ho, suyễn, đầy ngực, nấc"},
+            {n:"Khố Phòng", t:"Ho, đầy ngực, đau sườn"},
+            {n:"Ốc Ế", t:"Ho, suyễn, đau vú, tắc tia sữa"},
+            {n:"Ưng Song", t:"Ho, suyễn, viêm tuyến vú, đau sườn"},
+            {n:"Nhũ Trung", t:"Không châm cứu (Chỉ làm mốc đo)"},
+            {n:"Nhũ Căn", t:"Viêm tuyến vú, thiếu sữa, ho, đau ngực"},
+            {n:"Bất Dung", t:"Đầy bụng, nôn mửa, đau dạ dày"},
+            {n:"Thừa Mãn", t:"Đầy bụng, đau dạ dày, nôn mửa"},
+            {n:"Lương Môn", t:"Đau dạ dày, nôn mửa, chán ăn"},
+            {n:"Quan Môn", t:"Đau bụng, đầy hơi, tiêu chảy, phù thũng"},
+            {n:"Thái Ất", t:"Đau dạ dày, rối loạn tiêu hóa, điên cuồng"},
+            {n:"Hoạt Nhục Môn", t:"Đau dạ dày, nôn mửa, điên cuồng"},
+            {n:"Thiên Khu", t:"Đau bụng, tiêu chảy, táo bón, kinh nguyệt không đều"},
+            {n:"Ngoại Lăng", t:"Đau bụng dưới, đau bụng kinh"},
+            {n:"Đại Cự", t:"Bụng dưới đầy, bí tiểu, xuất tinh sớm"},
+            {n:"Thủy Đạo", t:"Bí tiểu, viêm bàng quang, đau bụng kinh"},
+            {n:"Quy Lai", t:"Đau bụng kinh, kinh nguyệt không đều, sa tinh hoàn"},
+            {n:"Khí Xung", t:"Thoát vị bẹn, đau bụng, kinh nguyệt không đều"},
+            {n:"Bễ Quan", t:"Liệt chân, đau khớp háng, tê đùi"},
+            {n:"Phục Thỏ", t:"Liệt chân, đau đầu gối, tê đùi"},
+            {n:"Âm Thị", t:"Liệt chân, đau đầu gối, tê chân"},
+            {n:"Lương Khâu", t:"Đau dạ dày cấp, đau đầu gối, viêm tuyến vú"},
+            {n:"Độc Tị", t:"Đau sưng đầu gối, tê chân"},
+            {n:"Túc Tam Lý", t:"Đau dạ dày, nôn mửa, tiêu hóa kém, suy nhược, tăng miễn dịch"},
+            {n:"Thượng Cự Hư", t:"Viêm ruột thừa, đau bụng, tiêu chảy, liệt chân"},
+            {n:"Điều Khẩu", t:"Đau vai, tê chân, liệt chân"},
+            {n:"Hạ Cự Hư", t:"Đau bụng dưới, tiêu chảy, đau ngực, liệt chân"},
+            {n:"Phong Long", t:"Ho đờm nhiều, hen suyễn, đau đầu, chóng mặt, béo phì"},
+            {n:"Giải Khê", t:"Đau cổ chân, đau đầu, đầy bụng"},
+            {n:"Xung Dương", t:"Đau mu bàn chân, liệt mặt, đau răng"},
+            {n:"Hãm Cốc", t:"Sưng mặt, đau bụng, sưng mu bàn chân"},
+            {n:"Nội Đình", t:"Đau răng, đau họng, chảy máu cam, đau dạ dày"},
+            {n:"Lệ Đoài", t:"Mơ màng, ác mộng, đau răng, chảy máu cam, lạnh chân"}
+        ];
+
+        const spData = [
+            {n:"Ẩn Bạch", t:"Rong kinh, băng huyết, đầy bụng, hay mơ"},
+            {n:"Đại Đô", t:"Đầy bụng, đau dạ dày, sốt không ra mồ hôi"},
+            {n:"Thái Bạch", t:"Đau dạ dày, đầy hơi, táo bón, nôn mửa"},
+            {n:"Công Tôn", t:"Đau dạ dày, nôn mửa, tiêu chảy, đau tim"},
+            {n:"Thương Khâu", t:"Đầy bụng, tiêu chảy, vàng da, đau cổ chân"},
+            {n:"Tam Âm Giao", t:"Rối loạn kinh nguyệt, mất ngủ, bổ âm, tiêu hóa kém"},
+            {n:"Lậu Cốc", t:"Đầy bụng, sôi bụng, tê chân"},
+            {n:"Địa Cơ", t:"Đau bụng kinh, kinh nguyệt không đều, đau lưng"},
+            {n:"Âm Lăng Tuyền", t:"Tiêu chảy, bí tiểu, phù thũng, đau đầu gối"},
+            {n:"Huyết Hải", t:"Kinh nguyệt không đều, dị ứng, ngứa da, bổ máu"},
+            {n:"Cơ Môn", t:"Bí tiểu, háng đau"},
+            {n:"Xung Môn", t:"Đau bụng, bí tiểu, thoát vị"},
+            {n:"Phủ Xá", t:"Đau bụng, táo bón, thoát vị"},
+            {n:"Phúc Kết", t:"Đau quanh rốn, táo bón, tiêu chảy"},
+            {n:"Đại Hoành", t:"Tiêu chảy, táo bón, đau bụng, liệt ruột"},
+            {n:"Phúc Ai", t:"Đau bụng, táo bón, kiết lỵ"},
+            {n:"Thực Đậu", t:"Đầy ngực, đau sườn"},
+            {n:"Thiên Khê", t:"Đau ngực, ho, ít sữa"},
+            {n:"Hung Hương", t:"Đầy ngực, đau sườn"},
+            {n:"Chu Vinh", t:"Ho, đau sườn, đầy ngực"},
+            {n:"Đại Bao", t:"Đau toàn thân, đau sườn, hen suyễn"}
+        ];
+
+        const htData = [
+            {n:"Cực Tuyền", t:"Đau tim, hôi nách, đau sườn"},
+            {n:"Thanh Linh", t:"Đau vai, đau cánh tay, mắt vàng"},
+            {n:"Thiếu Hải", t:"Đau tim, tê tay, run tay, đau khuỷu tay"},
+            {n:"Linh Đạo", t:"Đau tim, mất tiếng đột ngột, đau cổ tay"},
+            {n:"Thông Lý", t:"Tim đập nhanh, mất tiếng, lưỡi cứng"},
+            {n:"Âm Khích", t:"Đau tim, hồi hộp, trộm mồ hôi, chảy máu cam"},
+            {n:"Thần Môn", t:"Mất ngủ, hay quên, hồi hộp, hysteria"},
+            {n:"Thiếu Phủ", t:"Tim đập nhanh, đau ngực, tiểu rắt, ngứa âm hộ"},
+            {n:"Thiếu Xung", t:"Sốt cao, hôn mê, trúng gió, đau tim"}
+        ];
+
+        const siData = [
+            {n:"Thiếu Trạch", t:"Thiếu sữa, đau đầu, đau mắt, sốt cao"},
+            {n:"Tiền Cốc", t:"Đau tay, sốt, đau họng, tắc tia sữa"},
+            {n:"Hậu Khê", t:"Đau cổ gáy, đau lưng, ù tai, sốt rét"},
+            {n:"Uyển Cốt", t:"Đau cổ tay, đau đầu, vàng da, ngón tay co rút"},
+            {n:"Dương Cốc", t:"Đau cổ tay, ù tai, điếc tai, sốt"},
+            {n:"Dưỡng Lão", t:"Mắt mờ, đau lưng, đau vai, đau cổ tay"},
+            {n:"Chi Chính", t:"Cổ gáy cứng, đau khuỷu tay, hoa mắt"},
+            {n:"Tiểu Hải", t:"Đau khuỷu tay, đau vai, động kinh"},
+            {n:"Kiên Trinh", t:"Đau vai, không giơ tay được, ù tai"},
+            {n:"Nhu Du", t:"Đau vai, cánh tay yếu"},
+            {n:"Thiên Tông", t:"Đau vai, đau bả vai, viêm tuyến vú"},
+            {n:"Bỉnh Phong", t:"Đau vai, tê tay"},
+            {n:"Khúc Viên", t:"Đau vai, cơ gân co rút"},
+            {n:"Kiên Ngoại Du", t:"Đau vai gáy, cứng cổ"},
+            {n:"Kiên Trung Du", t:"Ho, suyễn, đau vai gáy, mờ mắt"},
+            {n:"Thiên Song", t:"Điếc tai, đau họng, cứng cổ"},
+            {n:"Thiên Dung", t:"Ù tai, đau họng, sưng cổ"},
+            {n:"Quyền Liêu", t:"Liệt mặt, đau răng, mắt giật"},
+            {n:"Thính Cung", t:"Ù tai, điếc tai, viêm tai giữa"}
+        ];
+
+        const blData = [
+            {n:"Tình Minh", t:"Mắt đỏ, mờ mắt, quáng gà, cận thị"},
+            {n:"Toản Trúc", t:"Đau đầu, mắt mờ, liệt mặt, nấc"},
+            {n:"Mi Xung", t:"Đau đầu, ngạt mũi, chóng mặt"},
+            {n:"Khúc Sai", t:"Đau đầu, ngạt mũi, chảy máu cam"},
+            {n:"Ngũ Xứ", t:"Đau đầu, hoa mắt, động kinh"},
+            {n:"Thừa Quang", t:"Đau đầu, mắt mờ, cảm mạo"},
+            {n:"Thông Thiên", t:"Đau đầu, ngạt mũi, chảy máu cam"},
+            {n:"Lạc Khước", t:"Đau đầu, hoa mắt, ù tai"},
+            {n:"Ngọc Chẩm", t:"Đau đầu, đau mắt, nghẹt mũi"},
+            {n:"Thiên Trụ", t:"Đau sau đầu, cứng gáy, ngạt mũi"},
+            {n:"Đại Trữ", t:"Ho, sốt, đau vai gáy, đau lưng"},
+            {n:"Phong Môn", t:"Cảm cúm, ho, sốt, đau lưng trên"},
+            {n:"Phế Du", t:"Ho, suyễn, lao phổi, ra mồ hôi trộm"},
+            {n:"Quyết Âm Du", t:"Đau tim, hồi hộp, ho, nôn mửa"},
+            {n:"Tâm Du", t:"Mất ngủ, hay quên, hoảng sợ, mộng tinh"},
+            {n:"Đốc Du", t:"Đau tim, đau bụng, sôi bụng"},
+            {n:"Cách Du", t:"Nấc, nôn mửa, thiếu máu, đau lưng"},
+            {n:"Can Du", t:"Vàng da, đau mắt, đau sườn, chóng mặt"},
+            {n:"Đởm Du", t:"Vàng da, đắng miệng, đau sườn"},
+            {n:"Tỳ Du", t:"Đầy bụng, tiêu chảy, chán ăn, phù thũng"},
+            {n:"Vị Du", t:"Đau dạ dày, nôn mửa, tiêu hóa kém"},
+            {n:"Tam Tiêu Du", t:"Đầy bụng, nôn mửa, tiêu chảy, bí tiểu"},
+            {n:"Thận Du", t:"Đau lưng, ù tai, di tinh, liệt dương, kinh nguyệt không đều"},
+            {n:"Khí Hải Du", t:"Đau lưng, kinh nguyệt không đều"},
+            {n:"Đại Trường Du", t:"Đau lưng, táo bón, tiêu chảy, đau thần kinh tọa"},
+            {n:"Quan Nguyên Du", t:"Đau lưng, tiêu chảy, tiểu rắt"},
+            {n:"Tiểu Trường Du", t:"Đau khớp cùng chậu, di tinh, đái dầm"},
+            {n:"Bàng Quang Du", t:"Bí tiểu, đái dầm, đau lưng"},
+            {n:"Trung Lữ Du", t:"Đau lưng, đau thần kinh tọa, viêm ruột"},
+            {n:"Bạch Hoàn Du", t:"Di tinh, đái dầm, đau vùng cùng cụt"},
+            {n:"Thượng Liêu", t:"Đau lưng, kinh nguyệt không đều, di tinh"},
+            {n:"Thứ Liêu", t:"Đau lưng, đau bụng kinh, khí hư"},
+            {n:"Trung Liêu", t:"Đau lưng, táo bón, bí tiểu"},
+            {n:"Hạ Liêu", t:"Đau bụng dưới, đau lưng, táo bón"},
+            {n:"Hội Dương", t:"Tiêu chảy, lòi dom (trĩ), liệt dương"},
+            {n:"Thừa Phù", t:"Đau thần kinh tọa, liệt chân, trĩ"},
+            {n:"Ân Môn", t:"Đau lưng, đau thần kinh tọa"},
+            {n:"Phù Khích", t:"Chuột rút, viêm bàng quang, táo bón"},
+            {n:"Ủy Dương", t:"Đau lưng, sưng nách, phù thũng"},
+            {n:"Ủy Trung", t:"Đau lưng, đau thần kinh tọa, thanh nhiệt, giải độc"},
+            {n:"Phụ Phân", t:"Đau vai gáy, tê tay"},
+            {n:"Phách Hộ", t:"Ho, suyễn, đau vai gáy"},
+            {n:"Cao Hoang", t:"Ho, suyễn, lao phổi, suy nhược cơ thể"},
+            {n:"Thần Đường", t:"Ho, suyễn, đau tim, hồi hộp"},
+            {n:"Y Hy", t:"Ho, suyễn, đau sườn, nấc"},
+            {n:"Cách Quan", t:"Nôn mửa, nấc, đau cột sống"},
+            {n:"Hồn Môn", t:"Đau dạ dày, đầy bụng, nôn mửa"},
+            {n:"Dương Cương", t:"Vàng da, đau bụng, tiêu chảy"},
+            {n:"Ý Xá", t:"Đầy bụng, nôn mửa, tiêu chảy"},
+            {n:"Vị Thương", t:"Đau dạ dày, đầy bụng, táo bón"},
+            {n:"Hoang Môn", t:"Đau bụng, táo bón, đau vú"},
+            {n:"Chí Thất", t:"Di tinh, liệt dương, đau lưng, bí tiểu"},
+            {n:"Bào Hoang", t:"Bí tiểu, đau lưng, đầy bụng"},
+            {n:"Trật Biên", t:"Đau thần kinh tọa, trĩ, liệt chân"},
+            {n:"Hợp Dương", t:"Đau lưng, đau chân, băng huyết"},
+            {n:"Thừa Cân", t:"Đau bắp chân, trĩ, đau thắt lưng"},
+            {n:"Thừa Sơn", t:"Chuột rút, trĩ, táo bón, đau gót chân"},
+            {n:"Phi Dương", t:"Đau đầu, chảy máu cam, đau lưng, đau chân"},
+            {n:"Phụ Dương", t:"Đau đầu, đau lưng, liệt chân"},
+            {n:"Côn Lôn", t:"Đau đầu, đau lưng, đau gót chân, đẻ khó"},
+            {n:"Bộc Tham", t:"Đau gót chân, liệt chân, động kinh"},
+            {n:"Thân Mạch", t:"Mất ngủ, đau đầu, chóng mặt, đau lưng"},
+            {n:"Kim Môn", t:"Động kinh, đau đầu, đau lưng"},
+            {n:"Kinh Cốt", t:"Đau đầu, cứng gáy, đau lưng"},
+            {n:"Thúc Cốt", t:"Đau đầu, đau lưng, hoa mắt"},
+            {n:"Thông Cốc", t:"Đau đầu, cứng gáy, chảy máu cam"},
+            {n:"Chí Âm", t:"Đau đầu, ngạt mũi, đẻ khó (xoay ngôi thai)"}
+        ];
+
+        const kiData = [
+            {n:"Dũng Tuyền", t:"Ngất, trúng gió, mất ngủ, cao huyết áp, đau đỉnh đầu"},
+            {n:"Nhiên Cốc", t:"Kinh nguyệt không đều, di tinh, tiểu đường"},
+            {n:"Thái Khê", t:"Ù tai, mất ngủ, đau lưng, hen suyễn, đau răng, bổ thận"},
+            {n:"Đại Chung", t:"Ho ra máu, hen suyễn, bí tiểu, đau gót chân"},
+            {n:"Thủy Tuyền", t:"Kinh nguyệt không đều, đau bụng kinh, tiểu rắt"},
+            {n:"Chiếu Hải", t:"Mất ngủ, đau họng, táo bón, kinh nguyệt không đều"},
+            {n:"Phục Lưu", t:"Phù thũng, ra mồ hôi trộm, tiêu chảy, đau lưng"},
+            {n:"Giao Tín", t:"Rong kinh, đau tinh hoàn, tiêu chảy"},
+            {n:"Trúc Tân", t:"Giải độc, điên cuồng, đau bắp chân"},
+            {n:"Âm Cốc", t:"Liệt dương, thoát vị, đau đầu gối"},
+            {n:"Hoành Cốt", t:"Đau bụng dưới, bí tiểu, di tinh"},
+            {n:"Đại Hách", t:"Di tinh, liệt dương, khí hư"},
+            {n:"Khí Huyệt", t:"Kinh nguyệt không đều, tiêu chảy, đau lưng"},
+            {n:"Tứ Mãn", t:"Đau bụng kinh, tiêu chảy, phù thũng"},
+            {n:"Trung Chú", t:"Táo bón, đau bụng, kinh nguyệt không đều"},
+            {n:"Hoang Du", t:"Đau dạ dày, nôn mửa, táo bón"},
+            {n:"Thương Khúc", t:"Đau bụng, tiêu chảy, táo bón"},
+            {n:"Thạch Quan", t:"Nôn mửa, đau dạ dày, táo bón"},
+            {n:"Âm Đô", t:"Đau bụng, đầy hơi, nôn mửa"},
+            {n:"Phúc Thông Cốc", t:"Đau bụng, nôn mửa, hồi hộp"},
+            {n:"U Môn", t:"Đau dạ dày, nôn mửa, tiêu chảy"},
+            {n:"Bộ Lang", t:"Ho, suyễn, đầy ngực"},
+            {n:"Thần Phong", t:"Ho, suyễn, đau ngực, đầy sườn"},
+            {n:"Linh Khư", t:"Ho, suyễn, đau ngực, nôn mửa"},
+            {n:"Thần Tàng", t:"Ho, suyễn, đau ngực"},
+            {n:"Vực Trung", t:"Ho, suyễn, đau ngực"},
+            {n:"Du Phủ", t:"Ho, suyễn, đau ngực"}
+        ];
+
+        const pcData = [
+            {n:"Thiên Trì", t:"Đau ngực, sưng nách, lao hạch, ít sữa"},
+            {n:"Thiên Tuyền", t:"Đau tim, đau ngực, đau tay"},
+            {n:"Khúc Trạch", t:"Đau tim, sốt cao, nôn mửa, run tay"},
+            {n:"Khích Môn", t:"Đau tim cấp, hồi hộp, nôn ra máu"},
+            {n:"Giản Sử", t:"Sốt rét, đau tim, nôn mửa, điên cuồng"},
+            {n:"Nội Quan", t:"Đau tim, mất ngủ, nôn mửa, say tàu xe, dạ dày đau"},
+            {n:"Đại Lăng", t:"Đau tim, hồi hộp, mất ngủ, hôi miệng"},
+            {n:"Lao Cung", t:"Tim đập nhanh, hôi miệng, loét miệng, ra mồ hôi tay"},
+            {n:"Trung Xung", t:"Trúng gió, hôn mê, sốt cao, đau tim"}
+        ];
+
+        const teData = [
+            {n:"Quan Xung", t:"Đau đầu, mắt đỏ, họng đau, sốt"},
+            {n:"Dịch Môn", t:"Đau đầu, mắt đỏ, điếc tai, sốt rét"},
+            {n:"Trung Chử", t:"Đau đầu, ù tai, điếc tai, đau vai"},
+            {n:"Dương Trì", t:"Đau cổ tay, đau họng, điếc tai"},
+            {n:"Ngoại Quan", t:"Đau đầu, sốt, đau vai gáy, đau sườn, ù tai"},
+            {n:"Chi Cấu", t:"Táo bón, đau sườn, đau vai, sốt"},
+            {n:"Hội Tông", t:"Điếc tai, động kinh, đau tay"},
+            {n:"Tam Dương Lạc", t:"Điếc tai, mất tiếng, đau tay"},
+            {n:"Tứ Độc", t:"Điếc tai, đau răng, đau tay"},
+            {n:"Thiên Tỉnh", t:"Đau vai, đau cổ, điếc tai"},
+            {n:"Thanh Lãnh Uyên", t:"Đau đầu, đau vai, đau mắt"},
+            {n:"Tiêu Lạc", t:"Đau đầu, đau cổ gáy, đau răng"},
+            {n:"Nhu Hội", t:"Đau vai, bướu cổ"},
+            {n:"Kiên Liêu", t:"Đau vai, không giơ tay được"},
+            {n:"Thiên Liêu", t:"Đau vai gáy, sốt"},
+            {n:"Thiên Dũ", t:"Cứng cổ, điếc tai, chóng mặt"},
+            {n:"Ế Phong", t:"Ù tai, điếc tai, liệt mặt, quai bị"},
+            {n:"Khế Mạch", t:"Đau đầu, ù tai, điếc tai"},
+            {n:"Lô Tức", t:"Đau đầu, ù tai, trẻ em nôn trớ"},
+            {n:"Giác Tôn", t:"Đau đầu, mắt mờ, đau răng"},
+            {n:"Nhĩ Môn", t:"Ù tai, điếc tai, viêm tai giữa, đau răng"},
+            {n:"Hòa Liêu", t:"Đau đầu, ù tai, méo miệng"},
+            {n:"Ty Trúc Không", t:"Đau đầu, mắt đỏ, mắt giật"}
+        ];
+
+        const gbData = [
+            {n:"Đồng Tử Liêu", t:"Đau đầu, đau mắt, quáng gà, liệt mặt"},
+            {n:"Thính Hội", t:"Ù tai, điếc tai, liệt mặt, đau răng"},
+            {n:"Thượng Quan", t:"Đau đầu, ù tai, đau răng, liệt mặt"},
+            {n:"Hàm Yến", t:"Đau đầu, chóng mặt, ù tai"},
+            {n:"Huyền Lư", t:"Đau nửa đầu, đau răng, sưng mặt"},
+            {n:"Huyền Ly", t:"Đau nửa đầu, đau răng, sưng mặt"},
+            {n:"Khúc Mấn", t:"Đau nửa đầu, cứng hàm"},
+            {n:"Suất Cốc", t:"Đau nửa đầu, chóng mặt, nôn mửa"},
+            {n:"Thiên Xung", t:"Đau đầu, sưng lợi, động kinh"},
+            {n:"Phù Bạch", t:"Đau đầu, ù tai, điếc tai"},
+            {n:"Đầu Khiếu Âm", t:"Đau đầu, cứng cổ, ù tai"},
+            {n:"Hoàn Cốt", t:"Đau đầu, mất ngủ, sưng mặt"},
+            {n:"Bản Thần", t:"Đau đầu, chóng mặt, động kinh"},
+            {n:"Dương Bạch", t:"Đau đầu, quáng gà, liệt mặt, sụp mi"},
+            {n:"Đầu Lâm Khấp", t:"Đau đầu, nghẹt mũi, chảy nước mắt"},
+            {n:"Mục Song", t:"Đau đầu, mắt đỏ, sưng mặt"},
+            {n:"Chính Dinh", t:"Đau đầu, chóng mặt, đau răng"},
+            {n:"Thừa Linh", t:"Đau đầu, chảy máu cam, suyễn"},
+            {n:"Não Không", t:"Đau đầu, cứng cổ, chảy máu cam"},
+            {n:"Phong Trì", t:"Cảm mạo, đau đầu, chóng mặt, đau vai gáy, cao huyết áp"},
+            {n:"Kiên Tỉnh", t:"Đau vai gáy, tắc tia sữa, đẻ khó, lao hạch"},
+            {n:"Uyên Dịch", t:"Đau sườn, sưng nách, đau tay"},
+            {n:"Triếp Cân", t:"Đau sườn, nôn mửa, ợ chua"},
+            {n:"Nhật Nguyệt", t:"Đau sườn, nôn mửa, vàng da, loét dạ dày"},
+            {n:"Kinh Môn", t:"Đau bụng, tiêu chảy, đau sườn"},
+            {n:"Đới Mạch", t:"Kinh nguyệt không đều, khí hư, đau lưng"},
+            {n:"Ngũ Khu", t:"Đau bụng dưới, khí hư, đau lưng"},
+            {n:"Duy Đạo", t:"Đau bụng dưới, khí hư, táo bón"},
+            {n:"Cự Liêu", t:"Đau khớp háng, đau lưng, liệt chân"},
+            {n:"Hoàn Khiêu", t:"Đau thần kinh tọa, liệt chân, đau lưng"},
+            {n:"Phong Thị", t:"Liệt chân, ngứa toàn thân, đau thần kinh tọa"},
+            {n:"Trung Độc", t:"Liệt chân, đau thần kinh tọa"},
+            {n:"Túc Dương Quan", t:"Đau đầu gối, tê chân"},
+            {n:"Dương Lăng Tuyền", t:"Đau sườn, đắng miệng, nôn mửa, đau đầu gối, thư gân"},
+            {n:"Dương Giao", t:"Đau thần kinh tọa, tê chân, đau hông"},
+            {n:"Ngoại Khâu", t:"Đau cổ, đau ngực, chân đau"},
+            {n:"Quang Minh", t:"Mắt mờ, quáng gà, đau chân"},
+            {n:"Dương Phụ", t:"Đau nửa đầu, đau mắt, đau họng, đau chân"},
+            {n:"Huyền Chung", t:"Đau cổ gáy, liệt chân, trĩ, đau họng"},
+            {n:"Khâu Khư", t:"Đau cổ chân, đau sườn, đau mắt"},
+            {n:"Túc Lâm Khấp", t:"Đau nửa đầu, đau mắt, đau sườn, tắc tia sữa"},
+            {n:"Địa Ngũ Hội", t:"Đau đầu, đau mắt, đau chân"},
+            {n:"Hiệp Khê", t:"Đau đầu, chóng mặt, đau tai, sốt"},
+            {n:"Túc Khiếu Âm", t:"Đau đầu, mất ngủ, đau mắt, đau họng"}
+        ];
+
+        const lrData = [
+            {n:"Đại Đôn", t:"Thoát vị, băng huyết, sa tử cung, động kinh"},
+            {n:"Hành Gian", t:"Đau đầu, mắt đỏ, mất ngủ, kinh nguyệt không đều"},
+            {n:"Thái Xung", t:"Đau đầu, chóng mặt, cao huyết áp, mất ngủ, stress"},
+            {n:"Trung Phong", t:"Đau bụng dưới, bí tiểu, đau mắt cá chân"},
+            {n:"Lãi Câu", t:"Kinh nguyệt không đều, bí tiểu, ngứa âm hộ"},
+            {n:"Trung Đô", t:"Băng huyết, khí hư, đau bụng dưới"},
+            {n:"Tất Quan", t:"Đau đầu gối"},
+            {n:"Khúc Tuyền", t:"Đau bụng dưới, bí tiểu, di tinh, ngứa âm hộ"},
+            {n:"Âm Bao", t:"Kinh nguyệt không đều, bí tiểu, đau lưng"},
+            {n:"Túc Ngũ Lý", t:"Bí tiểu, mệt mỏi, đau bụng dưới"},
+            {n:"Âm Liêm", t:"Kinh nguyệt không đều, đau đùi"},
+            {n:"Cấp Mạch", t:"Thoát vị, đau dương vật, sa tử cung"},
+            {n:"Chương Môn", t:"Đầy bụng, tiêu chảy, đau sườn, vàng da"},
+            {n:"Kỳ Môn", t:"Đau sườn, nôn mửa, ợ chua, viêm gan"}
+        ];
+
+        const gvData = [
+            {n:"Trường Cường", t:"Trĩ, tiêu chảy, đau lưng, điên cuồng"},
+            {n:"Yêu Du", t:"Kinh nguyệt không đều, đau lưng, trĩ"},
+            {n:"Yêu Dương Quan", t:"Đau lưng, di tinh, liệt dương, liệt chân"},
+            {n:"Mệnh Môn", t:"Đau lưng, di tinh, liệt dương, tay chân lạnh"},
+            {n:"Huyền Khu", t:"Đau lưng, tiêu chảy, đầy bụng"},
+            {n:"Tích Trung", t:"Đau dạ dày, tiêu chảy, trĩ"},
+            {n:"Trung Khu", t:"Đau dạ dày, đau lưng, nôn mửa"},
+            {n:"Cân Súc", t:"Đau dạ dày, động kinh, đau lưng"},
+            {n:"Chí Dương", t:"Vàng da, đau ngực sườn, suyễn"},
+            {n:"Linh Đài", t:"Ho, suyễn, đau lưng, mụn nhọt"},
+            {n:"Thần Đạo", t:"Mất ngủ, hay quên, ho, đau tim"},
+            {n:"Thân Trụ", t:"Ho, suyễn, mụn nhọt, sốt"},
+            {n:"Đào Đạo", t:"Sốt rét, sốt cao, đau đầu"},
+            {n:"Đại Chùy", t:"Sốt cao, cảm cúm, ho, suyễn, trúng gió"},
+            {n:"Á Môn", t:"Câm điếc, cứng gáy, đau đầu, chảy máu cam"},
+            {n:"Phong Phủ", t:"Đau đầu, cứng gáy, trúng gió, chảy máu cam"},
+            {n:"Não Hộ", t:"Đau đầu, cứng gáy, chóng mặt"},
+            {n:"Cường Gian", t:"Đau đầu, cứng gáy, nôn mửa"},
+            {n:"Hậu Đỉnh", t:"Đau đầu, chóng mặt, điên cuồng"},
+            {n:"Bách Hội", t:"Đau đầu, chóng mặt, sa trực tràng, mất ngủ, thăng dương khí"},
+            {n:"Tiền Đỉnh", t:"Đau đầu, chóng mặt, chảy nước mũi"},
+            {n:"Tín Hội", t:"Đau đầu, chóng mặt, trẻ em kinh phong"},
+            {n:"Thượng Tinh", t:"Đau đầu, chảy máu cam, đau mắt"},
+            {n:"Thần Đình", t:"Đau đầu, mất ngủ, hồi hộp, chảy máu cam"},
+            {n:"Tố Liêu", t:"Ngạt mũi, chảy máu cam, ngất"},
+            {n:"Nhân Trung", t:"Ngất, trúng gió, méo miệng, đau lưng cấp (cấp cứu)"},
+            {n:"Đoài Đoan", t:"Đau răng, sưng lợi, chảy máu cam"},
+            {n:"Ngân Giao", t:"Đau răng, sưng lợi, chảy máu cam"}
+        ];
+
+        const cvData = [
+            {n:"Hội Âm", t:"Kinh nguyệt không đều, di tinh, trĩ, chết đuối (cấp cứu)"},
+            {n:"Khúc Cốt", t:"Bí tiểu, di tinh, khí hư, liệt dương"},
+            {n:"Trung Cực", t:"Bí tiểu, di tinh, liệt dương, đau bụng kinh"},
+            {n:"Quan Nguyên", t:"Di tinh, liệt dương, tiểu dầm, đau bụng kinh, bổ thận khí"},
+            {n:"Thạch Môn", t:"Đau bụng, bí tiểu, kinh nguyệt không đều"},
+            {n:"Khí Hải", t:"Đau bụng, tiêu chảy, di tinh, suy nhược cơ thể, bổ khí"},
+            {n:"Âm Giao", t:"Đau bụng, tiêu chảy, kinh nguyệt không đều"},
+            {n:"Thần Khuyết", t:"Đau bụng, tiêu chảy, trúng gió (Cứu, không châm)"},
+            {n:"Thủy Phân", t:"Phù thũng, đau bụng, tiêu chảy"},
+            {n:"Hạ Quản", t:"Đau dạ dày, đầy bụng, nôn mửa"},
+            {n:"Kiến Lý", t:"Đau dạ dày, nôn mửa, chán ăn"},
+            {n:"Trung Quản", t:"Đau dạ dày, nôn mửa, đầy hơi, ợ chua"},
+            {n:"Thượng Quản", t:"Đau dạ dày, nôn mửa, điên cuồng"},
+            {n:"Cự Khuyết", t:"Đau dạ dày, nôn mửa, đau tim, hồi hộp"},
+            {n:"Cưu Vĩ", t:"Đau tim, đau ngực, động kinh"},
+            {n:"Trung Đình", t:"Đầy ngực, nôn mửa, khó nuốt"},
+            {n:"Đản Trung", t:"Hen suyễn, đau ngực, ít sữa, nấc, hội khí"},
+            {n:"Ngọc Đường", t:"Ho, suyễn, đau ngực"},
+            {n:"Tử Cung", t:"Ho, suyễn, đau ngực"},
+            {n:"Hoa Cái", t:"Ho, suyễn, đau ngực, đau họng"},
+            {n:"Toàn Cơ", t:"Ho, suyễn, đau ngực, đau họng"},
+            {n:"Thiên Đột", t:"Ho, suyễn, đau họng, mất tiếng, nấc"},
+            {n:"Liêm Tuyền", t:"Lưỡi cứng, mất tiếng, nuốt khó"},
+            {n:"Thừa Tương", t:"Méo miệng, đau răng, chảy nước dãi"}
+        ];
 
         const defaultAcupoints = [
-            ...createPoints("LU", "Phế Kinh", luNames),
-            ...createPoints("LI", "Đại Trường Kinh", liNames),
-            ...createPoints("ST", "Vị Kinh", stNames),
-            ...createPoints("SP", "Tỳ Kinh", spNames),
-            ...createPoints("HT", "Tâm Kinh", htNames),
-            ...createPoints("SI", "Tiểu Trường Kinh", siNames),
-            ...createPoints("BL", "Bàng Quang Kinh", blNames),
-            ...createPoints("KI", "Thận Kinh", kiNames),
-            ...createPoints("PC", "Tâm Bào Kinh", pcNames),
-            ...createPoints("TE", "Tam Tiêu Kinh", teNames),
-            ...createPoints("GB", "Đởm Kinh", gbNames),
-            ...createPoints("LR", "Can Kinh", lrNames),
-            ...createPoints("GV", "Mạch Đốc", gvNames),
-            ...createPoints("CV", "Mạch Nhâm", cvNames)
+            ...createPoints("LU", "Phế Kinh", luData),
+            ...createPoints("LI", "Đại Trường Kinh", liData),
+            ...createPoints("ST", "Vị Kinh", stData),
+            ...createPoints("SP", "Tỳ Kinh", spData),
+            ...createPoints("HT", "Tâm Kinh", htData),
+            ...createPoints("SI", "Tiểu Trường Kinh", siData),
+            ...createPoints("BL", "Bàng Quang Kinh", blData),
+            ...createPoints("KI", "Thận Kinh", kiData),
+            ...createPoints("PC", "Tâm Bào Kinh", pcData),
+            ...createPoints("TE", "Tam Tiêu Kinh", teData),
+            ...createPoints("GB", "Đởm Kinh", gbData),
+            ...createPoints("LR", "Can Kinh", lrData),
+            ...createPoints("GV", "Mạch Đốc", gvData),
+            ...createPoints("CV", "Mạch Nhâm", cvData)
         ];
 
         // ELEMENTS
@@ -984,7 +1367,7 @@
                     const docRef = doc(collection(db, "acupoints"));
                     batch.set(docRef, {
                         uid: currentUser.uid, group: item.group, name: item.name, desc: item.desc, image: "",
-                        treats: "", // Initialize empty treats
+                        treats: item.treats || "", 
                         srsLevel: 0, nextReview: 0, createdAt: serverTimestamp()
                     });
                 });
