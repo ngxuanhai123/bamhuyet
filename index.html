@@ -591,6 +591,9 @@
                         <button class="btn btn-xs btn-secondary" onclick="openComboModal()">+ Kê Toa</button>
                     </h3>
                     <p style="font-size:0.9rem; color:#6b7280; margin-bottom:20px;">Các bài thuốc phối hợp huyệt phổ biến trong Y học cổ truyền.</p>
+                    
+                    <input type="text" id="comboSearchInp" placeholder="🔍 Tìm toa thuốc, bệnh, hoặc huyệt..." style="margin-bottom: 15px;">
+
                     <div id="comboList" class="combo-list">
                         </div>
                 </div>
@@ -890,6 +893,7 @@
             viewMonth: document.getElementById('viewMonth'),
             // Combos
             comboList: document.getElementById('comboList'),
+            comboSearchInp: document.getElementById('comboSearchInp'), // NEW: Search Input
             // Badges
             badges: {
                 novice: document.getElementById('badge-novice'),
@@ -1329,7 +1333,18 @@
 
         function renderCombos() {
             els.comboList.innerHTML = '';
+            
+            // --- NEW: Filter Logic ---
+            const filterText = els.comboSearchInp ? els.comboSearchInp.value.trim().toLowerCase() : "";
+
             combos.forEach(combo => {
+                // Check if matches filter (Title, Description, or any Point name)
+                const matchTitle = combo.title.toLowerCase().includes(filterText);
+                const matchDesc = combo.desc.toLowerCase().includes(filterText);
+                const matchPoints = combo.points.some(p => p.toLowerCase().includes(filterText));
+
+                if (filterText && !matchTitle && !matchDesc && !matchPoints) return; // Skip if no match
+
                 const card = document.createElement('div');
                 card.className = 'combo-card';
                 card.onclick = () => {
@@ -1362,8 +1377,17 @@
                 `;
                 els.comboList.appendChild(card);
             });
+
+            if (els.comboList.innerHTML === '') {
+                els.comboList.innerHTML = '<div style="text-align:center; padding:20px; color:#9ca3af;">Không tìm thấy bài thuốc nào.</div>';
+            }
         }
         
+        // --- NEW: Event Listener for Combo Search ---
+        if(els.comboSearchInp) {
+            els.comboSearchInp.addEventListener('input', renderCombos);
+        }
+
         // Helper to open detail from Combo
         window.findAndOpen = (id) => {
             const item = acupoints.find(i => i.id === id);
