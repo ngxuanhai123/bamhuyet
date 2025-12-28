@@ -175,11 +175,11 @@
         }
 
         /* Modal Details & Edit */
-        #detailModal {
+        #detailModal, #comboModal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
             display: none; justify-content: center; align-items: flex-end;
         }
-        #detailModal.show { display: flex; animation: fadeIn 0.2s; }
+        #detailModal.show, #comboModal.show { display: flex; animation: fadeIn 0.2s; }
         .detail-sheet {
             background: white; width: 100%; max-width: 600px; 
             border-radius: 20px 20px 0 0; padding: 25px;
@@ -187,7 +187,7 @@
             display: flex; flex-direction: column;
         }
         @media(min-width: 600px) {
-            #detailModal { align-items: center; }
+            #detailModal, #comboModal { align-items: center; }
             .detail-sheet { border-radius: 20px; width: 90%; }
         }
 
@@ -203,15 +203,43 @@
         .combo-card {
             background: white; border: 1px solid #e5e7eb; border-radius: 12px;
             padding: 16px; cursor: pointer; transition: all 0.2s;
-            display: flex; flex-direction: column; gap: 8px;
+            display: flex; flex-direction: column; gap: 8px; position: relative;
         }
         .combo-card:hover { border-color: var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transform: translateY(-2px); }
-        .combo-title { font-weight: 800; color: var(--text); font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        .combo-title { font-weight: 800; color: var(--text); font-size: 1rem; display: flex; align-items: center; gap: 8px; padding-right: 50px; }
         .combo-points { display: flex; flex-wrap: wrap; gap: 6px; }
         .combo-tag { 
             background: #e0f2f1; color: var(--primary-dark); padding: 4px 10px; 
             border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
         }
+        .combo-actions {
+            position: absolute; top: 12px; right: 12px; display: flex; gap: 4px;
+        }
+        .btn-mini {
+            padding: 4px; border-radius: 6px; border: 1px solid #e5e7eb; background: white; cursor: pointer; color: #666; font-size: 0.9rem;
+        }
+        .btn-mini:hover { background: #f3f4f6; color: var(--primary); }
+        
+        /* Combo Edit Styles */
+        .selected-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .tag-chip {
+            background: var(--primary); color: white; padding: 5px 10px; border-radius: 16px; 
+            font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;
+        }
+        .tag-chip span { cursor: pointer; opacity: 0.8; font-size: 1rem; font-weight: bold;}
+        .tag-chip span:hover { opacity: 1; }
+        
+        .suggestion-box {
+            border: 1px solid #e5e7eb; border-top: none; max-height: 150px; overflow-y: auto;
+            border-radius: 0 0 12px 12px; background: white; margin-top: -12px; margin-bottom: 12px;
+            display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .suggestion-item {
+            padding: 10px; cursor: pointer; font-size: 0.9rem; border-bottom: 1px solid #f9fafb; display: flex; justify-content: space-between;
+        }
+        .suggestion-item:hover { background: #f3f4f6; color: var(--primary); }
+        .suggestion-group { font-size: 0.7rem; color: #9ca3af; background: #f3f4f6; padding: 2px 6px; border-radius: 4px;}
+
 
         /* --- Leaderboard UI --- */
         .lb-container { display: flex; flex-direction: column; gap: 10px; }
@@ -338,8 +366,7 @@
                 <h2 id="modalName" style="margin:0 0 5px 0; color:var(--primary-dark);">Tên Huyệt</h2>
                 <div id="modalGroup" style="color:var(--text-light); font-size:0.9rem; font-style:italic; margin-bottom:10px;">Nhóm huyệt</div>
                 
-                <div id="modalTreatsContainer" style="margin-bottom: 15px;">
-                    </div>
+                <div id="modalTreatsContainer" style="margin-bottom: 15px;"></div>
 
                 <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
                     <h4 style="margin:0 0 8px 0;">Vị trí & Mô tả</h4>
@@ -369,6 +396,29 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div id="comboModal">
+        <div class="detail-sheet">
+             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0; color: var(--primary);" id="comboModalTitle">Thêm Toa Thuốc Mới</h3>
+                <button onclick="document.getElementById('comboModal').classList.remove('show')" style="border:none; background:none; font-size:1.5rem; color:#999; cursor:pointer;">&times;</button>
+            </div>
+            
+            <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Tên Bệnh / Toa</label>
+            <input type="text" id="comboTitleInp" placeholder="VD: Đau đầu (Cảm lạnh)">
+
+            <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Mô tả / Cách dùng</label>
+            <textarea id="comboDescInp" rows="2" placeholder="Mô tả công dụng..."></textarea>
+
+            <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Công thức huyệt</label>
+            <div id="comboSelectedTags" class="selected-tags"></div>
+            
+            <input type="text" id="comboPointInput" placeholder="Nhập tên huyệt để tìm kiếm (VD: Hợp Cốc)..." autocomplete="off">
+            <div id="comboPointSuggestions" class="suggestion-box"></div>
+
+            <button class="btn btn-primary" id="btnSaveCombo" style="width:100%; margin-top:10px;">Lưu Toa Thuốc</button>
         </div>
     </div>
 
@@ -536,7 +586,10 @@
 
             <div id="tab-combo" class="view">
                 <div class="card">
-                    <h3 style="margin-top:0; margin-bottom:15px; font-size: 1.1rem;">💊 Bí Kíp Phối Huyệt</h3>
+                    <h3 style="margin-top:0; margin-bottom:15px; font-size: 1.1rem; display:flex; justify-content:space-between; align-items:center;">
+                        💊 Bí Kíp Phối Huyệt
+                        <button class="btn btn-xs btn-secondary" onclick="openComboModal()">+ Kê Toa</button>
+                    </h3>
                     <p style="font-size:0.9rem; color:#6b7280; margin-bottom:20px;">Các bài thuốc phối hợp huyệt phổ biến trong Y học cổ truyền.</p>
                     <div id="comboList" class="combo-list">
                         </div>
@@ -577,8 +630,12 @@
         const GUEST_LIMIT = 10;
         
         let acupoints = [];
+        let combos = [];
         let currentQuizItem = null;
         let currentEditingItem = null;
+        let currentComboEditing = null; // For Editing Combo
+        let comboPointsTemp = []; // Temp storage for points in combo editor
+        
         let currentHintIndex = 0;
         let todayCheckedIn = false;
         let attendanceDates = new Set();
@@ -739,8 +796,8 @@
             ...createPoints("CV", "Mạch Nhâm", cvData)
         ];
 
-        // --- COMBO PRESCRIPTIONS DATA ---
-        const combos = [
+        // --- COMBO PRESCRIPTIONS DATA (DEFAULTS) ---
+        const defaultCombos = [
             { title: "Đau Đầu (Cảm mạo)", points: ["Hợp Cốc", "Thái Dương", "Phong Trì", "Bách Hội"], desc: "Giảm đau đầu do trúng gió, cảm lạnh, căng thẳng." },
             { title: "Mất Ngủ", points: ["Thần Môn", "Tam Âm Giao", "Nội Quan", "Dũng Tuyền"], desc: "Giúp an thần, dễ ngủ, ngủ sâu giấc." },
             { title: "Đau Dạ Dày", points: ["Trung Quản", "Túc Tam Lý", "Nội Quan"], desc: "Giảm đau bụng, đầy hơi, khó tiêu." },
@@ -773,7 +830,7 @@
             inpGroup: document.getElementById('inpGroup'),
             inpName: document.getElementById('inpName'),
             inpDesc: document.getElementById('inpDesc'),
-            inpTreats: document.getElementById('inpTreats'), // New Input
+            inpTreats: document.getElementById('inpTreats'), 
             btnAddData: document.getElementById('btnAddData'),
             libraryContent: document.getElementById('libraryContent'),
             libSearch: document.getElementById('libSearch'),
@@ -798,6 +855,15 @@
             editTreats: document.getElementById('editTreats'),
             editDesc: document.getElementById('editDesc'),
             btnSaveEdit: document.getElementById('btnSaveEdit'),
+            // Combo Modal Elements
+            comboModal: document.getElementById('comboModal'),
+            comboModalTitle: document.getElementById('comboModalTitle'),
+            comboTitleInp: document.getElementById('comboTitleInp'),
+            comboDescInp: document.getElementById('comboDescInp'),
+            comboPointInput: document.getElementById('comboPointInput'),
+            comboSelectedTags: document.getElementById('comboSelectedTags'),
+            comboPointSuggestions: document.getElementById('comboPointSuggestions'),
+            btnSaveCombo: document.getElementById('btnSaveCombo'),
 
             // Quiz
             quizGroupSelect: document.getElementById('quizGroupSelect'),
@@ -905,7 +971,7 @@
                 
                 showLoading(true);
                 try {
-                    await Promise.all([loadData(), checkAttendance(), loadLeaderboard()]);
+                    await Promise.all([loadData(), loadCombos(), checkAttendance(), loadLeaderboard()]);
                 } catch(e) { console.error("Load error:", e); }
                 showLoading(false);
                 showToast(`Chào mừng ${user.displayName} Bác sĩ tương lai!`);
@@ -916,9 +982,16 @@
                 els.limitCounter.style.display = 'inline-block';
                 els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
                 
+                // Load Acupoints
                 const localData = localStorage.getItem('guest_acupoints');
                 if (localData) { acupoints = JSON.parse(localData); } 
                 else { acupoints = defaultAcupoints.map((item, index) => ({ id: 'guest_' + index, ...item, srsLevel: 0, nextReview: 0 })); }
+                
+                // Load Combos for Guest
+                const localCombos = localStorage.getItem('guest_combos');
+                if(localCombos) { combos = JSON.parse(localCombos); }
+                else { combos = defaultCombos.map((c, i) => ({ id: 'g_combo_'+i, ...c })); }
+
                 renderListGrouped(); updateGroupSelect(); prepareQuiz();
                 
                 startQuiz();
@@ -1229,28 +1302,60 @@
             showLoading(false);
         }
 
-        // --- COMBO PRESCRIPTION LOGIC ---
+        // --- COMBO PRESCRIPTION LOGIC (NEW & IMPROVED) ---
+        
+        async function loadCombos() {
+            if(isGuest) return; // Already handled in Auth check for guest
+            try {
+                const q = query(collection(db, "combos"), where("uid", "==", currentUser.uid));
+                const snap = await getDocs(q);
+                combos = [];
+                snap.forEach((doc) => combos.push({ id: doc.id, ...doc.data() }));
+
+                // If user has no combos, load defaults into DB
+                if (combos.length === 0) {
+                     const batch = writeBatch(db);
+                     defaultCombos.forEach(item => {
+                         const docRef = doc(collection(db, "combos"));
+                         const newItem = { uid: currentUser.uid, ...item, createdAt: serverTimestamp() };
+                         batch.set(docRef, newItem);
+                         combos.push({ id: docRef.id, ...newItem }); // Update local
+                     });
+                     await batch.commit();
+                }
+                renderCombos();
+            } catch(e) { console.error("Error loading combos", e); }
+        }
+
         function renderCombos() {
             els.comboList.innerHTML = '';
             combos.forEach(combo => {
                 const card = document.createElement('div');
                 card.className = 'combo-card';
                 card.onclick = () => {
-                    // Could add logic to open a detail view of the combo, 
-                    // for now just toggle open simple details
+                     // Click card logic if needed (e.g. expand details)
                 };
 
                 const pointsHtml = combo.points.map(p => {
                     // Find actual point code/name matching
-                    const match = acupoints.find(ap => ap.name.includes(p));
+                    const match = acupoints.find(ap => ap.name.toLowerCase().includes(p.toLowerCase()));
                     // Basic click logic to open detail if found
                     const clickAttr = match ? `onclick="event.stopPropagation(); window.findAndOpen('${match.id}')"` : "";
                     return `<span class="combo-tag" ${clickAttr} style="${match?'cursor:pointer':''}">${p}</span>`;
                 }).join('');
+                
+                // Edit/Delete buttons (only show if function exists, which now it does)
+                const actionsHtml = `
+                    <div class="combo-actions">
+                        <button class="btn-mini" onclick="event.stopPropagation(); editCombo('${combo.id}')" title="Sửa">✏️</button>
+                        <button class="btn-mini" onclick="event.stopPropagation(); deleteCombo('${combo.id}')" title="Xóa" style="color:#ef4444;">🗑️</button>
+                    </div>
+                `;
 
                 card.innerHTML = `
+                    ${actionsHtml}
                     <div class="combo-title">💊 ${combo.title}</div>
-                    <div style="font-size:0.9rem; color:#6b7280;">${combo.desc}</div>
+                    <div style="font-size:0.9rem; color:#6b7280; margin-bottom: 5px;">${combo.desc}</div>
                     <div class="combo-points">
                         ${pointsHtml}
                     </div>
@@ -1264,6 +1369,176 @@
             const item = acupoints.find(i => i.id === id);
             if(item) openDetail(item);
         }
+
+        // --- COMBO EDITING & AUTOCOMPLETE ---
+        
+        window.openComboModal = () => {
+            currentComboEditing = null;
+            comboPointsTemp = [];
+            els.comboModalTitle.textContent = "Thêm Toa Thuốc Mới";
+            els.comboTitleInp.value = "";
+            els.comboDescInp.value = "";
+            els.comboPointInput.value = "";
+            renderComboTags();
+            els.comboModal.classList.add('show');
+        }
+
+        window.editCombo = (id) => {
+            const combo = combos.find(c => c.id === id);
+            if(!combo) return;
+            currentComboEditing = combo;
+            comboPointsTemp = [...combo.points];
+            els.comboModalTitle.textContent = "Chỉnh Sửa Toa Thuốc";
+            els.comboTitleInp.value = combo.title;
+            els.comboDescInp.value = combo.desc;
+            els.comboPointInput.value = "";
+            renderComboTags();
+            els.comboModal.classList.add('show');
+        }
+
+        window.deleteCombo = async (id) => {
+             if(isGuest) {
+                 if(confirm("Xóa toa này? (Khách chỉ xóa tạm thời)")) {
+                    combos = combos.filter(c => c.id !== id);
+                    localStorage.setItem('guest_combos', JSON.stringify(combos));
+                    renderCombos();
+                 }
+                 return;
+             }
+             if(!confirm("Bạn chắc chắn muốn xóa toa thuốc này?")) return;
+             showLoading(true);
+             try {
+                 await deleteDoc(doc(db, "combos", id));
+                 combos = combos.filter(c => c.id !== id);
+                 renderCombos();
+                 showToast("Đã xóa toa thuốc.");
+             } catch(e) { showToast("Lỗi xóa: " + e.message); }
+             showLoading(false);
+        }
+
+        function renderComboTags() {
+            els.comboSelectedTags.innerHTML = '';
+            comboPointsTemp.forEach((pt, index) => {
+                const tag = document.createElement('div');
+                tag.className = 'tag-chip';
+                tag.innerHTML = `${pt} <span onclick="removeComboTag(${index})">&times;</span>`;
+                els.comboSelectedTags.appendChild(tag);
+            });
+        }
+
+        window.removeComboTag = (index) => {
+            comboPointsTemp.splice(index, 1);
+            renderComboTags();
+        }
+
+        // Suggestion Logic
+        els.comboPointInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase().trim();
+            if(!val) { els.comboPointSuggestions.style.display = 'none'; return; }
+            
+            // Search in acupoints
+            const matches = acupoints.filter(ap => 
+                ap.name.toLowerCase().includes(val) || 
+                (ap.treats && ap.treats.toLowerCase().includes(val))
+            ).slice(0, 10); // Limit to 10 suggestions
+
+            if(matches.length > 0) {
+                els.comboPointSuggestions.innerHTML = '';
+                matches.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = `<div>${m.name}</div> <div class="suggestion-group">${m.group}</div>`;
+                    div.onclick = () => {
+                        // Extract just the name or code + name
+                        // Usually user wants full name: "LI4 Hợp Cốc"
+                        comboPointsTemp.push(m.name);
+                        renderComboTags();
+                        els.comboPointInput.value = '';
+                        els.comboPointSuggestions.style.display = 'none';
+                        els.comboPointInput.focus();
+                    };
+                    els.comboPointSuggestions.appendChild(div);
+                });
+                els.comboPointSuggestions.style.display = 'block';
+            } else {
+                els.comboPointSuggestions.style.display = 'none';
+            }
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!els.comboPointInput.contains(e.target) && !els.comboPointSuggestions.contains(e.target)) {
+                els.comboPointSuggestions.style.display = 'none';
+            }
+        });
+
+        // Add custom point if enter pressed and no suggestion selected
+        els.comboPointInput.addEventListener('keydown', (e) => {
+             if(e.key === 'Enter') {
+                 const val = e.target.value.trim();
+                 if(val) {
+                     comboPointsTemp.push(val);
+                     renderComboTags();
+                     e.target.value = '';
+                     els.comboPointSuggestions.style.display = 'none';
+                 }
+             }
+        });
+
+        // Save Combo
+        els.btnSaveCombo.addEventListener('click', async () => {
+            const title = els.comboTitleInp.value.trim();
+            const desc = els.comboDescInp.value.trim();
+            
+            if(!title) return showToast("Vui lòng nhập tên Toa Thuốc!");
+            if(comboPointsTemp.length === 0) return showToast("Toa thuốc phải có ít nhất 1 huyệt!");
+
+            const newComboData = {
+                title, desc, points: comboPointsTemp
+            };
+
+            if(isGuest) {
+                if(currentComboEditing) {
+                    // Update Guest
+                    const idx = combos.findIndex(c => c.id === currentComboEditing.id);
+                    if(idx !== -1) combos[idx] = { ...combos[idx], ...newComboData };
+                } else {
+                    // Add Guest
+                    combos.push({ id: 'g_combo_' + Date.now(), ...newComboData });
+                }
+                localStorage.setItem('guest_combos', JSON.stringify(combos));
+                renderCombos();
+                els.comboModal.classList.remove('show');
+                showToast("Đã lưu (Chế độ Khách).");
+                return;
+            }
+
+            // Authenticated Save
+            showLoading(true);
+            try {
+                if (currentComboEditing) {
+                    // Update
+                    await updateDoc(doc(db, "combos", currentComboEditing.id), newComboData);
+                    // Update local
+                    const idx = combos.findIndex(c => c.id === currentComboEditing.id);
+                    if(idx !== -1) combos[idx] = { ...combos[idx], ...newComboData };
+                } else {
+                    // Add
+                    const docRef = await addDoc(collection(db, "combos"), {
+                        uid: currentUser.uid, createdAt: serverTimestamp(), ...newComboData
+                    });
+                    combos.push({ id: docRef.id, uid: currentUser.uid, ...newComboData });
+                }
+                renderCombos();
+                els.comboModal.classList.remove('show');
+                showToast("✅ Lưu toa thuốc thành công!");
+            } catch(e) {
+                console.error(e);
+                showToast("Lỗi khi lưu: " + e.message);
+            }
+            showLoading(false);
+        });
+
 
         // --- QUIZ LOGIC ---
         function prepareQuiz() {
