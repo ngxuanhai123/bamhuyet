@@ -1055,15 +1055,16 @@ body {
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp, writeBatch, orderBy, limit, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // FIREBASE CONFIG
+        // FIREBASE CONFIG (ĐỒNG BỘ TOÀN BỘ HỆ SINH THÁI HIHI STUDY)
         const firebaseConfig = {
-            apiKey: "AIzaSyAsHD5pH6Blm4wtXKEJojFYMl24SNgiKY0",
-            authDomain: "bamhuyet-6c9e6.firebaseapp.com",
-            projectId: "bamhuyet-6c9e6",
-            storageBucket: "bamhuyet-6c9e6.firebasestorage.app",
-            messagingSenderId: "195174949274",
-            appId: "1:195174949274:web:50cd99e0fad60ba8a81a23",
-            measurementId: "G-W66885N5XM"
+            apiKey: "AIzaSyDtaVYb_72YvoGzvcERJZypUGS-u3skz2M",
+            authDomain: "tuvung-88e8d.firebaseapp.com",
+            databaseURL: "https://tuvung-88e8d-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tuvung-88e8d",
+            storageBucket: "tuvung-88e8d.firebasestorage.app",
+            messagingSenderId: "722559465686",
+            appId: "1:722559465686:web:bae1a77791205d372db177",
+            measurementId: "G-T785TQ3V32"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -2192,13 +2193,45 @@ body {
 
         async function loadLeaderboard() {
             try {
-                const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(20));
-                const snap = await getDocs(q);
+                // Thử tải từ bảng xếp hạng chung hihi_leaderboard của hệ sinh thái
+                let users = [];
+                try {
+                    const qHihi = query(collection(db, "hihi_leaderboard"), orderBy("total_score", "desc"), limit(20));
+                    const snapHihi = await getDocs(qHihi);
+                    snapHihi.forEach(d => {
+                        const data = d.data();
+                        users.push({
+                            id: d.id,
+                            displayName: data.displayName || "Học viên",
+                            photoURL: data.photoURL || "https://www.gravatar.com/avatar/?d=mp",
+                            title: data.streak ? `${data.streak} ngày streak` : "Học viên HiHi",
+                            scoreText: data.total_score ? `${data.total_score.toLocaleString()} XP` : `${data.streak || 0} ngày`
+                        });
+                    });
+                } catch(e) {
+                    console.warn("hihi_leaderboard load error:", e);
+                }
+
+                if (users.length === 0) {
+                    // Fallback sang profiles
+                    const q = query(collection(db, "profiles"), orderBy("streak", "desc"), limit(20));
+                    const snap = await getDocs(q);
+                    snap.forEach(d => {
+                        const data = d.data();
+                        users.push({
+                            id: d.id,
+                            displayName: data.displayName || "Học viên",
+                            photoURL: data.photoURL || "https://www.gravatar.com/avatar/?d=mp",
+                            title: data.title || "Lang Băm",
+                            scoreText: `${data.streak || 0} ngày`
+                        });
+                    });
+                }
+
                 els.leaderboardList.innerHTML = '';
                 let rank = 1;
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    const isMe = currentUser && doc.id === currentUser.uid;
+                users.forEach(data => {
+                    const isMe = currentUser && data.id === currentUser.uid;
                     const div = document.createElement('div');
                     let rankClass = '';
                     if (rank === 1) rankClass = 'lb-top1'; else if (rank === 2) rankClass = 'lb-top2'; else if (rank === 3) rankClass = 'lb-top3';
@@ -2211,12 +2244,20 @@ body {
                         <img src="${data.photoURL}" class="avatar" style="width:36px; height:36px; margin-right:12px; border:none;">
                         <div class="lb-info">
                             <div class="lb-name">${data.displayName} ${isMe ? '(Bạn)' : ''}</div>
-                            <div class="lb-detail">${data.title || 'Lang Băm'}</div>
+                            <div class="lb-detail">${data.title}</div>
                         </div>
-                        <div class="lb-score">${data.streak} ngày</div>`;
+                        <div class="lb-score">${data.scoreText}</div>`;
                     els.leaderboardList.appendChild(div);
                     rank++;
                 });
+
+                // Thêm nút xem bảng xếp hạng chi tiết toàn hệ sinh thái
+                const moreBtn = document.createElement('div');
+                moreBtn.style.textAlign = 'center';
+                moreBtn.style.marginTop = '15px';
+                moreBtn.innerHTML = `<a href="https://ngxuanhai123.github.io/" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-secondary" style="display:inline-block;padding:8px 16px;text-decoration:none;"><i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px;"></i> Xem Bảng Vàng HiHi Study Toàn Hệ Thống</a>`;
+                els.leaderboardList.appendChild(moreBtn);
+
             } catch(e) {
                 els.leaderboardList.innerHTML = '<div style="text-align:center; padding:10px;">Đăng nhập để xem BXH</div>';
             }

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * TEST SUITE: HiHi Bamhuyet (bamhuyet)
  * Kiểm thử độ ổn định & cấu hình bảo mật
  */
@@ -62,6 +62,16 @@ async function runTests() {
     recordResult('4. Cấu hình bảo vệ dữ liệu Firestore Security Rules', hasAuthCheck && hasUidCheck, `Auth: ${hasAuthCheck}, Uid check: ${hasUidCheck}`);
   } catch (e) {
     recordResult('4. Cấu hình bảo vệ dữ liệu Firestore', false, e.message);
+  }
+
+  // TEST 5: Đồng bộ Bảng Xếp Hạng toàn hệ sinh thái & Single Sign-On (SSO)
+  try {
+    const hasSharedConfig = html.includes('tuvung-88e8d');
+    const hasHihiLbSync = html.includes('hihi_leaderboard');
+    const passed = hasSharedConfig && hasHihiLbSync;
+    recordResult('5. Đồng bộ Bảng Xếp Hạng toàn hệ sinh thái & Single Sign-On (SSO)', passed, passed ? 'Đã liên kết hihi_leaderboard & SSO tuvung-88e8d' : 'Chưa đồng bộ BXH chung');
+  } catch (e) {
+    recordResult('5. Đồng bộ Bảng Xếp Hạng toàn hệ sinh thái & Single Sign-On (SSO)', false, e.message);
   }
 
   const passedCount = results.filter(r => r.passed).length;
