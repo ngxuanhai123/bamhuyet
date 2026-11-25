@@ -12,59 +12,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root, [data-theme="dark"], html.dark, body.dark-mode {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --primary-light: #60a5fa;
-            --accent: #0ea5e9; 
-            --bg: #090d16;
-            --surface: #131d2e;
-            --surface-border: #1e293b;
-            --text: #f8fafc;
-            --text-light: #94a3b8;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
-            --radius: 16px;
-            --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-        }
-
-        [data-theme="light"], html.light, body.light-theme {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #dbeafe;
-            --accent: #0284c7;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --surface-border: #e2e8f0;
-            --text: #0f172a;
-            --text-light: #64748b;
+        :root, [data-theme="light"], html.light, body.light-theme {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --primary-light: #ede9fe;
+            --accent: #0ea5e9;
+            --bg: var(--color-canvas, #f8f6f1);
+            --surface: var(--color-surface, #ffffff);
+            --surface-2: var(--color-surface2, #efeee8);
+            --surface-border: var(--color-ink, #1e1e1e);
+            --text: var(--color-ink, #1e1e1e);
+            --text-light: var(--color-muted, #40484f);
             --success: #059669;
             --error: #dc2626;
             --warning: #d97706;
-            --radius: 16px;
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --radius: 20px;
+            --shadow: var(--shadow-hard, 4px 4px 0 0 #1e1e1e);
+        }
+
+        [data-theme="dark"], html.dark, body.dark-mode {
+            --primary: #a855f7;
+            --primary-dark: #c084fc;
+            --primary-light: #3b0764;
+            --accent: #38bdf8;
+            --bg: var(--color-canvas, #15191d);
+            --surface: var(--color-surface, #20262b);
+            --surface-2: var(--color-surface2, #2b3339);
+            --surface-border: var(--color-ink, #f5f7f6);
+            --text: var(--color-ink, #f5f7f6);
+            --text-light: var(--color-muted, #c6cdd1);
+            --success: #34d399;
+            --error: #f87171;
+            --warning: #fbbf24;
+            --radius: 20px;
+            --shadow: var(--shadow-hard, 4px 4px 0 0 #1e1e1e);
         }
 
         .card {
             background: var(--surface) !important;
+            color: var(--text) !important;
             border-radius: var(--radius) !important;
             padding: 20px;
             margin-bottom: 16px;
             box-shadow: var(--shadow) !important;
-            border: 1px solid var(--surface-border) !important;
+            border: 2.5px solid var(--surface-border) !important;
+        }
+        .card.streak-hero-card {
+            background: var(--color-yellow, #ffc72e) !important;
+            color: #1e1e1e !important;
+            border: 2.5px solid var(--surface-border) !important;
         }
 
         input, select, textarea {
-            background: var(--surface) !important;
+            background: var(--surface-2) !important;
             color: var(--text) !important;
-            border: 1px solid var(--surface-border) !important;
+            border: 2px solid var(--surface-border) !important;
             border-radius: 12px;
         }
+        input::placeholder, textarea::placeholder { color: var(--text-light) !important; opacity: 0.75; }
 
-        .btn-primary { background: var(--primary) !important; color: white !important; box-shadow: none !important; }
-        .btn-secondary { background: var(--surface-border) !important; color: var(--text) !important; }
-        .nav-item.active { background: var(--primary) !important; color: white !important; border-color: var(--primary) !important; }
+        .btn-primary { background: var(--color-yellow, #ffc72e) !important; color: #1e1e1e !important; border: 2px solid var(--surface-border) !important; box-shadow: var(--shadow-hard-sm, 2px 2px 0 0 #1e1e1e) !important; }
+        .btn-secondary { background: var(--surface-2) !important; color: var(--text) !important; border: 2px solid var(--surface-border) !important; box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e) !important; }
+        .btn-accent { background: var(--color-cyan, #38b6ff) !important; color: #1e1e1e !important; border: 2px solid var(--surface-border) !important; box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e) !important; }
+        .nav-item.active { background: var(--color-yellow, #ffc72e) !important; color: #1e1e1e !important; border-color: var(--surface-border) !important; }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
@@ -91,26 +101,27 @@
         .btn-danger { background: var(--error); color: #fff; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
         
         .btn-search { 
-            background: #eff6ff; color: #2563eb; border: 1px dashed #bfdbfe; 
-            width: 100%; margin-bottom: 15px; font-size: 0.9rem;
+            background: var(--surface-2); color: var(--text); border: 2px dashed var(--surface-border); 
+            width: 100%; margin-bottom: 15px; font-size: 0.9rem; font-weight: 700;
         }
-        .btn-search:hover { background: #dbeafe; }
-        .btn-google { background: white; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; }
+        .btn-search:hover { background: var(--color-cyan, #38b6ff); color: #1e1e1e; border-style: solid; }
+        .btn-google { background: var(--color-yellow, #ffc72e); color: #1e1e1e; border: 2px solid var(--surface-border); box-shadow: var(--shadow-hard-sm, 2px 2px 0 0 #1e1e1e); width: 100%; }
         .btn-xs { padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; }
-        .btn-icon { padding: 8px; border-radius: 50%; background: transparent; color: var(--text-light); cursor: pointer; border: none;}
-        .btn-icon:hover { background: #f3f4f6; color: var(--primary); }
+        .btn-icon { padding: 8px; border-radius: 50%; background: var(--surface-2); color: var(--text); cursor: pointer; border: 2px solid var(--surface-border); }
+        .btn-icon:hover { background: var(--color-yellow, #ffc72e); color: #1e1e1e; }
 
         .card {
             background: var(--surface); border-radius: var(--radius); padding: 20px;
-            margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.8);
+            margin-bottom: 16px; box-shadow: var(--shadow); border: 2.5px solid var(--surface-border);
             position: relative; overflow: hidden;
         }
         
         input, select, textarea {
-            width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px;
+            width: 100%; padding: 12px; border: 2px solid var(--surface-border); border-radius: 12px;
             font-size: 1rem; margin-bottom: 12px; font-family: inherit; transition: border-color 0.2s;
+            background: var(--surface-2); color: var(--text);
         }
-        input:focus, textarea:focus { border-color: var(--primary); background: #fff; ring: 2px solid var(--primary-light); }
+        input:focus, textarea:focus { border-color: var(--surface-border); background: var(--surface); box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e); }
 
         /* --- Layout --- */
         #login-screen, #disclaimer-modal {
@@ -118,20 +129,21 @@
             display: none;
             justify-content: center; align-items: center; z-index: 1000;
         }
-        #login-screen { background: rgba(0, 105, 92, 0.98); }
-        #disclaimer-modal { background: rgba(0, 0, 0, 0.85); z-index: 2100; display: flex; } /* Start visible */
+        #login-screen { background: rgba(18, 22, 26, 0.72); backdrop-filter: blur(4px); }
+        #disclaimer-modal { background: rgba(18, 22, 26, 0.72); backdrop-filter: blur(4px); z-index: 2100; display: flex; } /* Start visible */
 
         .login-box, .disclaimer-box {
-            background: white; padding: 30px; border-radius: 24px;
-            text-align: center; width: 90%; max-width: 380px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: slideUp 0.4s ease;
+            background: var(--surface); color: var(--text); border: 2.5px solid var(--surface-border);
+            padding: 30px; border-radius: 24px;
+            text-align: center; width: 90%; max-width: 390px;
+            box-shadow: var(--shadow-hard-xl, 8px 8px 0 0 #1e1e1e);
+            animation: slideUp 0.3s ease;
         }
 
-        .disclaimer-box { border-top: 5px solid var(--error); }
-        .disclaimer-box h2 { color: var(--error); margin-top: 0; }
-        .disclaimer-box p { text-align: left; color: #4b5563; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; }
-        .disclaimer-box ul { text-align: left; padding-left: 20px; color: #4b5563; font-size: 0.9rem; margin-bottom: 20px; }
+        .disclaimer-box { border-top: 8px solid var(--error); }
+        .disclaimer-box h2 { color: var(--error); margin-top: 0; font-weight: 800; }
+        .disclaimer-box p { text-align: left; color: var(--text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; }
+        .disclaimer-box ul { text-align: left; padding-left: 20px; color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; }
         .disclaimer-box li { margin-bottom: 8px; }
 
         #app-screen { display: flex; flex: 1; flex-direction: column; }
@@ -160,24 +172,25 @@
         .container { max-width: 800px; margin: 0 auto; width: 100%; padding: 16px; flex: 1; }
 
         /* --- Tabs --- */
-        .nav-pills { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch;}
+        .nav-pills { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch;}
         .nav-item {
-            padding: 10px 20px; border-radius: 25px; background: white; color: #6b7280;
-            font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s; border: 1px solid #e5e7eb;
+            padding: 10px 20px; border-radius: 25px; background: var(--surface); color: var(--text-light);
+            font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; border: 2px solid var(--surface-border);
+            box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e);
         }
-        .nav-item.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 6px rgba(0, 105, 92, 0.2); }
+        .nav-item.active { background: var(--color-yellow, #ffc72e); color: #1e1e1e; border-color: var(--surface-border); font-weight: 800; }
 
         /* --- Views --- */
-        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view { display: none; animation: fadeIn 0.2s ease; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- Quiz UI --- */
         .quiz-container { text-align: center; padding: 10px 0; }
-        .quiz-badge { display: inline-block; padding: 6px 16px; background: #ecfdf5; color: var(--primary); border-radius: 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; border: 1px solid #a7f3d0; }
-        .quiz-question { font-size: 1.5rem; color: #111827; margin: 10px 0; font-weight: 800; line-height: 1.3; }
-        .quiz-desc { color: #4b5563; font-style: italic; margin-bottom: 20px; line-height: 1.6; font-size: 1rem; }
+        .quiz-badge { display: inline-block; padding: 6px 16px; background: var(--color-cyan, #38b6ff); color: #1e1e1e; border-radius: 20px; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; border: 2px solid var(--surface-border); }
+        .quiz-question { font-size: 1.5rem; color: var(--text); margin: 10px 0; font-weight: 800; line-height: 1.3; }
+        .quiz-desc { color: var(--text-light); font-style: italic; margin-bottom: 20px; line-height: 1.6; font-size: 1rem; font-weight: 600; }
         
         .feedback { min-height: 30px; margin-top: 15px; font-weight: 700; font-size: 1.1rem; }
         .feedback.correct { color: var(--success); animation: popIn 0.3s; }
@@ -187,56 +200,58 @@
         .lib-search-box { position: sticky; top: 0; background: var(--surface); z-index: 10; padding: 10px 0; margin-bottom: 10px; }
         .lib-controls { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
         
-        .accordion-item { border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 8px; overflow: hidden; background: white; }
+        .accordion-item { border: 2px solid var(--surface-border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e); }
         .accordion-header { 
-            padding: 12px 16px; background: #f9fafb; cursor: pointer; font-weight: 600; 
+            padding: 12px 16px; background: var(--surface-2); color: var(--text); cursor: pointer; font-weight: 700; 
             display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;
         }
-        .accordion-header:hover { background: #f3f4f6; }
-        .accordion-header.active { background: #e0f2f1; color: var(--primary); }
-        .accordion-content { display: none; padding: 10px; background: white; }
+        .accordion-header:hover { background: var(--color-canvas, #f8f6f1); }
+        .accordion-header.active { background: var(--color-yellow, #ffc72e); color: #1e1e1e; font-weight: 800; }
+        .accordion-content { display: none; padding: 10px; background: var(--surface); }
         .accordion-content.open { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 
         .lib-card { 
-            border: 1px solid #f3f4f6; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 4px;
-            cursor: pointer; transition: all 0.2s; position: relative;
+            border: 2px solid var(--surface-border); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 4px;
+            cursor: pointer; transition: all 0.15s; position: relative; background: var(--surface-2); color: var(--text);
         }
-        .lib-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-color: var(--primary-light); }
-        .lib-code { font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; width: fit-content; }
-        .lib-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
-        .lib-srs { font-size: 0.75rem; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 2px; }
-        .lib-del { position: absolute; top: 5px; right: 5px; opacity: 0; transition: 0.2s; color: var(--error); background: none; border: none; cursor: pointer; font-size: 1.1rem;}
+        .lib-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e); }
+        .lib-code { font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; background: var(--surface); border: 1px solid var(--surface-border); padding: 2px 6px; border-radius: 4px; width: fit-content; }
+        .lib-name { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+        .lib-srs { font-size: 0.75rem; color: var(--success); font-weight: 700; display: flex; align-items: center; gap: 2px; }
+        .lib-del { position: absolute; top: 5px; right: 5px; opacity: 0.6; transition: 0.2s; color: var(--error); background: none; border: none; cursor: pointer; font-size: 1.1rem;}
         .lib-card:hover .lib-del { opacity: 1; }
 
         .caution-icon { position: absolute; top: 10px; right: 10px; font-size: 1.2rem; }
 
         /* Feature: Treats Tag */
         .tag-treat {
-            font-size: 0.7rem; color: var(--primary-dark); background: var(--primary-light); 
+            font-size: 0.7rem; color: #1e1e1e; background: var(--color-cyan, #38b6ff); 
             padding: 2px 6px; border-radius: 6px; margin-top: 4px; display: inline-block; 
-            font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+            font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; border: 1px solid #1e1e1e;
         }
 
         /* Modal Details & Edit */
         #detailModal, #comboModal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
+            position: fixed; inset: 0; background: rgba(18, 22, 26, 0.6); backdrop-filter: blur(4px); z-index: 2000;
             display: none; justify-content: center; align-items: flex-end;
         }
         #detailModal.show, #comboModal.show { display: flex; animation: fadeIn 0.2s; }
         .detail-sheet {
-            background: white; width: 100%; max-width: 600px; 
-            border-radius: 20px 20px 0 0; padding: 25px;
-            animation: slideUp 0.3s; max-height: 85vh; overflow-y: auto;
+            background: var(--surface); color: var(--text); border: 2.5px solid var(--surface-border);
+            width: 100%; max-width: 600px; 
+            border-radius: 24px 24px 0 0; padding: 25px;
+            box-shadow: var(--shadow-hard-xl, 8px 8px 0 0 #1e1e1e);
+            animation: slideUp 0.25s; max-height: 85vh; overflow-y: auto;
             display: flex; flex-direction: column;
         }
         @media(min-width: 600px) {
             #detailModal, #comboModal { align-items: center; }
-            .detail-sheet { border-radius: 20px; width: 90%; }
+            .detail-sheet { border-radius: 24px; width: 90%; }
         }
 
         .caution-box {
-            background: #fef2f2; border: 1px solid #fee2e2; color: #b91c1c;
-            padding: 12px; border-radius: 8px; margin-bottom: 15px;
+            background: #fef2f2; border: 2px solid #dc2626; color: #991b1b;
+            padding: 12px; border-radius: 12px; margin-bottom: 15px;
             display: flex; align-items: flex-start; gap: 10px;
         }
         .caution-box strong { display: block; margin-bottom: 2px; text-transform: uppercase; font-size: 0.8rem; }
@@ -244,121 +259,108 @@
         /* --- Combo (Prescription) UI --- */
         .combo-list { display: grid; gap: 12px; }
         .combo-card {
-            background: white; border: 1px solid #e5e7eb; border-radius: 12px;
-            padding: 16px; cursor: pointer; transition: all 0.2s;
+            background: var(--surface-2); border: 2px solid var(--surface-border); border-radius: 14px;
+            padding: 16px; cursor: pointer; transition: all 0.15s;
             display: flex; flex-direction: column; gap: 8px; position: relative;
+            box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e);
         }
-        .combo-card:hover { border-color: var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transform: translateY(-2px); }
+        .combo-card:hover { transform: translateY(-2px); }
         .combo-title { font-weight: 800; color: var(--text); font-size: 1rem; display: flex; align-items: center; gap: 8px; padding-right: 50px; }
         .combo-points { display: flex; flex-wrap: wrap; gap: 6px; }
         .combo-tag { 
-            background: #e0f2f1; color: var(--primary-dark); padding: 4px 10px; 
-            border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
+            background: var(--color-cyan, #38b6ff); color: #1e1e1e; border: 1.5px solid #1e1e1e; padding: 4px 10px; 
+            border-radius: 20px; font-size: 0.8rem; font-weight: 800; 
         }
         .combo-actions {
             position: absolute; top: 12px; right: 12px; display: flex; gap: 4px;
         }
         .btn-mini {
-            padding: 4px; border-radius: 6px; border: 1px solid #e5e7eb; background: white; cursor: pointer; color: #666; font-size: 0.9rem;
+            padding: 4px 6px; border-radius: 8px; border: 2px solid var(--surface-border); background: var(--surface); cursor: pointer; color: var(--text); font-size: 0.9rem;
         }
-        .btn-mini:hover { background: #f3f4f6; color: var(--primary); }
+        .btn-mini:hover { background: var(--color-yellow, #ffc72e); color: #1e1e1e; }
         
         /* Combo Edit Styles */
         .selected-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .tag-chip {
-            background: var(--primary); color: white; padding: 5px 10px; border-radius: 16px; 
-            font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;
+            background: var(--color-yellow, #ffc72e); color: #1e1e1e; border: 1.5px solid #1e1e1e; padding: 5px 10px; border-radius: 16px; 
+            font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; gap: 6px;
         }
-        .tag-chip span { cursor: pointer; opacity: 0.8; font-size: 1rem; font-weight: bold;}
+        .tag-chip span { cursor: pointer; opacity: 0.85; font-size: 1rem; font-weight: bold;}
         .tag-chip span:hover { opacity: 1; }
         
         .suggestion-box {
-            border: 1px solid #e5e7eb; border-top: none; max-height: 150px; overflow-y: auto;
-            border-radius: 0 0 12px 12px; background: white; margin-top: -12px; margin-bottom: 12px;
-            display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 2px solid var(--surface-border); border-top: none; max-height: 150px; overflow-y: auto;
+            border-radius: 0 0 12px 12px; background: var(--surface); color: var(--text); margin-top: -12px; margin-bottom: 12px;
+            display: none; box-shadow: var(--shadow-hard-sm, 2px 2px 0 0 #1e1e1e);
         }
         .suggestion-item {
-            padding: 10px; cursor: pointer; font-size: 0.9rem; border-bottom: 1px solid #f9fafb; display: flex; justify-content: space-between;
+            padding: 10px; cursor: pointer; font-size: 0.9rem; border-bottom: 1px solid var(--surface-2); display: flex; justify-content: space-between;
         }
-        .suggestion-item:hover { background: #f3f4f6; color: var(--primary); }
-        .suggestion-group { font-size: 0.7rem; color: #9ca3af; background: #f3f4f6; padding: 2px 6px; border-radius: 4px;}
-
+        .suggestion-item:hover { background: var(--color-yellow, #ffc72e); color: #1e1e1e; }
+        .suggestion-group { font-size: 0.72rem; color: var(--text-light); background: var(--surface-2); padding: 2px 6px; border-radius: 4px;}
 
         /* --- Leaderboard UI --- */
         .lb-container { display: flex; flex-direction: column; gap: 10px; }
         .lb-item { 
-            display: flex; align-items: center; padding: 12px 16px; background: white; 
-            border-radius: 16px; border: 1px solid #f3f4f6;
+            display: flex; align-items: center; padding: 12px 16px; background: var(--surface); color: var(--text);
+            border-radius: 16px; border: 2px solid var(--surface-border); box-shadow: var(--shadow-hard-sm, 2px 2px 0 0 #1e1e1e);
             transition: transform 0.2s;
         }
         .lb-rank { 
-            font-weight: 800; font-size: 1rem; width: 30px; height: 30px; 
+            font-weight: 800; font-size: 1rem; width: 32px; height: 32px; 
             display: flex; justify-content: center; align-items: center; 
-            border-radius: 50%; background: #f3f4f6; color: #6b7280; margin-right: 12px; flex-shrink: 0;
+            border-radius: 50%; background: var(--surface-2); color: var(--text); border: 1.5px solid var(--surface-border); margin-right: 12px; flex-shrink: 0;
         }
         .lb-info { flex: 1; min-width: 0; }
-        .lb-name { font-weight: 700; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
-        .lb-detail { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+        .lb-name { font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
+        .lb-detail { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; font-weight: 600; }
         .lb-score { 
-            font-weight: 800; color: var(--primary); background: #ecfdf5; 
-            padding: 6px 12px; border-radius: 12px; font-size: 0.9rem;
+            font-weight: 800; color: #1e1e1e; background: var(--color-cyan, #38b6ff); border: 1.5px solid #1e1e1e; 
+            padding: 5px 12px; border-radius: 12px; font-size: 0.88rem;
         }
-        .lb-top1 { background: linear-gradient(135deg, #fffbeb, #fff); border: 1px solid #fcd34d; }
-        .lb-top1 .lb-rank { background: #f59e0b; color: white; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3); }
-        .lb-top2 { background: linear-gradient(135deg, #f8fafc, #fff); border: 1px solid #cbd5e1; }
-        .lb-top2 .lb-rank { background: #94a3b8; color: white; }
-        .lb-top3 { background: linear-gradient(135deg, #fff7ed, #fff); border: 1px solid #fdba74; }
-        .lb-top3 .lb-rank { background: #d97706; color: white; }
+        .lb-top1 { background: var(--color-yellow, #ffc72e) !important; color: #1e1e1e !important; }
+        .lb-top1 .lb-name, .lb-top1 .lb-detail { color: #1e1e1e !important; }
+        .lb-top1 .lb-rank { background: #1e1e1e; color: #ffc72e; }
+        .lb-top2 { background: var(--surface-2) !important; }
+        .lb-top2 .lb-rank { background: #94a3b8; color: #1e1e1e; }
+        .lb-top3 { background: #ffad85 !important; color: #1e1e1e !important; }
+        .lb-top3 .lb-name, .lb-top3 .lb-detail { color: #1e1e1e !important; }
+        .lb-top3 .lb-rank { background: #1e1e1e; color: #ffad85; }
 
         /* --- Badges --- */
         .badges-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; justify-content: center; }
         .badge-item { 
             display: flex; align-items: center; gap: 6px; padding: 8px 12px; 
-            background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; 
-            font-size: 0.75rem; font-weight: 700; color: #9ca3af; opacity: 0.6; 
-            filter: grayscale(1); transition: all 0.3s;
+            background: var(--surface-2); border: 1.5px solid var(--surface-border); border-radius: 12px; 
+            font-size: 0.75rem; font-weight: 700; color: var(--text-light); opacity: 0.7; 
+            filter: grayscale(0.8); transition: all 0.2s;
         }
         .badge-item.unlocked { 
-            opacity: 1; filter: grayscale(0); border-color: var(--accent); 
-            background: linear-gradient(135deg, #fffbeb, #fff); 
-            color: #b45309; box-shadow: 0 4px 6px rgba(251, 191, 36, 0.1); 
-            transform: scale(1.02);
+            opacity: 1; filter: grayscale(0); border-color: var(--surface-border); border-width: 2px;
+            background: var(--color-yellow, #ffc72e); 
+            color: #1e1e1e; box-shadow: var(--shadow-hard-xs, 2px 2px 0 0 #1e1e1e); 
         }
 
         /* --- Calendar UI --- */
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 0.9rem; margin-top: 10px;}
-        .cal-day-header { font-weight: bold; color: #9ca3af; padding-bottom: 5px; font-size: 0.8rem; }
+        .cal-day-header { font-weight: 800; color: var(--text-light); padding-bottom: 5px; font-size: 0.8rem; }
         .cal-day { 
             aspect-ratio: 1; display: flex; align-items: center; justify-content: center; 
-            border-radius: 10px; background: #f9fafb; color: #d1d5db; font-weight: 600;
+            border-radius: 10px; background: var(--surface-2); color: var(--text-light); border: 1.5px solid var(--surface-border); font-weight: 700;
         }
-        .cal-day.active { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .cal-day.today { border: 2px solid var(--accent); color: var(--text); }
+        .cal-day.active { background: var(--color-green, #22c55e); color: #1e1e1e; font-weight: 900; }
+        .cal-day.today { border: 2.5px solid var(--primary); color: var(--text); font-weight: 900; }
 
         /* --- Utilities --- */
-        .app-footer { text-align: center; padding: 30px 20px; margin-top: auto; color: #9ca3af; font-size: 0.85rem; }
+        .app-footer { text-align: center; padding: 24px 20px; margin-top: auto; color: var(--text-light); font-size: 0.85rem; font-weight: 700; }
         .heart-anim { color: #e91e63; display: inline-block; animation: heartBeat 1.5s infinite; }
         @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.3); } 28% { transform: scale(1); } 42% { transform: scale(1.3); } 70% { transform: scale(1); } }
         
-        #toast { visibility: hidden; min-width: 200px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 1000; left: 50%; bottom: 80px; transform: translateX(-50%); opacity: 0; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-size: 0.95rem; font-weight: 500; }
+        #toast { visibility: hidden; min-width: 200px; background-color: #1e1e1e; color: #ffc72e; border: 2px solid #ffc72e; text-align: center; border-radius: 50px; padding: 12px 24px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); opacity: 0; transition: 0.3s; box-shadow: 4px 4px 0 0 #000; font-size: 0.95rem; font-weight: 800; }
         #toast.show { visibility: visible; opacity: 1; bottom: 100px; }
-        #loading { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 200; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 10px; display: none;}
-        .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        #loading { position: fixed; inset: 0; background: rgba(18, 22, 26, 0.72); backdrop-filter: blur(4px); z-index: 2500; justify-content: center; align-items: center; flex-direction: column; gap: 10px; display: none;}
+        .spinner { width: 42px; height: 42px; border: 4px solid var(--surface-2); border-top: 4px solid var(--color-yellow, #ffc72e); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- Floating Home Button --- */
-        .floating-home-btn {
-            position: fixed; bottom: 30px; left: 20px; z-index: 900;
-            display: flex; align-items: center; gap: 10px; padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50px;
-            color: var(--primary); text-decoration: none; font-weight: 700;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;
-        }
-        .floating-home-btn:hover { background: linear-gradient(90deg, #4db6ac, #00695c); transform: translateY(-3px); color: white; border-color: transparent; }
-        .floating-home-btn svg { width: 24px; height: 24px; transition: transform 0.3s ease; }
-        .floating-home-btn:hover svg { transform: scale(1.1); }
-        @media (max-width: 640px) { .floating-home-btn span { display: none; } .floating-home-btn { padding: 12px; border-radius: 50%; bottom: 20px; left: 15px; } }
 
     </style>
 
@@ -1304,17 +1306,6 @@ body {
     <a href="https://ngxuanhai123.github.io/note/" class="phiquiz-sidebar-btn " title="Kho Lưu Ghi Chú">
       <span class="msr ">bookmark</span>
     </a>
-    <button type="button" class="phiquiz-sidebar-btn" onclick="window.hihiOpenLeaderboard()" title="Bảng Xếp Hạng">
-      <span class="msr">emoji_events</span>
-    </button>
-  </div>
-  <div class="phiquiz-sidebar-footer">
-    <button type="button" class="phiquiz-sidebar-btn" onclick="toggleHiHiSysTheme()" title="Đổi Chế Độ Sáng / Tối">
-      <span class="msr" id="hihiSidebarThemeIcon">dark_mode</span>
-    </button>
-    <button type="button" class="phiquiz-sidebar-btn login-btn" onclick="hihiAuthLogin()" title="Đăng Nhập">
-      <span class="msr msr-filled">account_circle</span>
-    </button>
   </div>
 </aside>
 
@@ -1463,6 +1454,20 @@ body {
             <div class="hihi-grid-desc">Dịch câu & ngữ cảnh</div>
           </div>
       </a>
+      <a href="https://ngxuanhai123.github.io/dich-ios/" class="hihi-grid-card">
+          <div class="hihi-grid-icon hihi-icon-dich"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+          <div class="hihi-grid-info">
+            <div class="hihi-grid-name">Dịch Touch</div>
+            <div class="hihi-grid-desc">Dịch nhanh tối ưu Mobile</div>
+          </div>
+      </a>
+      <a href="https://ngxuanhai123.github.io/indo/" class="hihi-grid-card">
+          <div class="hihi-grid-icon hihi-icon-tuvung"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <div class="hihi-grid-info">
+            <div class="hihi-grid-name">Tiếng Indo</div>
+            <div class="hihi-grid-desc">Học giao tiếp Bahasa</div>
+          </div>
+      </a>
       <a href="https://ngxuanhai123.github.io/note/" class="hihi-grid-card">
           <div class="hihi-grid-icon hihi-icon-note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
           <div class="hihi-grid-info">
@@ -1497,13 +1502,6 @@ body {
 
 
 
-
-    <a href="https://ngxuanhai123.github.io/" class="floating-home-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <span>Trang chủ</span>
-    </a>
 
     <div id="loading"><div class="spinner"></div></div>
     <div id="toast">Thông báo</div>
@@ -1545,9 +1543,9 @@ body {
                 
                 <div id="modalTreatsContainer" style="margin-bottom: 15px;"></div>
 
-                <div style="background:#f9fafb; padding:15px; border-radius:12px; margin-bottom:20px;">
-                    <h4 style="margin:0 0 8px 0;">Vị trí & Mô tả</h4>
-                    <p id="modalDesc" style="margin:0; line-height:1.6; color:#4b5563;">Mô tả chi tiết...</p>
+                <div style="background:var(--surface-2); border:2px solid var(--surface-border); padding:15px; border-radius:12px; margin-bottom:20px;">
+                    <h4 style="margin:0 0 8px 0; color:var(--text);">Vị trí &amp; Mô tả</h4>
+                    <p id="modalDesc" style="margin:0; line-height:1.6; color:var(--text-light);">Mô tả chi tiết...</p>
                 </div>
                 
                 <button class="btn btn-search" id="modalSearchBtn">🔍 Xem hình ảnh trên Google</button>
@@ -1555,16 +1553,16 @@ body {
 
             <div id="modalEditContent" style="display: none;">
                 <h3 style="margin-top:0; color: var(--primary);">Chỉnh sửa Huyệt</h3>
-                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Nhóm huyệt</label>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Nhóm huyệt</label>
                 <input type="text" id="editGroup" placeholder="Nhóm">
                 
-                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Tên huyệt</label>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Tên huyệt</label>
                 <input type="text" id="editName" placeholder="Tên huyệt">
                 
-                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Chủ trị (Bệnh chữa được)</label>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Chủ trị (Bệnh chữa được)</label>
                 <input type="text" id="editTreats" placeholder="VD: Đau đầu, mất ngủ...">
 
-                <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Mô tả / Vị trí</label>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Mô tả / Vị trí</label>
                 <textarea id="editDesc" rows="4" placeholder="Mô tả..."></textarea>
                 
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
@@ -1583,13 +1581,13 @@ body {
                 <button onclick="document.getElementById('comboModal').classList.remove('show')" style="border:none; background:none; font-size:1.5rem; color:#999; cursor:pointer;">&times;</button>
             </div>
             
-            <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Tên Bệnh / Toa</label>
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Tên Bệnh / Toa</label>
             <input type="text" id="comboTitleInp" placeholder="VD: Đau đầu (Cảm lạnh)">
 
-            <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Mô tả / Cách dùng</label>
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Mô tả / Cách dùng</label>
             <textarea id="comboDescInp" rows="2" placeholder="Mô tả công dụng..."></textarea>
 
-            <label style="font-size: 0.85rem; font-weight: 600; color: #666;">Công thức huyệt</label>
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light);">Công thức huyệt</label>
             <div id="comboSelectedTags" class="selected-tags"></div>
             
             <input type="text" id="comboPointInput" placeholder="Nhập tên huyệt để tìm kiếm (VD: Hợp Cốc)..." autocomplete="off">
@@ -1603,35 +1601,16 @@ body {
         <div class="login-box">
             <div style="font-size: 4rem; margin-bottom: 15px;">🥋</div>
             <h1 style="color: var(--primary); margin: 0; font-size: 1.8rem; letter-spacing: -1px; margin-bottom: 10px;" id="loginTitle">Nhập Môn</h1>
-            <p style="color: #6b7280; margin-bottom: 30px; font-size: 1rem; line-height: 1.5;" id="loginMsg">Đăng nhập để lưu bí kíp<br>và tranh đoạt ngôi vị Minh Chủ</p>
+            <p style="color: var(--text-light); margin-bottom: 30px; font-size: 1rem; line-height: 1.5;" id="loginMsg">Đăng nhập để lưu bí kíp<br>và tranh đoạt ngôi vị Minh Chủ</p>
             <button class="btn btn-google" id="btnLogin">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" style="margin-right:10px">
                 Tiếp tục bằng Google
             </button>
-            <p style="font-size: 0.85rem; color: #9ca3af; margin-top: 25px;">Chân nhân bất lộ tướng (Miễn phí)</p>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 25px;">Chân nhân bất lộ tướng (Miễn phí)</p>
         </div>
     </div>
 
     <div id="app-screen">
-        <header>
-            <div class="brand">
-                <span class="brand-icon">⚕️</span>
-                <div class="brand-text">
-                    <span>HiHi Med</span>
-                    <span class="slogan">Tuyệt Kỹ Y Học: Chữa được là nhờ thuốc, không chữa được là tại… duyên phận</span>
-                </div>
-            </div>
-            <div class="user-profile">
-                <div class="user-info" id="headerUserInfo">
-                    <div class="user-name" id="displayUserName">Khách</div>
-                    <div class="user-title" id="displayUserTitle">Lang Băm</div>
-                </div>
-                <img id="userAvatar" class="avatar" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NmZDhkYyI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00czLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPjwvc3ZnPg==" alt="">
-                <button class="btn btn-primary btn-xs" style="display:none;" id="btnLogout">Thoát</button>
-                <button class="btn btn-primary btn-xs" id="btnLoginHeader">Vào</button>
-            </div>
-        </header>
-
         <div class="container">
             <div class="nav-pills">
                 <div class="nav-item active" data-target="tab-quiz">🧠 Luyện Công</div>
@@ -1642,9 +1621,9 @@ body {
 
             <div id="tab-quiz" class="view active">
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin:0; font-size: 1.1rem; color: var(--primary-dark);">Luyện Tập <span id="limitCounter" style="font-size: 0.8rem; color: #f59e0b; display:none;">(0/10)</span></h3>
-                        <select id="quizGroupSelect" style="width: auto; margin:0; padding: 6px 12px; font-size: 0.85rem; border-radius: 20px; background: #f3f4f6; border: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap:10px; flex-wrap:wrap;">
+                        <h3 style="margin:0; font-size: 1.1rem; color: var(--text); font-weight:800;">Luyện Tập <span id="limitCounter" style="font-size: 0.8rem; color: var(--warning); display:none;">(0/10)</span></h3>
+                        <select id="quizGroupSelect" style="width: auto; margin:0; padding: 6px 14px; font-size: 0.85rem; border-radius: 20px; font-weight:700;">
                             <option value="all">Tất cả chiêu thức</option>
                         </select>
                     </div>
@@ -1667,13 +1646,13 @@ body {
                             <button class="btn btn-accent" id="btnHint">💡 Gợi ý</button>
                             <button class="btn btn-secondary" id="btnShowAns">👁️ Xem Đáp án</button>
                         </div>
-                        <button class="btn btn-secondary" style="width: 100%; margin-top: 12px; background: white; border: 1px solid #e5e7eb; color: #9ca3af;" id="btnNext">Bỏ qua chiêu này ➜</button>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" id="btnNext">Bỏ qua chiêu này ➜</button>
                     </div>
                     
                     <div id="emptyQuizMsg" style="display:none; text-align: center; padding: 40px 20px;">
                         <div style="font-size: 4rem; margin-bottom: 10px;">🧘</div>
                         <h2 style="margin: 0; color: var(--primary);">Đắc Đạo Thành Tiên</h2>
-                        <p id="emptyMsgText" style="color: #6b7280;">Hôm nay bạn đã luyện hết các bài cần ôn.</p>
+                        <p id="emptyMsgText" style="color: var(--text-light);">Hôm nay bạn đã luyện hết các bài cần ôn.</p>
                         <button class="btn btn-primary" id="btnInitData" onclick="initDefaultData()" style="margin-top: 15px;">♻️ Tải bí kíp nhập môn (361 Huyệt)</button>
                     </div>
                 </div>
@@ -1681,13 +1660,13 @@ body {
 
             <div id="tab-dashboard" class="view">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-                    <div class="card" style="margin:0; text-align:center; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border:none;">
+                    <div class="card streak-hero-card" style="margin:0; text-align:center;">
                         <div style="font-size: 2.5rem; font-weight: 800;" id="stat-streak">0</div>
-                        <div style="font-size: 0.85rem; opacity: 0.9; font-weight: 600;">Ngày Tu Luyện</div>
+                        <div style="font-size: 0.85rem; font-weight: 700;">Ngày Tu Luyện</div>
                     </div>
                     <div class="card" style="margin:0; text-align:center;">
                         <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);" id="stat-mastered">0</div>
-                        <div style="font-size: 0.85rem; color: #6b7280; font-weight: 600;">Chiêu Đã Thuộc</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light); font-weight: 700;">Chiêu Đã Thuộc</div>
                     </div>
                 </div>
 
@@ -1732,7 +1711,7 @@ body {
                         <button class="btn btn-xs btn-secondary" onclick="document.getElementById('addForm').style.display = document.getElementById('addForm').style.display=='none'?'block':'none'">+ Thêm mới</button>
                     </h3>
                     
-                    <div id="addForm" style="display:none; margin-bottom:15px; padding:15px; background:#f9fafb; border-radius:12px;">
+                    <div id="addForm" style="display:none; margin-bottom:15px; padding:15px; background:var(--surface-2); border:2px solid var(--surface-border); border-radius:12px;">
                         <input type="text" id="inpGroup" placeholder="Nhóm (VD: Phế Kinh)" list="groupSuggestions">
                         <input type="text" id="inpName" placeholder="Tên Huyệt (VD: LU1 Trung Phủ)">
                         <input type="text" id="inpTreats" placeholder="Chủ trị (VD: Ho, suyễn, đau ngực...)">
@@ -1767,7 +1746,7 @@ body {
                         💊 Bí Kíp Phối Huyệt
                         <button class="btn btn-xs btn-secondary" onclick="openComboModal()">+ Kê Toa</button>
                     </h3>
-                    <p style="font-size:0.9rem; color:#6b7280; margin-bottom:20px;">Các bài thuốc phối hợp huyệt phổ biến trong Y học cổ truyền.</p>
+                    <p style="font-size:0.9rem; color:var(--text-light); margin-bottom:20px;">Các bài thuốc phối hợp huyệt phổ biến trong Y học cổ truyền.</p>
                     
                     <input type="text" id="comboSearchInp" placeholder="🔍 Tìm toa thuốc, bệnh, hoặc huyệt..." style="margin-bottom: 15px;">
 
@@ -1784,9 +1763,9 @@ body {
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp, writeBatch, orderBy, limit, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc, getDoc, serverTimestamp, writeBatch, orderBy, limit, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js";
 
         // FIREBASE CONFIG (ĐỒNG BỘ TOÀN BỘ HỆ SINH THÁI HIHI STUDY)
@@ -1801,10 +1780,39 @@ body {
             measurementId: "G-T785TQ3V32"
         };
 
-        const app = initializeApp(firebaseConfig);
+        const HIHI_ADMIN_EMAIL = "haingxua@gmail.com";
+        const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        window.hihiAuth = {
+            app, auth, db, provider,
+            async login() {
+                try { await signInWithPopup(auth, provider); }
+                catch (err) {
+                    if (err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user" || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
+                        try { await signInWithRedirect(auth, provider); } catch(re) { showToast("Không thể đăng nhập Google: " + re.message); }
+                    } else { showToast("Đăng nhập Google thất bại: " + err.message); }
+                }
+            },
+            async logout() {
+                try { await signOut(auth); location.reload(); } catch(e) { console.error(e); }
+            }
+        };
+        window.hihiAuthLogin = () => window.hihiAuth.login();
+        window.hihiAuthLogout = () => window.hihiAuth.logout();
+        window.toggleHiHiUserMenu = function(e) {
+            if (e) e.stopPropagation();
+            const d = document.getElementById("hihiUserDropdown");
+            if (d) d.classList.toggle("active");
+        };
+        document.addEventListener("click", function() {
+            const d = document.getElementById("hihiUserDropdown");
+            if (d) d.classList.remove("active");
+        });
+        getRedirectResult(auth).catch(() => {});
 
         let currentUser = null;
         let isGuest = true;
@@ -2139,31 +2147,76 @@ body {
             }
         }
 
-        els.btnLogin.addEventListener('click', () => signInWithPopup(auth, provider).catch(err => showToast("Lỗi: " + err.message)));
-        els.btnLoginHeader.addEventListener('click', () => showLoginScreen(false));
-        els.btnLogout.addEventListener('click', () => { signOut(auth); location.reload(); });
+        if (els.btnLogin) els.btnLogin.addEventListener('click', () => window.hihiAuthLogin());
+        if (els.btnLoginHeader) els.btnLoginHeader.addEventListener('click', () => showLoginScreen(false));
+        if (els.btnLogout) els.btnLogout.addEventListener('click', () => window.hihiAuthLogout());
 
         onAuthStateChanged(auth, async (user) => {
-            els.loginScreen.style.display = 'none';
+            if (els.loginScreen) els.loginScreen.style.display = 'none';
+            const authBtn = document.getElementById("hihiSysAuthBtn");
+            const userPill = document.getElementById("hihiUserPill");
+            const avatar = document.getElementById("hihiUserAvatar");
+            const name = document.getElementById("hihiUserName");
+            const dropAvatar = document.getElementById("hihiDropAvatar");
+            const dropName = document.getElementById("hihiDropName");
+            const dropEmail = document.getElementById("hihiDropEmail");
+            const adminBadge = document.getElementById("hihiAdminBadge");
+
             if (user) {
                 isGuest = false; currentUser = user;
-                els.userAvatar.src = user.photoURL;
-                els.btnLogout.style.display = 'inline-block'; els.btnLoginHeader.style.display = 'none';
-                els.headerUserInfo.style.display = 'block';
-                els.displayUserName.textContent = user.displayName;
-                
+                window.hihiCurrentUser = user;
+                if (els.userAvatar && user.photoURL) els.userAvatar.src = user.photoURL;
+                if (els.btnLogout) els.btnLogout.style.display = 'inline-block';
+                if (els.btnLoginHeader) els.btnLoginHeader.style.display = 'none';
+                if (els.headerUserInfo) els.headerUserInfo.style.display = 'block';
+                if (els.displayUserName) els.displayUserName.textContent = user.displayName || user.email;
+                if (els.limitCounter) els.limitCounter.style.display = 'none';
+
+                if (authBtn) authBtn.style.display = "none";
+                if (userPill) userPill.style.display = "inline-flex";
+                if (avatar && user.photoURL) avatar.src = user.photoURL;
+                if (name) name.textContent = user.displayName || (user.email ? user.email.split("@")[0] : "Học viên");
+                if (dropAvatar && user.photoURL) dropAvatar.src = user.photoURL;
+                if (dropName) dropName.textContent = user.displayName || "Học viên";
+                if (dropEmail) dropEmail.textContent = user.email || "";
+                if (adminBadge) adminBadge.style.display = (user.email === HIHI_ADMIN_EMAIL) ? "inline-block" : "none";
+
+                getDoc(doc(db, "hihi_leaderboard", user.uid)).then(snap => {
+                    if (snap.exists()) {
+                        const d = snap.data();
+                        window.hihiCurrentUserData = d;
+                        const tot = document.getElementById("hihiScoreTotal");
+                        const voc = document.getElementById("hihiScoreVocab");
+                        const spl = document.getElementById("hihiScoreSpell");
+                        if (tot) tot.textContent = d.total_score || 0;
+                        if (voc) voc.textContent = d.tuvung_score || 0;
+                        if (spl) spl.textContent = d.chinhta_score || 0;
+                    }
+                }).catch(() => {});
+
                 showLoading(true);
                 try {
                     await Promise.all([loadData(), loadCombos(), checkAttendance(), loadLeaderboard()]);
                 } catch(e) { console.error("Load error:", e); }
                 showLoading(false);
-                showToast(`Chào mừng ${user.displayName} Bác sĩ tương lai!`);
+                showToast(`Chào mừng ${user.displayName || 'bạn'} Bác sĩ tương lai!`);
             } else {
                 isGuest = true; currentUser = null; guestQuizCount = 0;
-                els.btnLogout.style.display = 'none'; els.btnLoginHeader.style.display = 'inline-block';
-                els.headerUserInfo.style.display = 'none'; 
-                els.limitCounter.style.display = 'inline-block';
-                els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
+                window.hihiCurrentUser = null;
+                window.hihiCurrentUserData = null;
+                if (els.btnLogout) els.btnLogout.style.display = 'none';
+                if (els.btnLoginHeader) els.btnLoginHeader.style.display = 'inline-block';
+                if (els.headerUserInfo) els.headerUserInfo.style.display = 'none';
+                if (els.limitCounter) {
+                    els.limitCounter.style.display = 'inline-block';
+                    els.limitCounter.textContent = `(0/${GUEST_LIMIT})`;
+                }
+
+                if (authBtn) authBtn.style.display = "inline-flex";
+                if (userPill) userPill.style.display = "none";
+                if (adminBadge) adminBadge.style.display = "none";
+                if (dropName) dropName.textContent = "Khách";
+                if (dropEmail) dropEmail.textContent = "Chưa đăng nhập";
                 
                 // Load Acupoints
                 const localData = localStorage.getItem('guest_acupoints');
@@ -3057,6 +3110,35 @@ body {
         }
     </script>
 
+<!-- HIHI SHARED USER DROPDOWN -->
+<div id="hihiUserDropdown" class="hihi-user-dropdown" onclick="event.stopPropagation()">
+  <div class="hihi-dropdown-header">
+    <img id="hihiDropAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" class="hihi-user-avatar" alt="Avatar">
+    <div style="min-width:0;">
+      <div id="hihiDropName" style="font-weight:800;font-size:0.88rem;color:var(--color-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Khách</div>
+      <div id="hihiDropEmail" style="font-size:0.72rem;color:var(--color-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Chưa đăng nhập</div>
+    </div>
+  </div>
+  <div class="hihi-dropdown-scores">
+    <div class="hihi-score-item">
+      <div id="hihiScoreTotal" class="score-val">0</div>
+      <div class="score-lbl">🏆 Tổng điểm</div>
+    </div>
+    <div class="hihi-score-item">
+      <div id="hihiScoreVocab" class="score-val">0</div>
+      <div class="score-lbl">📚 Từ Vựng</div>
+    </div>
+    <div class="hihi-score-item">
+      <div id="hihiScoreSpell" class="score-val">0</div>
+      <div class="score-lbl">✍️ Chính Tả</div>
+    </div>
+  </div>
+  <div class="hihi-dropdown-actions">
+    <button type="button" class="hihi-dropdown-btn" onclick="hihiOpenLeaderboard()"><span>🏆</span> Bảng Xếp Hạng Chung</button>
+    <button type="button" class="hihi-dropdown-btn logout-btn" onclick="hihiAuthLogout()"><span>🚪</span> Đăng xuất</button>
+  </div>
+</div>
+
 <script id="hihi-global-nav-script">
 function applyHiHiTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -3109,10 +3191,8 @@ document.addEventListener('keydown', function(e) {
 });
 
 (function() {
-  var saved = localStorage.getItem('hihi-theme');
-  if (!saved) {
-    saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  }
+  var saved = localStorage.getItem('hihi-theme') || 'light';
+  localStorage.setItem('hihi-theme', saved);
   applyHiHiTheme(saved);
 })();
 </script>
