@@ -10,6 +10,14 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == uid;
     }
 
+    function validPhotoUrl(data) {
+      return !('photoURL' in data) || (
+        data.photoURL is string &&
+        data.photoURL.size() <= 1000 &&
+        (data.photoURL.size() == 0 || data.photoURL.matches('^https://.*'))
+      );
+    }
+
     // 1. DANH SÁCH HUYỆT CÁ NHÂN (Acupoints)
     match /acupoints/{docId} {
       allow read: if isAuthenticated() && resource.data.uid == request.auth.uid;
@@ -35,7 +43,10 @@ service cloud.firestore {
     match /profiles/{uid} {
       allow read: if true;
       allow write: if isOwner(uid)
-                   && (!('streak' in request.resource.data) || (request.resource.data.streak is number && request.resource.data.streak >= 0 && request.resource.data.streak <= 5000));
+                   && (!('streak' in request.resource.data) || (request.resource.data.streak is number && request.resource.data.streak >= 0 && request.resource.data.streak <= 5000))
+                   && (!('name' in request.resource.data) || (request.resource.data.name is string && request.resource.data.name.size() <= 100))
+                   && (!('displayName' in request.resource.data) || (request.resource.data.displayName is string && request.resource.data.displayName.size() <= 100))
+                   && validPhotoUrl(request.resource.data);
     }
 
     // Chặn toàn bộ các document/collection khác ngoài danh mục cho phép

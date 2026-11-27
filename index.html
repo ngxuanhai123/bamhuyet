@@ -1821,6 +1821,26 @@ body {
 
         const SRS_INTERVALS = [0, 1, 3, 7, 14, 30, 90];
 
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function sanitizePhotoUrl(url) {
+            const fallback = 'https://www.gravatar.com/avatar/?d=mp';
+            if (!url || typeof url !== 'string') return fallback;
+            try {
+                const parsed = new URL(url.trim());
+                if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return parsed.href;
+            } catch (_) {}
+            return fallback;
+        }
+
         // --- DATA WITH CAUTION FIELD (t: treats, c: caution) ---
         const createPoints = (code, groupName, dataList) => {
             return dataList.map((item, i) => ({
@@ -2287,7 +2307,7 @@ body {
                 // Header
                 const header = document.createElement('div');
                 header.className = 'accordion-header';
-                header.innerHTML = `<span>${gName} (${groupItems.length})</span> <span>▼</span>`;
+                header.innerHTML = `<span>${escapeHtml(gName)} (${groupItems.length})</span> <span>▼</span>`;
                 header.onclick = () => {
                     const content = itemDiv.querySelector('.accordion-content');
                     const isActive = header.classList.contains('active');
@@ -2332,7 +2352,7 @@ body {
                     if(item.treats) {
                         const tags = item.treats.split(',').slice(0, 2); // Show max 2 tags
                         tags.forEach(t => {
-                            treatsHtml += `<span class="tag-treat">${t.trim()}</span>`;
+                            treatsHtml += `<span class="tag-treat">${escapeHtml(t.trim())}</span>`;
                         });
                         if(item.treats.split(',').length > 2) treatsHtml += `<span class="tag-treat">...</span>`;
                     }
@@ -2345,12 +2365,14 @@ body {
 
                     card.innerHTML = `
                         ${cautionHtml}
-                        <div class="lib-code">${code}</div>
-                        <div class="lib-name">${realName}</div>
+                        <div class="lib-code">${escapeHtml(code)}</div>
+                        <div class="lib-name">${escapeHtml(realName)}</div>
                         <div>${treatsHtml}</div>
-                        <div class="lib-srs">${lvText}</div>
-                        <button class="lib-del" onclick="deleteAcupoint('${item.id}')">&times;</button>
+                        <div class="lib-srs">${escapeHtml(lvText)}</div>
+                        <button class="lib-del" type="button">&times;</button>
                     `;
+                    const delBtn = card.querySelector('.lib-del');
+                    if (delBtn) delBtn.onclick = (ev) => { ev.stopPropagation(); deleteAcupoint(item.id); };
                     content.appendChild(card);
                 });
 
@@ -2467,7 +2489,7 @@ body {
             
             els.modalSearchBtn.onclick = () => {
                  const query = encodeURIComponent(`huyệt ${item.name} vị trí`);
-                 window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank');
+                 window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank', 'noopener,noreferrer');
             };
         }
 
@@ -2570,29 +2592,32 @@ body {
                 };
 
                 const pointsHtml = combo.points.map(p => {
-                    // Find actual point code/name matching
                     const match = acupoints.find(ap => ap.name.toLowerCase().includes(p.toLowerCase()));
-                    // Basic click logic to open detail if found
-                    const clickAttr = match ? `onclick="event.stopPropagation(); window.findAndOpen('${match.id}')"` : "";
-                    return `<span class="combo-tag" ${clickAttr} style="${match?'cursor:pointer':''}">${p}</span>`;
+                    return `<span class="combo-tag" ${match ? `data-point-id="${escapeHtml(match.id)}" style="cursor:pointer"` : ''}>${escapeHtml(p)}</span>`;
                 }).join('');
                 
-                // Edit/Delete buttons (only show if function exists, which now it does)
                 const actionsHtml = `
                     <div class="combo-actions">
-                        <button class="btn-mini" onclick="event.stopPropagation(); editCombo('${combo.id}')" title="Sửa">✏️</button>
-                        <button class="btn-mini" onclick="event.stopPropagation(); deleteCombo('${combo.id}')" title="Xóa" style="color:#ef4444;">🗑️</button>
+                        <button class="btn-mini btn-edit-combo" type="button" title="Sửa">✏️</button>
+                        <button class="btn-mini btn-del-combo" type="button" title="Xóa" style="color:#ef4444;">🗑️</button>
                     </div>
                 `;
 
                 card.innerHTML = `
                     ${actionsHtml}
-                    <div class="combo-title">💊 ${combo.title}</div>
-                    <div style="font-size:0.9rem; color:#6b7280; margin-bottom: 5px;">${combo.desc}</div>
+                    <div class="combo-title">💊 ${escapeHtml(combo.title)}</div>
+                    <div style="font-size:0.9rem; color:#6b7280; margin-bottom: 5px;">${escapeHtml(combo.desc)}</div>
                     <div class="combo-points">
                         ${pointsHtml}
                     </div>
                 `;
+                card.querySelectorAll('.combo-tag[data-point-id]').forEach(tagEl => {
+                    tagEl.onclick = (ev) => { ev.stopPropagation(); window.findAndOpen(tagEl.dataset.pointId); };
+                });
+                const editBtn = card.querySelector('.btn-edit-combo');
+                if (editBtn) editBtn.onclick = (ev) => { ev.stopPropagation(); editCombo(combo.id); };
+                const delBtn = card.querySelector('.btn-del-combo');
+                if (delBtn) delBtn.onclick = (ev) => { ev.stopPropagation(); deleteCombo(combo.id); };
                 els.comboList.appendChild(card);
             });
 
@@ -2663,7 +2688,7 @@ body {
             comboPointsTemp.forEach((pt, index) => {
                 const tag = document.createElement('div');
                 tag.className = 'tag-chip';
-                tag.innerHTML = `${pt} <span onclick="removeComboTag(${index})">&times;</span>`;
+                tag.innerHTML = `${escapeHtml(pt)} <span onclick="removeComboTag(${index})">&times;</span>`;
                 els.comboSelectedTags.appendChild(tag);
             });
         }
@@ -2689,7 +2714,7 @@ body {
                 matches.forEach(m => {
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
-                    div.innerHTML = `<div>${m.name}</div> <div class="suggestion-group">${m.group}</div>`;
+                    div.innerHTML = `<div>${escapeHtml(m.name)}</div> <div class="suggestion-group">${escapeHtml(m.group)}</div>`;
                     div.onclick = () => {
                         // Extract just the name or code + name
                         // Usually user wants full name: "LI4 Hợp Cốc"
@@ -2830,7 +2855,7 @@ body {
         els.btnSearchImg.addEventListener('click', () => {
             if(!currentQuizItem) return;
             const query = encodeURIComponent(`huyệt ${currentQuizItem.name} vị trí`);
-            window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank');
+            window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank', 'noopener,noreferrer');
         });
 
         async function handleAnswer(isCorrect) {
@@ -2851,7 +2876,7 @@ body {
             } else {
                 newLevel = 0; nextReview = Date.now();
                 playTone('wrong');
-                els.qFeedback.innerHTML = `Sai rồi: <b>${currentQuizItem.name}</b>`;
+                els.qFeedback.innerHTML = `Sai rồi: <b>${escapeHtml(currentQuizItem.name)}</b>`;
                 els.qFeedback.className = 'feedback wrong';
             }
 
@@ -3018,12 +3043,12 @@ body {
                     
                     div.innerHTML = `
                         <div class="lb-rank">${rank}</div>
-                        <img src="${data.photoURL}" class="avatar" style="width:36px; height:36px; margin-right:12px; border:none;">
+                        <img src="${escapeHtml(sanitizePhotoUrl(data.photoURL))}" class="avatar" style="width:36px; height:36px; margin-right:12px; border:none;">
                         <div class="lb-info">
-                            <div class="lb-name">${data.displayName} ${isMe ? '(Bạn)' : ''}</div>
-                            <div class="lb-detail">${data.title}</div>
+                            <div class="lb-name">${escapeHtml(data.displayName)} ${isMe ? '(Bạn)' : ''}</div>
+                            <div class="lb-detail">${escapeHtml(data.title)}</div>
                         </div>
-                        <div class="lb-score">${data.scoreText}</div>`;
+                        <div class="lb-score">${escapeHtml(data.scoreText)}</div>`;
                     els.leaderboardList.appendChild(div);
                     rank++;
                 });
